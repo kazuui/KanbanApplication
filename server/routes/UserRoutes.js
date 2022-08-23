@@ -13,7 +13,7 @@ router.post("/user", (req,res) => {
 //Get all users
 router.route('/users').get(users.getUsersAndGroups);
 
-//Update specific user
+//Get specific user
 router.route('/users/:id').get(users.getUsersAndGroups);
 
 //Delete specific user (User will still be in database but inactive)

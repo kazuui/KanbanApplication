@@ -9,22 +9,22 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const UserModel = require ('../models/UserModel');
 
 //middleware
-function authenticateToken (req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1] //if there is an authHeader return the following
+// function authenticateToken (req, res, next) {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1] //if there is an authHeader return the following
 
-    if (token == null) {
-        res.sendStatus(401);
-    }
+//     if (token == null) {
+//         res.sendStatus(401);
+//     }
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if(err){
-            res.sendStatus(403)
-        }
-        req.user = user
-        next();
-    })
-}
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//         if(err){
+//             res.sendStatus(403)
+//         }
+//         req.user = user
+//         next();
+//     })
+// }
 
 //Login
 exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
@@ -113,8 +113,7 @@ exports.updateUser = catchAsyncErrors ( async (req, res, next) => {
 
     const password = JSON.stringify(req.body.password);
     const email = JSON.stringify(req.body.email);
-    // const groupSelect = req.body.groupSelect;
-    // res.send(groupSelect);
+    // const groupUpdate = req.body.selectedGroups;
 
     if (password == `""`) {
         let sql = `UPDATE user SET user.email = ${email} WHERE user.user_id = ${id}`;
@@ -138,8 +137,6 @@ exports.updateUser = catchAsyncErrors ( async (req, res, next) => {
                     if (error){
                         res.send("failed");
                     } else {
-                        // console.log(hashPassword);
-                        // console.log(password);
                         res.send("success");
                     }
                 });

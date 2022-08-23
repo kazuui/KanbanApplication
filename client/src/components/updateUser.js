@@ -94,6 +94,7 @@ function UpdateUser() {
       const response = await axios.post(`/users/update/${id}`, {
         password,
         email,
+        // selectedGroups,
       })
       notify("success");
       Navigate("/users", { replace: true });
@@ -115,15 +116,14 @@ function UpdateUser() {
     },
   };
 
-  const [groupName, setGroupName] = React.useState([]);
+  // const [groupName, setGroupName] = React.useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
 
-    console.log(value);
-    setGroupName(
+    setSelectedGroups(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
@@ -158,8 +158,8 @@ function UpdateUser() {
               <label>Groups:</label>
               <Select 
                 className="select-form"
-                labelId="demo-multiple-checkbox-label"
-                id="demo-multiple-checkbox"
+                labelId="multiple-checkbox-label"
+                id="multiple-checkbox"
                 multiple
                 value={selectedGroups}
                 onChange={handleChange}
@@ -171,7 +171,7 @@ function UpdateUser() {
 
                   return(
                     <MenuItem key={name} value={name}>
-                    <Checkbox checked={groupName.indexOf(name) > -1} />
+                    <Checkbox checked={selectedGroups.indexOf(name) > -1} />
                     <ListItemText primary={name} />
                     </MenuItem>
                   )
