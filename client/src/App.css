@@ -6,6 +6,18 @@
   width: 20% !important;
 }
 
+.form-size {
+  width: 300px;
+}
+
+.doFlex {
+  display: flex;
+}
+
+.doFlex input {
+  margin-right: 24px;
+}
+
 body {
   font-family: "Public Sans", sans-serif;
 }

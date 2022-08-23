@@ -16,8 +16,11 @@ exports.getGroups = catchAsyncErrors ( async (req, res, next) => {
 });
 
 //Create group
-exports.createGroup = (req, res, next) => {
-    let sql = `INSERT INTO "group" (group_name) VALUES ('heehee')`;
+exports.createGroup = catchAsyncErrors ( async (req, res, next) => {
+
+    const groupName = await JSON.stringify(req.body.groupName);
+
+    let sql = `INSERT INTO kanban_web_app.group (group_name) VALUES (${groupName})`;
     db.query(sql, (error, results) => {
         if (error) {
             res.send("Error");
@@ -25,7 +28,7 @@ exports.createGroup = (req, res, next) => {
             res.send(results);
         }
     })
-};
+});
 
 //Get group ID by name
 // exports.getGroupID = (req, res, next) => {

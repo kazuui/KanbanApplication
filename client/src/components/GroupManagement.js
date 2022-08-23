@@ -17,7 +17,7 @@ function GroupManagement(props) {
     <Page title="Groups" wide={true}>
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">Group Management Table</p>
-        <div className="col-lg-12 py-lg-5 center_align">
+        <div className="col-lg-12 py-lg-3 center_align">
           
           <GroupTable />
 

@@ -144,3 +144,33 @@ exports.updateUser = catchAsyncErrors ( async (req, res, next) => {
         });
     }
 });
+
+//Delete user groups
+exports.refreshUserGroups = catchAsyncErrors ( async (req, res, next) => {
+    const { id } = req.params;
+    //remove all groups from user first
+    let sql = `DELETE FROM user_in_group WHERE user_id = ${id};`
+    db.query(sql, (error, results) => {
+            if (error){
+                res.send("failed");
+            } else {
+                res.send("success");
+            }
+        });
+});
+
+//Update user groups
+exports.updateUserGroups = catchAsyncErrors ( async (req, res, next) => {
+    const { id } = req.params;
+
+    const groupID = req.body.getGroupID;
+
+    let sql = `INSERT INTO user_in_group (user_id, group_id) VALUES (${id}, ${groupID})`;
+        db.query(sql, (error, results) => {
+            if (error){
+                res.send("failed");
+            } else {
+                res.send("success");
+            }
+        });
+});

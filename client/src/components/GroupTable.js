@@ -1,8 +1,36 @@
 import React, {useEffect, useState} from "react";
 import {Link} from 'react-router-dom';
-import Page from "./Page";
+import axios from "axios";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function GroupTable () {
+
+  //Toast
+  const notify = (status) => {
+    if(status === "success") {
+      toast.success('Group created successfully', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "warning") {
+      toast.warn('Group creation failed', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+  }
   
   useEffect( () => {
     fetchGroups();
@@ -17,6 +45,20 @@ function GroupTable () {
     setGroups(groups);
   };
 
+  async function doGroupCreate(e) {
+    e.preventDefault();
+    try{
+      const response = await axios.post(`/groups/create`, {
+        groupName,
+      });
+      setTimeout(() => fetchGroups(), 500);
+      notify("success");
+    } catch(e){
+      notify("warning");
+      console.log("There was a problem.")
+    }
+  };
+
   return (
     <section>
       <table className="styled-table">
@@ -29,14 +71,13 @@ function GroupTable () {
         </thead>
         <tbody>
           <tr>
-            <td></td>
-            <td>
-              <input autoFocus required id="groupName" name="groupName" className="form-control" type="text" autoComplete="off" placeholder="Group name" onChange={(e) =>{ setGroupName(e.target.value) }} />
-            </td>
-            <td>
-              <Link to={`/groups/create`}>
+            <td colSpan={3}>
+              <form className="form-size" onSubmit={doGroupCreate}>
+                <div className="form-group doFlex">
+                <input autoFocus required id="groupName" name="groupName" className="form-control" type="text" autoComplete="off" placeholder="Group name" onChange={(e) =>{ setGroupName(e.target.value) }} />
                 <button className="btn btn-edit">Create</button>
-              </Link>
+                </div>
+              </form>
             </td>
           </tr>
           {Groups.map((group, index) => {

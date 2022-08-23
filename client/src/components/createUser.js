@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Page from './Page';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -16,6 +17,8 @@ import 'react-toastify/dist/ReactToastify.css';
 // import UserLoggedOut from '../components/UserLoggedOut';
 
 function CreateUser() {
+
+  let Navigate = useNavigate();
 
   //Toast
   const notify = (status) => {
@@ -85,6 +88,10 @@ function CreateUser() {
       console.log("There was a problem.")
     }
   };
+
+  function doGoBack() {
+    Navigate("/users", { replace: true });
+  }
 
   //SELECT FIELD
   const ITEM_HEIGHT = 48;
@@ -164,9 +171,9 @@ function CreateUser() {
             </div>
             
             <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block"> Create</button>
-            <button type="submit" className="py-3 mt-4 btn btn-lg btn-edit btn-block"> Back </button>
-
           </form>
+
+          <button type="submit" className="py-3 mt-4 btn btn-lg btn-edit btn-block" onClick={doGoBack}> Back </button>
 
         </div>
 

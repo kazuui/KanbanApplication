@@ -62,6 +62,9 @@ function UpdateUser() {
   const [allGroups, setAllGroups] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
 
+  const [groupInfo, setGroupInfo] = useState([]);
+  const [previousGroup, setPreviousGroup] = useState([]);
+
   const fetchUser = async() => {
     const data = await fetch(`/users/${id}`); //fetching data from port 5000 on proxy
     const users = await data.json();
@@ -75,6 +78,7 @@ function UpdateUser() {
     setUsers(userData);
     setEmail(userData.email);
     setSelectedGroups(selectedGroupArray);
+    setPreviousGroup(selectedGroupArray);
   };
 
   const fetchGroups = async() => {
@@ -85,12 +89,39 @@ function UpdateUser() {
       return group['group_name'];
     });
 
+    setGroupInfo(groups);
     setAllGroups(groupArray);
   };
 
+
   async function doUpdate(e) {
+    // if(previousGroup){
+    //   const updateGroup=selectedGroups.shift();
+    //   setSelectedGroups(updateGroup);
+    // }
+
     e.preventDefault();
     try{
+      if(selectedGroups){
+
+        if (previousGroup){
+          //Refresh Group
+          const response = await axios.post(`/users/group/${id}`);
+        }
+
+        for(var i = 0 ; i < selectedGroups.length; i++){
+          var currentGroupName = selectedGroups[i]
+          var getGroupID = groupInfo.find(x => x.group_name === currentGroupName).group_id;
+          try{
+            let response = await axios.post(`/users/update-group/${id}`, {
+              getGroupID,
+            })
+          } catch {
+            notify("warning");
+            console.log("There was a problem.")
+          }
+        }
+      }
       const response = await axios.post(`/users/update/${id}`, {
         password,
         email,
@@ -117,6 +148,8 @@ function UpdateUser() {
   };
 
   // const [groupName, setGroupName] = React.useState([]);
+  // var getGroupID = groupInfo.find(x => x.group_name === 'Oreo').group_id;
+  // console.log(getGroupID);
 
   const handleChange = (event) => {
     const {
