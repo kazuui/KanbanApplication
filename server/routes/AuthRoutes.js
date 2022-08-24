@@ -19,4 +19,7 @@ router.route('/users/update-group/:id').post(authController.updateUserGroups);
 //Refresh User Group
 router.route('/users/group/:id').post(authController.refreshUserGroups);
 
+//Add New User to Group
+router.route('/users/create/add-to-group').post(authController.addUserGroups);
+
 module.exports = router;

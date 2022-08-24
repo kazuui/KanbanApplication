@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS `kanban_web_app`.`user` (
+  `user_id` INT NOT NULL AUTO_INCREMENT,
+  `username` CHAR(45) NULL DEFAULT NULL,
+  `password` VARCHAR(600) NULL DEFAULT NULL,
+  `email` VARCHAR(45) NULL DEFAULT NULL,
+  `status` INT NULL DEFAULT NULL,
+  `refresh_token` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`))
+ENGINE = InnoDB

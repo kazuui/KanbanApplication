@@ -26,6 +26,16 @@ const UserModel = require ('../models/UserModel');
 //     })
 // }
 
+//Min 8 Max 10; Aplha, Num , Special
+const validPassword = (password) => {
+    if (password.length < 8 || password.length > 10) return false; //check for password length
+    if (!/[0-9]/g.test(password)) return false; //check for numbers
+    if (!/[a-zA-Z]/.test(password)) return false; //check for alphabets
+    if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password)) return false; //check for special characters
+  
+    return true;
+  };
+
 //Login
 exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
     const username = await JSON.stringify(req.body.username);
@@ -50,7 +60,9 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
                   const checkPassword = result.password;
   
                   bcrypt.compare(password, checkPassword).then(check => {
-                    if (check) {
+                    if (!check) {
+                        res.send("Wrong password/username");
+                      } else {
                         const user = results;
                         result.password = undefined;
                         console.log(check, result);
@@ -59,8 +71,7 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
                         const accessToken = jwt.sign(User , process.env.ACCESS_TOKEN_SECRET);
                         res.json({ accessToken: accessToken })
                       }
-
-                      return null;
+                    //   return null;
                   })
               }
           })
@@ -78,32 +89,39 @@ exports.createUser = catchAsyncErrors ( async (req, res, next) => {
     if (username === `""` || password === `""`){
         res.send("Fill in username and password to create new user");
     } else {
-        let sql = `SELECT username FROM user WHERE username = ${username}`;
-        db.query(sql, (error, results) => {
-            if (error){
-                res.send(error);
-            } else {
-                if (results.length){
-                    res.send("existed");
+
+        const checkPasswordValid = validPassword(password);
+
+        if(checkPasswordValid === false){
+            res.send("password criteria")
+        } else {
+            let sql = `SELECT username FROM user WHERE username = ${username}`;
+            db.query(sql, (error, results) => {
+                if (error){
+                    res.send(error);
                 } else {
-                    bcrypt.hash(password, saltRounds, (error, hash) => {
-                        if (error){
-                            res.send(error);
-                        } else {
-                            hashPassword = JSON.stringify(hash);
-                            let sql = `INSERT INTO user (username, password, email, status) VALUES (${username}, ${hashPassword},${email},${status})`;
-                            db.query(sql, (error, results) => {
-                                if (error){
-                                    res.send("Error");
-                                } else {
-                                    res.send("success");
-                                }
-                            });
-                        }
-                    });
+                    if (results.length){
+                        res.send("existed");
+                    } else {
+                        bcrypt.hash(password, saltRounds, (error, hash) => {
+                            if (error){
+                                res.send(error);
+                            } else {
+                                hashPassword = JSON.stringify(hash);
+                                let sql = `INSERT INTO user (username, password, email, status) VALUES (${username}, ${hashPassword},${email},${status})`;
+                                db.query(sql, (error, results) => {
+                                    if (error){
+                                        res.send("Error");
+                                    } else {
+                                        res.send("success");
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 });
 
@@ -162,7 +180,6 @@ exports.refreshUserGroups = catchAsyncErrors ( async (req, res, next) => {
 //Update user groups
 exports.updateUserGroups = catchAsyncErrors ( async (req, res, next) => {
     const { id } = req.params;
-
     const groupID = req.body.getGroupID;
 
     let sql = `INSERT INTO user_in_group (user_id, group_id) VALUES (${id}, ${groupID})`;
@@ -173,4 +190,34 @@ exports.updateUserGroups = catchAsyncErrors ( async (req, res, next) => {
                 res.send("success");
             }
         });
+});
+
+//Add Users to groups
+exports.addUserGroups = catchAsyncErrors ( async (req, res, next) => {
+
+    const username = JSON.stringify(req.body.username);
+    const groupID = req.body.getGroupID;
+
+    var thisUserID = "";
+
+    //find userID
+    let findID = `SELECT user_id FROM user WHERE username = ${username}`
+    db.query(findID, (error, results) => {
+        if (error){
+            res.send("failed");
+        } else {
+            const [result] = results;
+            thisUserID= (result.user_id);
+            
+            //Insert user
+            let sql = `INSERT INTO user_in_group (user_id, group_id) VALUES (${thisUserID}, ${groupID})`;
+            db.query(sql, (error, results) => {
+                if (error){
+                    res.send("failed");
+                } else {
+                    res.send("success");
+                }
+            });
+        }
+    });
 });

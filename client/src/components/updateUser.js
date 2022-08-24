@@ -81,6 +81,15 @@ function UpdateUser() {
     setPreviousGroup(selectedGroupArray);
   };
 
+  // Remove first item if null
+  if(selectedGroups[0] === null){
+    const removeNull = selectedGroups.filter(group => {
+      return group !== null;
+    });
+
+    setSelectedGroups(removeNull);
+  }
+
   const fetchGroups = async() => {
     const data = await fetch('/groups'); //fetching data from port 5000 on proxy
     const groups = await data.json();
@@ -95,10 +104,6 @@ function UpdateUser() {
 
 
   async function doUpdate(e) {
-    // if(previousGroup){
-    //   const updateGroup=selectedGroups.shift();
-    //   setSelectedGroups(updateGroup);
-    // }
 
     e.preventDefault();
     try{
@@ -134,6 +139,8 @@ function UpdateUser() {
       console.log("There was a problem.")
     }
   };
+
+  console.log(selectedGroups);
 
   //SELECT FIELD
   const ITEM_HEIGHT = 48;

@@ -42,12 +42,22 @@ function CreateUser() {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "password criteria") {
+      toast.warn('Password needs to be between 8 to 10 characters and consists of alphabets , numbers, and special character.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     }
   }
 
-  //get all groups
   const [allGroups, setAllGroups] = useState([]);
   const [addToGroups, setAddToGroups] = useState([]);
+  const [groupInfo, setGroupInfo] = useState([]);
 
   useEffect( () => {
     fetchGroups();
@@ -61,6 +71,7 @@ function CreateUser() {
       return group['group_name'];
     });
 
+    setGroupInfo(groups);
     setAllGroups(groupArray);
   };
 
@@ -78,13 +89,25 @@ function CreateUser() {
         email
       });
 
-      if (response.data === "success"){
-        notify("success");
-      } else {
-        notify("warning");
-      }
+      console.log(response.data);
 
+      if(response.data === "password criteria"){
+        notify("password criteria");
+      } else {
+        if(addToGroups && response === "success"){
+          for(var i = 0 ; i < addToGroups.length; i++){
+            var currentGroupName = addToGroups[i]
+            var getGroupID = groupInfo.find(x => x.group_name === currentGroupName).group_id;
+            let response = await axios.post(`/users/create/add-to-group`, {
+              username,
+              getGroupID,
+            })
+          }
+        }
+        notify("success");
+      }
     } catch(e){
+      notify("warning");
       console.log("There was a problem.")
     }
   };
@@ -105,19 +128,15 @@ function CreateUser() {
     },
   };
   
-  const [groupName, setGroupName] = React.useState([]);
-  
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
   
-    setGroupName(
+    setAddToGroups(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
-
-    setAddToGroups(value);
   };
 
   return (
@@ -152,7 +171,7 @@ function CreateUser() {
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
                 multiple
-                value={groupName}
+                value={addToGroups}
                 onChange={handleChange}
                 input={<OutlinedInput label="Tag" />}
                 renderValue={(selected) => selected.join(', ')}
@@ -162,7 +181,7 @@ function CreateUser() {
 
                   return(
                     <MenuItem key={name} value={name}>
-                    <Checkbox checked={groupName.indexOf(name) > -1} />
+                    <Checkbox checked={addToGroups.indexOf(name) > -1} />
                     <ListItemText primary={name} />
                     </MenuItem>
                   )

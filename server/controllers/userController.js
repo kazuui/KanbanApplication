@@ -5,16 +5,6 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 //User Model
 const UserModel = require("../models/UserModel.js");
 
-//Min 8 Max 10; Aplha, Num , Special
-const validPassword = (password) => {
-    if (password.length < 8 || password.length > 10) return false; //check for password length
-    if (!/[0-9]/g.test(password)) return false; //check for numbers
-    if (!/[a-zA-Z]/.test(password)) return false; //check for alphabets
-    if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password)) return false; //check for special characters
-  
-    return true;
-  };
-
 // Get Users and their groups
 exports.getUsersAndGroups = catchAsyncErrors ( async (req, res, next) => {
     const { id } = req.params;

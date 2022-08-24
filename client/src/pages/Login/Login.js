@@ -1,39 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import Page from '../../components/Page';
 import axios from "axios";
 
+import AuthContext from "../../context/authContext"
+
 function Login() {
 
   let Navigate = useNavigate();
-
+  const {doLogin, isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
+  
   //Login form
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  async function doLogin(e) {
-    e.preventDefault();
-    try{
-      const response = await axios.post('/login', {
-        username,
-        password
-      })
-      if (response.data){
-        Navigate("/home", { replace: true });
-      }
-    } catch(e){
-      console.log("There was a problem.")
+  const handleSubmit  = async (e) => {
+    e.preventDefault()
+    const result = await doLogin(username, password);
+    console.log(result)
+
+    //check if user is logged in
+    if(result) {
+      Navigate("/home", { replace: true });
     }
-  };
+  }
+
+  //Previous form
+  // async function doLogin(e) {
+  //   e.preventDefault();
+  //   try{
+  //     const response = await axios.post('/login', {
+  //       username,
+  //       password
+  //     })
+  //     if (response.data){
+  //       Navigate("/home", { replace: true });
+  //     }
+  //   } catch(e){
+  //     console.log("There was a problem.")
+  //   }
+  // };
 
   return (
-    <Page title="Home">
+    <Page title="Login">
       <div className="align-items-center">
         <h1 className="display-3 display-3-center center_align">Login</h1>
         <p className="lead text-muted display-3-center">To get your tasks sorted.</p>
         <div className="col-lg-7 py-lg-5 center_align">
           
-          <form onSubmit={doLogin}>
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input required id="username" name="username" className="form-control" type="text" autoComplete="off" placeholder="Username" onChange={(e) =>{ setUsername(e.target.value) }}/>
             </div>
