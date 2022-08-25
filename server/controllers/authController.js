@@ -8,38 +8,48 @@ const jwt = require('jsonwebtoken');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const UserModel = require ('../models/UserModel');
 
-//middleware
-// function authenticateToken (req, res, next) {
-//     const authHeader = req.headers['authorization'];
-//     const token = authHeader && authHeader.split(' ')[1] //if there is an authHeader return the following
-
-//     if (token == null) {
-//         res.sendStatus(401);
-//     }
-
-//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-//         if(err){
-//             res.sendStatus(403)
-//         }
-//         req.user = user
-//         next();
-//     })
-// }
-
 //Min 8 Max 10; Aplha, Num , Special
 const validPassword = (password) => {
-    if (password.length < 8 || password.length > 10) return false; //check for password length
-    if (!/[0-9]/g.test(password)) return false; //check for numbers
-    if (!/[a-zA-Z]/.test(password)) return false; //check for alphabets
-    if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password)) return false; //check for special characters
-  
-    return true;
+
+    password = password.replaceAll("\"", "");
+
+    let regExp = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,11}$/
+    if (!regExp.test(password)){
+        return false;
+    } else {
+        return true;
+    }
+    // if (/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,11}$/.test(password)) return true; check for password length
+    // if (!/[0-9]/g.test(password)) return false; //check for numbers
+    // if (!/[a-zA-Z]/.test(password)) return false; //check for alphabets
+    // if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password)) return false; //check for special characters
+    // return false;
   };
 
 //Login
 exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
     const username = await JSON.stringify(req.body.username);
     const password = await JSON.stringify(req.body.password);
+
+    // Check if admin
+    var userAdmin = "";
+
+    let sql = `SELECT user.user_id, user.username, kanban_web_app.group.group_id, 
+    kanban_web_app.group.group_name FROM user LEFT JOIN user_in_group ON user.user_id = user_in_group.user_id 
+    LEFT JOIN kanban_web_app.group ON user_in_group.group_id = kanban_web_app.group.group_id 
+    WHERE kanban_web_app.group.group_name = 'admin' AND user.username = ${username}`;
+    db.query(sql, (error, checkAdmin) => {
+        if (error) {
+            res.send("Error");
+        } else {
+            // console.log(checkAdmin[0] === undefined);
+            if (checkAdmin[0] === undefined){
+                userAdmin = 0
+            } else {
+                userAdmin = 1
+            }
+        }
+    })
   
       if (username === `""` || password === `""`) {
           if (username === `""` && password !==`""`) {
@@ -55,24 +65,34 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
               if (error || !results.length) {
                   res.send("Wrong password/username");
               } else {
+
                   const [result] = results;
-                  // const checkPassword = JSON.stringify(result.password);
-                  const checkPassword = result.password;
-  
-                  bcrypt.compare(password, checkPassword).then(check => {
-                    if (!check) {
-                        res.send("Wrong password/username");
-                      } else {
-                        const user = results;
-                        result.password = undefined;
-                        console.log(check, result);
-                        
-                        const User = { name: req.body.username}
-                        const accessToken = jwt.sign(User , process.env.ACCESS_TOKEN_SECRET);
-                        res.json({ accessToken: accessToken })
-                      }
-                    //   return null;
-                  })
+                  const userStatus = result.status;
+
+                  if (userStatus === 0){
+                    res.send("deactivated");
+                  } else {
+                    const checkPassword = result.password;
+                    bcrypt.compare(password, checkPassword).then(check => {
+                      if (!check) {
+                          res.send("Wrong password/username");
+                        } else {
+
+                            const user = results;
+                            result.password = undefined;
+                            // console.log(check, result);
+
+                            const User = { name: req.body.username};
+                            const accessToken = jwt.sign(User , process.env.ACCESS_TOKEN_SECRET);
+                                
+                            const userInfo = Object.assign(result, {accessToken}, {checkAdmin: userAdmin});
+
+                            // console.log(userInfo);
+                            res.json(userInfo);
+                        }
+                        //return null;
+                    })
+                  }
               }
           })
       };
@@ -86,11 +106,16 @@ exports.createUser = catchAsyncErrors ( async (req, res, next) => {
     const email = JSON.stringify(req.body.email);
     const status = 1;
 
+    // const password = req.body.password;
+
     if (username === `""` || password === `""`){
         res.send("Fill in username and password to create new user");
     } else {
 
         const checkPasswordValid = validPassword(password);
+
+        // console.log(password);
+        // console.log(checkPasswordValid);
 
         if(checkPasswordValid === false){
             res.send("password criteria")
@@ -132,6 +157,7 @@ exports.updateUser = catchAsyncErrors ( async (req, res, next) => {
     const password = JSON.stringify(req.body.password);
     const email = JSON.stringify(req.body.email);
     // const groupUpdate = req.body.selectedGroups;
+    const checkPasswordValid = validPassword(password);
 
     if (password == `""`) {
         let sql = `UPDATE user SET user.email = ${email} WHERE user.user_id = ${id}`;
@@ -142,24 +168,27 @@ exports.updateUser = catchAsyncErrors ( async (req, res, next) => {
                 res.send("success");
             }
         });
-
     } else {
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-            if(err){
-                res.send(err);
-            }else{
-                hashPassword = JSON.stringify(hash);
-    
-                let sql = `UPDATE user SET user.password = ${hashPassword} , user.email = ${email} WHERE user.user_id = ${id}`;
-                db.query(sql, (error, results) => {
-                    if (error){
-                        res.send("failed");
-                    } else {
-                        res.send("success");
-                    }
-                });
-            }
-        });
+        if (checkPasswordValid == false){
+            res.send("password criteria")
+        } else {
+            bcrypt.hash(password, saltRounds, (err, hash) => {
+                if(err){
+                    res.send(err);
+                }else{
+                    hashPassword = JSON.stringify(hash);
+        
+                    let sql = `UPDATE user SET user.password = ${hashPassword} , user.email = ${email} WHERE user.user_id = ${id}`;
+                    db.query(sql, (error, results) => {
+                        if (error){
+                            res.send("failed");
+                        } else {
+                            res.send("success");
+                        }
+                    });
+                }
+            });
+        }
     }
 });
 

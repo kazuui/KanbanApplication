@@ -6,10 +6,12 @@ import AuthContext from "../context/authContext"
 
 function NavBar() {
 
-  const {doLogin, isLoggedIn, setLoggedIn} = useContext(AuthContext);
+  const {doLogin, isLoggedIn, setLoggedIn, userAdmin, setUserAdmin, setThisUserID} = useContext(AuthContext);
 
   const doLogout  = () => {
     setLoggedIn(false);
+    setUserAdmin(false);
+    setThisUserID("");
   }
 
   const navIcon = () => {
@@ -36,14 +38,24 @@ function NavBar() {
         </div>
       )
     } else {
-      return(
-        <div>
-          <Link to="/profile" className="text-white navBarLink">{" "}Profile{" "}</Link>
-          <Link to="/users" className="text-white navBarLink">{" "}User Management{" "}</Link>
-          <Link to="/groups" className="text-white navBarLink">{" "}Group Management</Link>
-          <Link to="/" className="text-white navBarLink" onClick={doLogout}>{" "}Logout</Link>
+
+      if(userAdmin === true){
+        return (
+          <div>
+            <Link to="/profile" className="text-white navBarLink">{" "}Profile{" "}</Link>
+            <Link to="/users" className="text-white navBarLink">{" "}User Management{" "}</Link>
+            <Link to="/groups" className="text-white navBarLink">{" "}Group Management</Link>
+            <Link to="/" className="text-white navBarLink" onClick={doLogout}>{" "}Logout</Link>
         </div>
-      )
+        ) 
+      } else {
+        return(
+          <div>
+            <Link to="/profile" className="text-white navBarLink">{" "}Profile{" "}</Link>
+            <Link to="/" className="text-white navBarLink" onClick={doLogout}>{" "}Logout</Link>
+          </div>
+        )
+      }
     }
   }
   

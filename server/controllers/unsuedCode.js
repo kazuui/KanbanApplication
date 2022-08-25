@@ -1,3 +1,29 @@
+// exports.checkGroupName = async (userid, groupname) => {
+//     const query = `SELECT t1.* FROM assignment.user_groups t1 INNER JOIN assignment.groups t2 ON t1.group_id = t2.id WHERE t1.user_id = ? AND t2.name = ?`;
+//     const results = await db.promise().query(query, [userid, groupname]);
+//     return results[0].length ? true : false;
+//   };
+
+
+//middleware
+// function authenticateToken (req, res, next) {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1] //if there is an authHeader return the following
+
+//     if (token == null) {
+//         res.sendStatus(401);
+//     }
+
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//         if(err){
+//             res.sendStatus(403)
+//         }
+//         req.user = user
+//         next();
+//     })
+// }
+
+
 /////////// UNUSED CODE ///////////////////
 
 // Get Users and their groups

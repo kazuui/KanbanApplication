@@ -32,7 +32,7 @@ function CreateUser() {
         draggable: true,
         progress: undefined,
         });
-    } else if (status === "warning") {
+    } else if (status === "existed") {
       toast.warn('User already exists', {
         position: "top-center",
         autoClose: 5000,
@@ -89,23 +89,31 @@ function CreateUser() {
         email
       });
 
-      console.log(response.data);
+      // console.log(response.data);
 
       if(response.data === "password criteria"){
         notify("password criteria");
       } else {
-        if(addToGroups && response === "success"){
-          for(var i = 0 ; i < addToGroups.length; i++){
-            var currentGroupName = addToGroups[i]
-            var getGroupID = groupInfo.find(x => x.group_name === currentGroupName).group_id;
-            let response = await axios.post(`/users/create/add-to-group`, {
-              username,
-              getGroupID,
-            })
+        if(response.data === "existed") {
+          notify("existed");
+        } else {
+          if(response.data === "success"){
+            if (addToGroups){
+              for(var i = 0 ; i < addToGroups.length; i++){
+                var currentGroupName = addToGroups[i]
+                var getGroupID = groupInfo.find(x => x.group_name === currentGroupName).group_id;
+                let response = await axios.post(`/users/create/add-to-group`, {
+                  username,
+                  getGroupID,
+                })
+              }
+            }
+            notify("success");
           }
         }
-        notify("success");
       }
+
+      document.getElementById("createUserForm").reset();
     } catch(e){
       notify("warning");
       console.log("There was a problem.")
@@ -146,7 +154,7 @@ function CreateUser() {
         <div id="liveAlertPlaceholder"></div>
         <div className="col-lg-7 py-lg-5 center_align">
           
-          <form onSubmit={doCreate}>
+          <form onSubmit={doCreate} id="createUserForm">
             <div className="form-group">
               <label>Username:</label>
               <input autoFocus required id="username" name="username" className="form-control" type="text" autoComplete="off" placeholder="Username" onChange={(e) =>{ setUsername(e.target.value) }}/>

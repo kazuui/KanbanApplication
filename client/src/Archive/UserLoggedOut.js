@@ -13,7 +13,7 @@ function UserLoggedOut(props) {
         username,
         password
       })
-      console.log(response.data);
+      // console.log(response.data);
     } catch(e){
       console.log("There was a problem.")
     }

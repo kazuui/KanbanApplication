@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState , useContext } from "react";
 import Page from './Page';
 import {Link , useParams, useNavigate} from 'react-router-dom';
 import axios from "axios";
@@ -11,12 +11,14 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import AuthContext from "../context/authContext"
+
 function UpdateUser() {
 
+  const { userAdmin } = useContext(AuthContext);
   let Navigate = useNavigate();
 
    //Toast
@@ -41,6 +43,47 @@ function UpdateUser() {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "password criteria") {
+      toast.warn('Password needs to be between 8 to 10 characters and consists of alphabets , numbers, and special character.', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+  }
+
+  //Update group selection if user is admin
+  const updateGroupSelect = () =>{
+    if(userAdmin === true){
+      return (
+        <div className="form-group">
+          <label>Groups:</label>
+          <Select 
+            className="select-form"
+            labelId="multiple-checkbox-label"
+            id="multiple-checkbox"
+            multiple
+            value={selectedGroups}
+            onChange={handleChange}
+            input={<OutlinedInput label="Tag" />}
+            renderValue={(selected) => selected.join(', ')}
+            MenuProps={MenuProps}
+          >
+            {allGroups.map((name) => {
+              return(
+                <MenuItem key={name} value={name}>
+                <Checkbox checked={selectedGroups.indexOf(name) > -1} />
+                <ListItemText primary={name} />
+                </MenuItem>
+              )
+            })}
+          </Select>
+        </div>
+      ) 
     }
   }
 
@@ -107,33 +150,40 @@ function UpdateUser() {
 
     e.preventDefault();
     try{
-      if(selectedGroups){
 
-        if (previousGroup){
-          //Refresh Group
-          const response = await axios.post(`/users/group/${id}`);
-        }
-
-        for(var i = 0 ; i < selectedGroups.length; i++){
-          var currentGroupName = selectedGroups[i]
-          var getGroupID = groupInfo.find(x => x.group_name === currentGroupName).group_id;
-          try{
-            let response = await axios.post(`/users/update-group/${id}`, {
-              getGroupID,
-            })
-          } catch {
-            notify("warning");
-            console.log("There was a problem.")
-          }
-        }
-      }
       const response = await axios.post(`/users/update/${id}`, {
         password,
         email,
         // selectedGroups,
       })
-      notify("success");
-      Navigate("/users", { replace: true });
+
+      console.log(response.data);
+      if(response.data === "password criteria"){
+        notify("password criteria");
+      } else {
+        if(selectedGroups){
+
+          if (previousGroup){
+            //Refresh Group
+            const response = await axios.post(`/users/group/${id}`);
+          }
+  
+          for(var i = 0 ; i < selectedGroups.length; i++){
+            var currentGroupName = selectedGroups[i]
+            var getGroupID = groupInfo.find(x => x.group_name === currentGroupName).group_id;
+            try{
+              let response = await axios.post(`/users/update-group/${id}`, {
+                getGroupID,
+              })
+            } catch {
+              notify("warning");
+              console.log("There was a problem.")
+            }
+          }
+        }
+        notify("success");
+        Navigate("/users", { replace: true });
+      }
     } catch(e){
       notify("warning");
       console.log("There was a problem.")
@@ -194,30 +244,7 @@ function UpdateUser() {
               onChange={(e) =>{ setEmail(e.target.value) }}/>
             </div>
 
-            <div className="form-group">
-              <label>Groups:</label>
-              <Select 
-                className="select-form"
-                labelId="multiple-checkbox-label"
-                id="multiple-checkbox"
-                multiple
-                value={selectedGroups}
-                onChange={handleChange}
-                input={<OutlinedInput label="Tag" />}
-                renderValue={(selected) => selected.join(', ')}
-                MenuProps={MenuProps}
-              >
-                {allGroups.map((name) => {
-
-                  return(
-                    <MenuItem key={name} value={name}>
-                    <Checkbox checked={selectedGroups.indexOf(name) > -1} />
-                    <ListItemText primary={name} />
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </div>
+            {updateGroupSelect()}
             
             <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block"> Update </button>
 

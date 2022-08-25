@@ -17,7 +17,7 @@ function Login() {
   const handleSubmit  = async (e) => {
     e.preventDefault()
     const result = await doLogin(username, password);
-    console.log(result)
+    // console.log(result)
 
     //check if user is logged in
     if(result) {

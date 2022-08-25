@@ -22,5 +22,8 @@ router.route('/users/deactivate/:id').post(users.deactivateUser);
 //Create user
 // router.route('/users/create').post(users.createUser);
 
+//Check user in specific group
+router.route('/users/check-group').get(users.checkGroup);
+
 
 module.exports = router;

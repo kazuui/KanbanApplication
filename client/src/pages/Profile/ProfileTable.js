@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState , useContext } from "react";
 import {Link} from 'react-router-dom';
 // import Page from "./Page";
 import axios from "axios";
@@ -7,7 +7,11 @@ import 'bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import AuthContext from "../../context/authContext"
+
 function ProfileTable (props) {
+
+  const { thisUserID } = useContext(AuthContext);
 
   //Toast
   const notify = (status) => {
@@ -42,9 +46,11 @@ function ProfileTable (props) {
   const [Users, setUsers] = useState([]);
 
   const fetchUser = async() => {
-    const data = await fetch('/users'); //fetching data from port 5000 on proxy
+    const data = await fetch(`/users/${thisUserID}`); //fetching data from port 5000 on proxy
     const users = await data.json();
-    setUsers(users);
+
+    const userProfile = [users[0]]
+    setUsers(userProfile);
   };
 
   //Scroll to Top

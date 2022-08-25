@@ -24,11 +24,25 @@ export const AuthProvider = ({ children, ...rest }) => {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "deactivated") {
+      toast.warn('Account is deactivated', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     }
   }
+  
+  //Check admin
+  const [userAdmin, setUserAdmin] = useState(false);
 
-//   let Navigate = useNavigate();
+  const [thisUserID, setThisUserID] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState("");
 
   //Login form 
   async function doLogin(username, password) {
@@ -39,14 +53,22 @@ export const AuthProvider = ({ children, ...rest }) => {
         password
     })
 
-    console.log(response.data);
+    // console.log(response.data);
 
-    if(response.data == "Wrong password/username"){
+    if(response.data.checkAdmin === 1){
+      setUserAdmin(true);
+    }
+
+    if(response.data === "Wrong password/username"){
       notify("warning");
-    } else if (response.data.accessToken){
+    } else if (response.data === "deactivated"){
+      notify("deactivated");
+    }else if (response.data.accessToken){
       var decoded = await jwt_decode(response.data.accessToken);
       // console.log(decoded);
       setIsLoggedIn(true);
+      setUserInfo(response.data);
+      setThisUserID(response.data.user_id);
       return(decoded);
     }
 
@@ -56,7 +78,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 };
 
   return(
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, doLogin }}>
+    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, doLogin, userAdmin, setUserAdmin, thisUserID, setThisUserID }}>
         {children}
     </AuthContext.Provider>
   )
