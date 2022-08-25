@@ -25,7 +25,7 @@ export const AuthProvider = ({ children, ...rest }) => {
         progress: undefined,
         });
     } else if (status === "deactivated") {
-      toast.warn('Account is deactivated', {
+      toast.warn('Something went wrong', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
