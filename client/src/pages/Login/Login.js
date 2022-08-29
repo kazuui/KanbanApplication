@@ -64,6 +64,11 @@ function Login() {
 
         </div>
       </div>
+      <div className="display-3-center center_align">
+        <p>Project Lead: admin </p>
+        <p>Project Manager: dev1 </p>
+        <p>Team Member: dev2</p>
+      </div>
     </Page>
   )
 }

@@ -18,6 +18,7 @@ import UserManagement from "./components/UserManagement"
 import GroupManagement from "./components/GroupManagement"
 import UpdateUser from "./components/updateUser"
 import CreateUser from "./components/createUser"
+import ApplicationBoard from "./components/Board"
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/users/update/:id" element={<UpdateUser />} />
         <Route path="/users/create" element={<CreateUser />} />
         <Route path="/groups" element={<GroupManagement/>} />
+        {/* <Route path="/app" element={<ApplicationBoard/>} /> */}
       </Routes>
       <Footer />
     </BrowserRouter>
