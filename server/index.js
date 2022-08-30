@@ -14,11 +14,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const authRoutes = require('./routes/AuthRoutes.js');
 const userRoutes = require('./routes/UserRoutes.js');
 const groupRoutes = require('./routes/GroupRoutes.js');
+const appRoutes = require('./routes/ApplicationRoutes.js');
 
 //Routes
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', groupRoutes);
+app.use('/', appRoutes);
 
 
 // app.get('/', (req,res) => {

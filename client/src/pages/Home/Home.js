@@ -6,16 +6,39 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
+import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 
 //Components
 import ApplicationBoard from "../../components/Board"
 import CreateAppModal from "../../components/Modals/createAppModal"
 import CreatePlanModal from "../../components/Modals/createPlanModal"
+import { height } from "@mui/system";
 
 function Home() {
+  document.title = `Home | Task Management App`;
 
   const [application, setApplication] = React.useState('');
+  const [allApplication, setAllApplication] = React.useState([]);
+
+  //Get all application info
+  useEffect( () => {
+    fetchAllApplications();
+  }, []);
+
+  const fetchAllApplications = async() => {
+    const data = await fetch('/apps'); //fetching data from port 5000 on proxy
+    const apps = await data.json();
+
+    const [app] = apps;
+    
+    var appsArray = apps.map(function(apps) {
+      return apps['app_acronym'];
+    });
+
+    setApplication(`${JSON.stringify(app.app_acronym)}`);
+    setAllApplication(appsArray);
+  };
 
   const handleChange = (event) => {
     setApplication(event.target.value);
@@ -29,8 +52,10 @@ function Home() {
 
   }
 
+  console.log("this " + application )
+
   return (
-    <div title="Home" wide={true} className="py-md-5">
+    <div title="Home" className="py-md-5">
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">What's currently happening...</p>
         {/* <div className="col-lg-12 py-lg-3 center_align">
@@ -48,17 +73,28 @@ function Home() {
           {/* Application selector */}
           <Box sx={{ minWidth: 120 }} className="py-md-3">
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Application</InputLabel>
+              <InputLabel id="demo-simple-select-label">Applications</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                defaultValue={10}
-                label="Application"
+                // defaultValue={application}
+                Value={application}
+                label="Applications"
                 onChange={handleChange}
               >
-                <MenuItem value={10}>Application 1</MenuItem>
-                <MenuItem value={20}>Application 2</MenuItem>
-                <MenuItem value={30}>Application 3</MenuItem>
+                {allApplication.map((apps) => {
+                  console.log(JSON.stringify(apps))
+
+                  return(
+                  <MenuItem key={apps} value={JSON.stringify(apps)}>
+                    <ListItemText primary={apps} />
+                  </MenuItem>
+                  )
+                  })}
+
+                {/* <MenuItem value={"test"}>Application 1</MenuItem>
+                <MenuItem value={"test2"}>Application 2</MenuItem>
+                <MenuItem value={"test3"}>Application 3</MenuItem> */}
               </Select>
             </FormControl>
           </Box>

@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 
+import TaskInfoModal from "./Modals/taskInfoModal"
+
 function taskPanel() {
 
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
 
   return (
+    <div>
+    <button type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal">
       <div className="task-panel">
         <div className="top-section doFlex">
           <div id="helloHello" className="indicate-colour"></div>
@@ -31,6 +35,10 @@ function taskPanel() {
           </button>
         </div>
       </div>
+    </button>
+
+      <TaskInfoModal/>
+    </div>
   )
 }
 

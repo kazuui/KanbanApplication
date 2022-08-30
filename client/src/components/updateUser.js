@@ -74,6 +74,7 @@ function UpdateUser() {
             MenuProps={MenuProps}
           >
             {allGroups.map((name) => {
+
               return(
                 <MenuItem key={name} value={name}>
                 <Checkbox checked={selectedGroups.indexOf(name) > -1} />
@@ -189,8 +190,6 @@ function UpdateUser() {
       console.log("There was a problem.")
     }
   };
-
-  console.log(selectedGroups);
 
   //SELECT FIELD
   const ITEM_HEIGHT = 48;

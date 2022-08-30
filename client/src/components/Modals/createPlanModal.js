@@ -16,7 +16,7 @@ function Modal() {
 
   return (
     // Testing
-    <div className="modal fade" id="createPlanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div className="modal fade" id="createPlanModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
         <div className="modal-content">
             <div className="modal-header">
