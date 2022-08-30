@@ -46,7 +46,7 @@ function Login() {
       <div className="align-items-center">
         <h1 className="display-3 display-3-center center_align">Login</h1>
         <p className="lead text-muted display-3-center">To get your tasks sorted.</p>
-        <div className="col-lg-7 py-lg-5 center_align">
+        <div className="col-lg-4 py-lg-5 center_align">
           
           <form onSubmit={handleSubmit}>
             <div className="form-group">

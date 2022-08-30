@@ -76,7 +76,7 @@ function GroupTable () {
               <form id="createGroupForm" className="form-size" onSubmit={doGroupCreate}>
                 <div className="form-group doFlex">
                 <input autoFocus required id="groupName" name="groupName" className="form-control" type="text" autoComplete="off" placeholder="Group name" onChange={(e) =>{ setGroupName(e.target.value) }} />
-                <button className="btn btn-edit">Create</button>
+                <button className="btn btn-primary btn-edit">Create</button>
                 </div>
               </form>
             </td>

@@ -98,7 +98,7 @@ function UserTable (props) {
             <td> </td>
             <td>
               <Link to={`/users/create`}>
-                <button className="btn btn-edit">Create User</button>
+                <button className="btn btn-primary">Create User</button>
               </Link>
             </td>
           </tr>
@@ -119,10 +119,10 @@ function UserTable (props) {
                 <td>{user.status}</td>
                 <td>
                   <Link to={`/users/update/${user.user_id}`}>
-                    <button className="btn btn-edit">Edit</button>
+                    <button className="btn btn-primary btn-edit">Edit</button>
                   </Link>
 
-                    <button className="btn btn-delete" 
+                    <button className="btn btn-danger btn-delete" 
                     onClick={() => deactivateUser(user.user_id)}>Deactivate</button>
 
                 </td>
@@ -131,7 +131,7 @@ function UserTable (props) {
           })}
         </tbody>
       </table>
-      <button onClick={scrollToTop} className="scrollTop btn" title="Go to top">Scroll up</button>
+      <button onClick={scrollToTop} className="scrollTop btn btn-primary" title="Go to top">Scroll up</button>
     </section>
   )
 }

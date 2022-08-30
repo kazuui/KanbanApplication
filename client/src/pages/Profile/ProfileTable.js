@@ -91,7 +91,7 @@ function ProfileTable (props) {
                 <td>{user.status}</td>
                 <td>
                   <Link to={`/users/update/${user.user_id}`}>
-                    <button className="btn btn-edit">Edit</button>
+                    <button className="btn btn-edit btn-primary">Edit</button>
                   </Link>
                 </td>
               </tr>
