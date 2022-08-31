@@ -4,9 +4,9 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 
 //Get all task
 exports.getTasksOfApp = catchAsyncErrors ( async (req, res, next) => {
-    const { id } = req.params;
+    const { acronym } = req.params;
 
-    let sql = `SELECT * FROM task WHERE task_app_acronym = ${id}`;
+    let sql = `SELECT * FROM task WHERE task_app_acronym = "${acronym}"`;
     db.query(sql, (error, results) => {
         if (error) {
             res.send("Error");

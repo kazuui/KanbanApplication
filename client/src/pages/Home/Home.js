@@ -20,6 +20,7 @@ function Home() {
   document.title = `Home | Task Management App`;
 
   const {currentAppID, setCurrentAppID} = useContext(BoardContext);
+  const {GroupsArray, setGroupsArray} = useContext(BoardContext);
 
   //Application selector
   const ITEM_HEIGHT = 48;
@@ -41,26 +42,31 @@ function Home() {
   }, []);
 
   const fetchAll = async() => {
-    //All apps
+    //Get all apps
     const data = await fetch('/apps'); //fetching data from port 5000 on proxy
     const apps = await data.json();
-
     const [app] = apps;
+    setApplication(app.app_acronym);
 
-    console.log(app.app_acronym);
-
-    //Current app data
+    //Get current app data
     const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
     const currAppData = await data1.json();
 
     var appsArray = apps.map(function(apps) {
       return apps['app_acronym'];
     });
-
-    setApplication(app.app_acronym);
     setAllApplication(appsArray);
 
+     //Get all groups
+    const data2 = await fetch('/groups'); //fetching data from port 5000 on proxy
+    const groups = await data2.json();
+
+    var groupArray = groups.map(function(group) {
+      return group['group_name'];
+    });
+    setGroupsArray(groupArray);
     console.log(currAppData);
+    console.log(groupArray);
   };
 
   const fetchCurrentAppTask = async() => {

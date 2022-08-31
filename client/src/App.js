@@ -33,6 +33,7 @@ function App() {
       <NavBar />
       <Routes>
         <Route path="/" element={<Login />} />
+        
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/users" element={<UserManagement />} />

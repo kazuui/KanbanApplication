@@ -38,12 +38,12 @@ export const AuthProvider = ({ children, ...rest }) => {
   }
   
   //Check admin
-  const [userAdmin, setUserAdmin] = useState(true); //Temporary
-  const [isLoggedIn, setIsLoggedIn] = useState(true); //Temporary
+  // const [userAdmin, setUserAdmin] = useState(true); //Temporary
+  // const [isLoggedIn, setIsLoggedIn] = useState(true); //Temporary
 
 
-  // const [userAdmin, setUserAdmin] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userAdmin, setUserAdmin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [thisUserID, setThisUserID] = useState("");
   const [userInfo, setUserInfo] = useState("");
 
