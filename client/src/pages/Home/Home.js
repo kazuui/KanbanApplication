@@ -65,8 +65,8 @@ function Home() {
       return group['group_name'];
     });
     setGroupsArray(groupArray);
-    console.log(currAppData);
-    console.log(groupArray);
+    // console.log(currAppData);
+    // console.log(groupArray);
   };
 
   const fetchCurrentAppTask = async() => {

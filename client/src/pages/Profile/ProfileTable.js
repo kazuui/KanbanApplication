@@ -11,7 +11,7 @@ import AuthContext from "../../context/authContext"
 
 function ProfileTable (props) {
 
-  const { thisUserID } = useContext(AuthContext);
+  const { thisUserID , auth } = useContext(AuthContext);
 
   //Toast
   const notify = (status) => {

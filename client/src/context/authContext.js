@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AuthContext = createContext();
 
-export default AuthContext;
+// export default AuthContext;
 
 export const AuthProvider = ({ children, ...rest }) => {
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children, ...rest }) => {
   // const [userAdmin, setUserAdmin] = useState(true); //Temporary
   // const [isLoggedIn, setIsLoggedIn] = useState(true); //Temporary
 
-
+  const [auth, setAuth] = useState({});
   const [userAdmin, setUserAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [thisUserID, setThisUserID] = useState("");
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 
     // console.log(response.data);
 
-    if(response.data.checkAdmin === 1){
+    if(response.data.checkAdmin === true){
       setUserAdmin(true);
     }
 
@@ -67,6 +67,12 @@ export const AuthProvider = ({ children, ...rest }) => {
     } else if (response.data === "deactivated"){
       notify("deactivated");
     }else if (response.data.accessToken){
+
+      const accessToken = response.data.accessToken;
+      const isAdmin = response.data.checkAdmin;
+
+      setAuth({username : username , isAdmin : isAdmin , token : accessToken});
+
       var decoded = await jwt_decode(response.data.accessToken);
       // console.log(decoded);
       setIsLoggedIn(true);
@@ -81,8 +87,10 @@ export const AuthProvider = ({ children, ...rest }) => {
 };
 
   return(
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, doLogin, userAdmin, setUserAdmin, thisUserID, setThisUserID }}>
+    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, doLogin, userAdmin, setUserAdmin, thisUserID, setThisUserID , auth , setAuth }}>
         {children}
     </AuthContext.Provider>
   )
 }
+
+export default AuthContext;

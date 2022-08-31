@@ -44,46 +44,51 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
         } else {
             // console.log(checkAdmin[0] === undefined);
             if (checkAdmin[0] === undefined){
-                userAdmin = 0
+                // userAdmin = 0
+                userAdmin = false
             } else {
-                userAdmin = 1
+                // userAdmin = 1
+                userAdmin = true
             }
         }
     })
   
-      if (username === `""` || password === `""`) {
-          if (username === `""` && password !==`""`) {
-              res.send("username empty");
-          } else if (username !== `""` && password === `""`){
-              res.send("password empty")
-          } else {
-              res.send("username and password empty")
-          }
-      } else {
-          let sql = `SELECT * FROM user WHERE username = ${username}`;
-          db.query(sql, (error, results) => {
-              if (error || !results.length) {
-                  res.send("Wrong password/username");
-              } else {
+    if (username === `""` || password === `""`) {
+        if (username === `""` && password !==`""`) {
+            res.send("username empty");
+        } else if (username !== `""` && password === `""`){
+            res.send("password empty")
+        } else {
+            res.send("username and password empty")
+        }
+     } else {
+        let sql = `SELECT * FROM user WHERE username = ${username}`;
+        db.query(sql, (error, results) => {
+            if (error || !results.length) {
+                res.send("Wrong password/username");
+            } else {
 
-                  const [result] = results;
-                  const userStatus = result.status;
+                const [result] = results;
+                const userStatus = result.status;
 
-                  if (userStatus === 0){
+                if (userStatus === 0){
                     res.send("deactivated");
-                  } else {
+                } else {
                     const checkPassword = result.password;
                     bcrypt.compare(password, checkPassword).then(check => {
-                      if (!check) {
+                        if (!check) {
                           res.send("Wrong password/username");
                         } else {
-
+                            
                             const user = results;
                             result.password = undefined;
                             // console.log(check, result);
 
                             const User = { name: req.body.username};
-                            const accessToken = jwt.sign(User , process.env.ACCESS_TOKEN_SECRET);
+                            const accessToken = jwt.sign(User , process.env.ACCESS_TOKEN_SECRET , {expiresIn: '1d'}
+                                //, {expiresIn: 1800} //Expires in 30 mins
+                                ); 
+                            const refreshToken = jwt.sign(User , process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
                                 
                             const userInfo = Object.assign(result, {accessToken}, {checkAdmin: userAdmin});
 
@@ -92,11 +97,11 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
                         }
                         //return null;
                     })
-                  }
-              }
-          })
-      };
-  });
+                }
+            }
+        })
+    };
+});
 
 
 //Create new user 
