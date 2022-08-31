@@ -6,7 +6,7 @@ export default BoardContext;
 
 export const BoardProvider = ({ children, ...rest }) => {
 
-  const [GroupsArray, setGroupsArray] = useState("");
+  const [GroupsArray, setGroupsArray] = useState([]);
   const [userAccess, setUserAccess] = useState("");
   //Current Application
   const [currentApp, setCurrentApp] = useState("");

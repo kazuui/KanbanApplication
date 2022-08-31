@@ -15,42 +15,11 @@ function Modal() {
 
   const { GroupsArray, currentApp, setCurrentApp } = useContext(BoardContext);
 
-  // const [GroupsArray, setGroupsArray] = useState("");
-
-  // useEffect( () => {
-  //   fetchAllGroups();
-  // }, []);
-
-  // const fetchAllGroups = async() => {
-  //    //Get all groups
-  //   const data2 = await fetch('/groups'); //fetching data from port 5000 on proxy
-  //   const groups = await data2.json();
-
-  //   var groupArray = groups.map(function(group) {
-  //     return group['group_name'];
-  //   });
-  //   setGroupsArray(groupArray);
-  //   console.log(groupArray);
-  // };
-
   const [permitCreate, setPermitCreate] = useState([]);
   const [permitOpen, setPermitOpen] = useState([]);
   const [permitToDo, setPermitToDo] = useState([]);
   const [permitDoing, setPermitDoing] = useState([]);
   const [permitDone, setPermitDone] = useState([]);
-
-  // const names = [
-  //   'Oliver Hansen',
-  //   'Van Henry',
-  //   'April Tucker',
-  //   'Ralph Hubbard',
-  //   'Omar Alexander',
-  //   'Carlos Abbott',
-  //   'Miriam Wagner',
-  //   'Bradley Wilkerson',
-  //   'Virginia Andrews',
-  //   'Kelly Snyder',
-  // ];
 
   //Multi-Selector
   const ITEM_HEIGHT = 48;
