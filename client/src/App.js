@@ -11,6 +11,9 @@ import { AuthProvider } from "./context/authContext";
 import { BoardProvider } from "./context/boardContext";
 
 // Components
+import PrivateRoutes from "./utils/PrivateRoute";
+import Unauthorized from "./pages/Unauthorized/Unauthorized";
+import PageNotFound from "./pages/Unauthorized/PageNotFound";
 import NavBar from './components/NavBar';
 import Login from "./pages/Login/Login"
 import Footer from "./components/Footer"
@@ -32,15 +35,25 @@ function App() {
       <ToastContainer />
       <NavBar />
       <Routes>
+        {/* Public */}
         <Route path="/" element={<Login />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="*" element={<PageNotFound />} />
         
-        <Route path="/home" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/users" element={<UserManagement />} />
-        <Route path="/users/update/:id" element={<UpdateUser />} />
-        <Route path="/users/create" element={<CreateUser />} />
-        <Route path="/groups" element={<GroupManagement/>} />
-        {/* <Route path="/app" element={<ApplicationBoard/>} /> */}
+        {/* Protected all users */}
+        <Route element={<PrivateRoutes isAdmin={false || true}/>}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+
+        {/* Protected admin ONLY */}
+        <Route element={<PrivateRoutes isAdmin={true}/>}>
+          <Route path="/users" element={<UserManagement />} />
+          <Route path="/users/update/:id" element={<UpdateUser />} />
+          <Route path="/users/create" element={<CreateUser />} />
+          <Route path="/groups" element={<GroupManagement/>} />
+          {/* <Route path="/app" element={<ApplicationBoard/>} /> */}
+        </Route>
       </Routes>
       <Footer />
     </BrowserRouter>

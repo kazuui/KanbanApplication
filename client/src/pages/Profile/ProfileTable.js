@@ -58,6 +58,7 @@ function ProfileTable (props) {
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
   
+  console.log(auth);
   return (
     <section>
       <div id="liveAlertPlaceholder"></div>
