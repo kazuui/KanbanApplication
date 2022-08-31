@@ -152,7 +152,7 @@ function CreateUser() {
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">Create User</p>
         <div id="liveAlertPlaceholder"></div>
-        <div className="col-lg-7 py-lg-5 center_align">
+        <div className="col-lg-4 py-lg-5 center_align form-user">
           
           <form onSubmit={doCreate} id="createUserForm">
             <div className="form-group">

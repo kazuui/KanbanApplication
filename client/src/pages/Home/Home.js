@@ -2,42 +2,72 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from 'react-router-dom';
 import Page from '../../components/Page';
 
-import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
+
+//Context
+import BoardContext from "../../context/boardContext"
 
 //Components
 import ApplicationBoard from "../../components/Board"
 import CreateAppModal from "../../components/Modals/createAppModal"
 import CreatePlanModal from "../../components/Modals/createPlanModal"
-import { height } from "@mui/system";
 
 function Home() {
   document.title = `Home | Task Management App`;
 
+  const {currentAppID, setCurrentAppID} = useContext(BoardContext);
+
+  //Application selector
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
   const [application, setApplication] = React.useState('');
   const [allApplication, setAllApplication] = React.useState([]);
 
-  //Get all application info
   useEffect( () => {
-    fetchAllApplications();
+    fetchAll();
   }, []);
 
-  const fetchAllApplications = async() => {
+  const fetchAll = async() => {
+    //All apps
     const data = await fetch('/apps'); //fetching data from port 5000 on proxy
     const apps = await data.json();
 
     const [app] = apps;
-    
+
+    console.log(app.app_acronym);
+
+    //Current app data
+    const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
+    const currAppData = await data1.json();
+
     var appsArray = apps.map(function(apps) {
       return apps['app_acronym'];
     });
 
-    setApplication(`${JSON.stringify(app.app_acronym)}`);
+    setApplication(app.app_acronym);
     setAllApplication(appsArray);
+
+    console.log(currAppData);
+  };
+
+  const fetchCurrentAppTask = async() => {
+    const data = await fetch(`/apps/tasks/${application}`); //fetching data from port 5000 on proxy
+    const currentAppTasks = await data.json();
+
+    console.log(currentAppTasks);
   };
 
   const handleChange = (event) => {
@@ -51,8 +81,6 @@ function Home() {
   const handleAddPlans = () => {
 
   }
-
-  console.log("this " + application )
 
   return (
     <div title="Home" className="py-md-5">
@@ -71,33 +99,25 @@ function Home() {
           <CreateAppModal/>
 
           {/* Application selector */}
-          <Box sx={{ minWidth: 120 }} className="py-md-3">
+          <div className="py-md-3">
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Applications</InputLabel>
+              <InputLabel id="demo-multiple-name-label">Current Application</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                // defaultValue={application}
-                Value={application}
-                label="Applications"
+                labelId="demo-multiple-name-label"
+                id="demo-multiple-name"
+                value={application}
                 onChange={handleChange}
+                input={<OutlinedInput label="Current Application" />}
+                MenuProps={MenuProps}
               >
-                {allApplication.map((apps) => {
-                  console.log(JSON.stringify(apps))
-
-                  return(
-                  <MenuItem key={apps} value={JSON.stringify(apps)}>
-                    <ListItemText primary={apps} />
+                {allApplication.map((app) => (
+                  <MenuItem key={app} value={app}>
+                    {app}
                   </MenuItem>
-                  )
-                  })}
-
-                {/* <MenuItem value={"test"}>Application 1</MenuItem>
-                <MenuItem value={"test2"}>Application 2</MenuItem>
-                <MenuItem value={"test3"}>Application 3</MenuItem> */}
+                ))}
               </Select>
             </FormControl>
-          </Box>
+          </div>
 
           {/* Plans */}
           <h5 className="create-text">Current Plans:</h5>

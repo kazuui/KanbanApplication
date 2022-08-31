@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 //Context
 import { AuthProvider } from "./context/authContext";
+import { BoardProvider } from "./context/boardContext";
 
 // Components
 import NavBar from './components/NavBar';
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <AuthProvider>
+    <BoardProvider>
     <BrowserRouter>
       <ToastContainer />
       <NavBar />
@@ -41,6 +43,7 @@ function App() {
       </Routes>
       <Footer />
     </BrowserRouter>
+    </BoardProvider>
     </AuthProvider>
   );
 }

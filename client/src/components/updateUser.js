@@ -222,7 +222,7 @@ function UpdateUser() {
     <Page title="Update">
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">Update User</p>
-        <div className="col-lg-7 py-lg-5 center_align">
+        <div className="col-lg-4 py-lg-5 center_align form-user">
 
           <form onSubmit={doUpdate}>
 

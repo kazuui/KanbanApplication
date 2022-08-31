@@ -15,12 +15,16 @@ const authRoutes = require('./routes/AuthRoutes.js');
 const userRoutes = require('./routes/UserRoutes.js');
 const groupRoutes = require('./routes/GroupRoutes.js');
 const appRoutes = require('./routes/ApplicationRoutes.js');
+const taskRoutes = require('./routes/TaskRoutes.js');
+const planRoutes = require('./routes/PlanRoutes.js');
 
 //Routes
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', groupRoutes);
 app.use('/', appRoutes);
+app.use('/', taskRoutes);
+app.use('/', planRoutes);
 
 
 // app.get('/', (req,res) => {
