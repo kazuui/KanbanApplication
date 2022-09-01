@@ -20,7 +20,7 @@ function Login() {
     // console.log(result)
 
     //check if user is logged in
-    if(result) {
+    if(result === true) {
       Navigate("/home", { replace: true });
     }
   }

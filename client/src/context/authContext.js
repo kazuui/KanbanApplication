@@ -68,17 +68,18 @@ export const AuthProvider = ({ children, ...rest }) => {
       notify("deactivated");
     }else if (response.data.accessToken){
 
-      const accessToken = response.data.accessToken;
       const isAdmin = response.data.checkAdmin;
+      const accessToken = response.data.accessToken;
+      sessionStorage.setItem("token", accessToken);
 
       setAuth({username : username , isAdmin : isAdmin , token : accessToken});
-
-      var decoded = await jwt_decode(response.data.accessToken);
+      
+      // var decoded = await jwt_decode(response.data.accessToken);
       // console.log(decoded);
       setIsLoggedIn(true);
       setUserInfo(response.data);
       setThisUserID(response.data.user_id);
-      return(decoded);
+      return(true);
     }
 
     } catch(e){

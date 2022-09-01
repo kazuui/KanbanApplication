@@ -7,6 +7,8 @@ const PrivateRoutes = ({ isAdmin }) => {
   const location = useLocation();
   // let auth = {'token':false}
 
+  
+
   return(
     // auth.token ? <Outlet/> : <Navigate to="/" />
     // <Outlet/>
