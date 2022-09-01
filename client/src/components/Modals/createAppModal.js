@@ -13,8 +13,12 @@ import BoardContext from "../../context/boardContext"
 
 function Modal() {
 
-  const { GroupsArray, currentApp, setCurrentApp } = useContext(BoardContext);
+  const { GroupsArray } = useContext(BoardContext);
 
+  const [appAcronym, setAppAcronym] = useState("");
+  const [appRNum, setAppRNum] = useState("");
+  const [appStartDate, setAppStartDate] = useState("");
+  const [appEndDate, setAppEndDate] = useState("");
   const [permitCreate, setPermitCreate] = useState([]);
   const [permitOpen, setPermitOpen] = useState([]);
   const [permitToDo, setPermitToDo] = useState([]);
@@ -33,7 +37,34 @@ function Modal() {
     },
   };
 
+  const handleCreateAppSubmit  = async (e) => {
+    e.preventDefault()
+  }
+
+  // async function handleCreateAppSubmit(username, password) {
+  // }
+
+  // document.getElementById("app-Rnumber").addEventListener('input', e =>{
+  //   e.target.value = Math.round(e.target.value.replace(/\D/g, ''))
+  // });
+
   const [application, setApplication] = React.useState('');
+
+  const handleAcronymChange = (event) => {
+    setAppAcronym(event.target.value);
+  };
+
+  const handleRnumChange = (event) => {
+    setAppRNum(event.target.value);
+  };
+
+  const handleStartDateChange = (event) => {
+    setAppStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event) => {
+    setAppEndDate(event.target.value);
+  };
 
   const handleCreateChange = (event) => {
     const {
@@ -90,6 +121,8 @@ function Modal() {
     );
   };
 
+
+
   return (
     // Testing
     <div className="modal fade" id="createAppModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -101,28 +134,28 @@ function Modal() {
             </div>
 
             <div className="modal-body">
-              <form>
+              <form onSubmit={handleCreateAppSubmit}>
                 <div className="form row">
                   {/* Left */}
                   <div className="col-6">
                     <div className="form-row py-lg-3">
                       <div className="col-6">
                         <label className="" for="app-acronym">Application Acronym</label>
-                        <input id="app-acronym" type="text" className="form-control"/>
+                        <input required id="app-acronym" onChange={handleAcronymChange} type="text" className="form-control"/>
                       </div>
                       <div className="col-6">
                         <label className="" for="app-Rnumber">Running Number</label>
-                        <input id="app-Rnumber" type="number" className="form-control"/>
+                        <input required id="app-Rnumber" onChange={handleRnumChange} type="number" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-6">
                         <label className="" for="app-startDate">Start Date</label>
-                        <input id="app-startDate" type="date" className="form-control"/>
+                        <input id="app-startDate" onChange={handleStartDateChange} type="date" className="form-control"/>
                       </div>
                       <div className="col-6">
                         <label className="" for="app-endDate">End Date</label>
-                        <input id="app-endDate" type="date" className="form-control"/>
+                        <input id="app-endDate" onChange={handleEndDateChange} type="date" className="form-control"/>
                       </div>
                     </div>
                   </div>

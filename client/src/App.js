@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {BrowserRouter, Routes, Route , Outlet } from "react-router-dom"
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import { useImmerReducer } from "use-immer";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,6 +29,10 @@ import ApplicationBoard from "./components/Board"
 
 function App() {
 
+  useEffect(() => {
+    const userData = sessionStorage.getItem("user")
+  });
+
   return (
     <AuthProvider>
     <BoardProvider>
@@ -41,13 +46,13 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
         
         {/* Protected all users */}
-        <Route element={<PrivateRoutes isAdmin={false || true}/>}>
+        <Route element={<PrivateRoutes allowedRoles={["admin", "user"]}/>}>
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
 
         {/* Protected admin ONLY */}
-        <Route element={<PrivateRoutes isAdmin={true}/>}>
+        <Route element={<PrivateRoutes allowedRoles={["admin"]}/>}>
           <Route path="/users" element={<UserManagement />} />
           <Route path="/users/update/:id" element={<UpdateUser />} />
           <Route path="/users/create" element={<CreateUser />} />

@@ -37,13 +37,7 @@ export const AuthProvider = ({ children, ...rest }) => {
     }
   }
   
-  //Check admin
-  // const [userAdmin, setUserAdmin] = useState(true); //Temporary
-  // const [isLoggedIn, setIsLoggedIn] = useState(true); //Temporary
-
   const [auth, setAuth] = useState({});
-  const [userAdmin, setUserAdmin] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [thisUserID, setThisUserID] = useState("");
   const [userInfo, setUserInfo] = useState("");
 
@@ -56,27 +50,24 @@ export const AuthProvider = ({ children, ...rest }) => {
         password
     })
 
-    // console.log(response.data);
-
-    if(response.data.checkAdmin === true){
-      setUserAdmin(true);
-    }
-
     if(response.data === "Wrong password/username"){
       notify("warning");
     } else if (response.data === "deactivated"){
       notify("deactivated");
-    }else if (response.data.accessToken){
+    }else if (response.data.token){
 
-      const isAdmin = response.data.checkAdmin;
-      const accessToken = response.data.accessToken;
-      sessionStorage.setItem("token", accessToken);
+      const role = response.data.role;
+      const token = response.data.token;
+      // sessionStorage.setItem("username", username);
+      // sessionStorage.setItem("token", token);
+      // sessionStorage.setItem("role", role);
+      sessionStorage.setItem('user', JSON.stringify({
+        username,
+        token,
+        role
+      }))
 
-      setAuth({username : username , isAdmin : isAdmin , token : accessToken});
-      
-      // var decoded = await jwt_decode(response.data.accessToken);
-      // console.log(decoded);
-      setIsLoggedIn(true);
+      setAuth({username : username , role: role , token : token});
       setUserInfo(response.data);
       setThisUserID(response.data.user_id);
       return(true);
@@ -88,7 +79,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 };
 
   return(
-    <AuthContext.Provider value={{isLoggedIn, setIsLoggedIn, doLogin, userAdmin, setUserAdmin, thisUserID, setThisUserID , auth , setAuth }}>
+    <AuthContext.Provider value={{ doLogin, thisUserID, setThisUserID , auth , setAuth }}>
         {children}
     </AuthContext.Provider>
   )

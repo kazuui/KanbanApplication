@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect , useContext } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import Page from '../../components/Page';
 import axios from "axios";
@@ -8,7 +8,15 @@ import AuthContext from "../../context/authContext"
 function Login() {
 
   let Navigate = useNavigate();
-  const {doLogin, isLoggedIn, setIsLoggedIn} = useContext(AuthContext);
+  const { doLogin } = useContext(AuthContext);
+
+  //Redirect if user is logged in
+  useEffect(() => {
+    const data = JSON.parse(sessionStorage.getItem("user"));
+    if(data){
+      Navigate("/home", { replace: true });
+    }
+  });
   
   //Login form
   const [username, setUsername] = useState("");

@@ -9,10 +9,22 @@ import Select from '@mui/material/Select';
 function Modal() {
 
   const [application, setApplication] = React.useState('');
+  const [planMVPName, setPlanMVPName] = useState("");
+  const [planStartDate, setPlanStartDate] = useState("");
+  const [planEndDate, setPlanEndDate] = useState("");
 
-  const handleChange = (event) => {
-    setApplication(event.target.value);
+  const handlePlanMVPNameChange = (event) => {
+    setPlanMVPName(event.target.value);
   };
+
+  const handlePlanStartDateChange = (event) => {
+    setPlanStartDate(event.target.value);
+  };
+
+  const handlePlanEndDateChange = (event) => {
+    setPlanEndDate(event.target.value);
+  };
+  
 
   return (
     // Testing
@@ -32,17 +44,17 @@ function Modal() {
                     <div className="form-row py-lg-3">
                       <div className="col-12">
                         <label className="" for="app-acronym">Plan MVP Name</label>
-                        <input id="app-acronym" type="text" className="form-control"/>
+                        <input id="app-acronym" onChange={handlePlanMVPNameChange} type="text" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-6">
                         <label className="" for="app-startDate">Start Date</label>
-                        <input id="app-startDate" type="date" className="form-control"/>
+                        <input id="app-startDate" onChange={handlePlanStartDateChange} type="date" className="form-control"/>
                       </div>
                       <div className="col-6">
                         <label className="" for="app-endDate">End Date</label>
-                        <input id="app-endDate" type="date" className="form-control"/>
+                        <input id="app-endDate" onChange={handlePlanEndDateChange} type="date" className="form-control"/>
                       </div>
                     </div>
                   </div>

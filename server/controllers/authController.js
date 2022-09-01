@@ -24,7 +24,7 @@ const validPassword = (password) => {
     // if (!/[a-zA-Z]/.test(password)) return false; //check for alphabets
     // if (!/[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/.test(password)) return false; //check for special characters
     // return false;
-  };
+};
 
 //Login
 exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
@@ -33,6 +33,7 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
 
     // Check if admin
     var userAdmin = "";
+    var userRole = "";
 
     let sql = `SELECT user.user_id, user.username, kanban_web_app.group.group_id, 
     kanban_web_app.group.group_name FROM user LEFT JOIN user_in_group ON user.user_id = user_in_group.user_id 
@@ -42,13 +43,14 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
         if (error) {
             res.send("Error");
         } else {
-            // console.log(checkAdmin[0] === undefined);
             if (checkAdmin[0] === undefined){
                 // userAdmin = 0
                 userAdmin = false
+                userRole = "user"
             } else {
                 // userAdmin = 1
                 userAdmin = true
+                userRole = "admin"
             }
         }
     })
@@ -90,7 +92,7 @@ exports.doLogin = catchAsyncErrors ( async (req, res, next) => {
                                 ); 
                             const refreshToken = jwt.sign(User , process.env.REFRESH_TOKEN_SECRET, {expiresIn: '1d'});
                                 
-                            const userInfo = Object.assign(result, {accessToken}, {checkAdmin: userAdmin});
+                            const userInfo = Object.assign(result, {token: accessToken}, {role: userRole});
 
                             // console.log(userInfo);
                             res.json(userInfo);

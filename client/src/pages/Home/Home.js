@@ -76,7 +76,7 @@ function Home() {
     console.log(currentAppTasks);
   };
 
-  const handleChange = (event) => {
+  const handleAppChange = (event) => {
     setApplication(event.target.value);
   };
 
@@ -112,7 +112,7 @@ function Home() {
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
                 value={application}
-                onChange={handleChange}
+                onChange={handleAppChange}
                 input={<OutlinedInput label="Current Application" />}
                 MenuProps={MenuProps}
               >
