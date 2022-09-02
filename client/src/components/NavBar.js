@@ -6,17 +6,18 @@ import AuthContext from "../context/authContext"
 
 function NavBar() {
   const {setThisUserID} = useContext(AuthContext);
-
   const [userData,  setUserData] = useState({});
 
+  var user = sessionStorage.getItem("user");
+  user = JSON.parse(user);
+
   useEffect(() => {
-    const data = JSON.parse(sessionStorage.getItem("user"));
-    setUserData(data);
+    setUserData(user);
   });
 
   const doLogout  = () => {
     sessionStorage.clear();
-    setThisUserID("");
+    // setThisUserID("");
   }
 
   const navIcon = () => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import TaskPanels from "./taskPanel"
 import CreateTaskModal from "./Modals/createTaskModal"
 
-function Board() {
+function Board(props) {
 
   return (
       <div className="doFlex kanban-board">

@@ -69,7 +69,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 
       setAuth({username : username , role: role , token : token});
       setUserInfo(response.data);
-      setThisUserID(response.data.user_id);
+      // setThisUserID(response.data.user_id);
       return(true);
     }
 
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 };
 
   return(
-    <AuthContext.Provider value={{ doLogin, thisUserID, setThisUserID , auth , setAuth }}>
+    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID }}>
         {children}
     </AuthContext.Provider>
   )

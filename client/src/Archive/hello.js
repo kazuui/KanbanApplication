@@ -4,9 +4,9 @@ import Page from "../Page";
 
 function About () {
   
-  useEffect( () => {
-    fetchItems();
-  }, []);
+  // useEffect( () => {
+  //   fetchItems();
+  // }, []);
 
   const [items, setItems] = useState([]);
 

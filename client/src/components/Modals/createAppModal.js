@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -16,6 +17,7 @@ function Modal() {
   const { GroupsArray } = useContext(BoardContext);
 
   const [appAcronym, setAppAcronym] = useState("");
+  const [appDescription, setAppDescription] = useState("");
   const [appRNum, setAppRNum] = useState("");
   const [appStartDate, setAppStartDate] = useState("");
   const [appEndDate, setAppEndDate] = useState("");
@@ -37,12 +39,26 @@ function Modal() {
     },
   };
 
-  const handleCreateAppSubmit  = async (e) => {
-    e.preventDefault()
-  }
+  //Submit Create Application
+  async function handleCreateAppSubmit(e) {
+    e.preventDefault();
+    try{
+      const response = await axios.post('/apps/create', {
+        appAcronym,
+        appDescription,
+        appRNum,
+        appStartDate,
+        appEndDate,
+        permitCreate,
+        permitOpen,
+        permitToDo,
+        permitDoing,
+        permitDone
+      });
+    } catch {
 
-  // async function handleCreateAppSubmit(username, password) {
-  // }
+    }
+  }
 
   // document.getElementById("app-Rnumber").addEventListener('input', e =>{
   //   e.target.value = Math.round(e.target.value.replace(/\D/g, ''))
@@ -52,6 +68,10 @@ function Modal() {
 
   const handleAcronymChange = (event) => {
     setAppAcronym(event.target.value);
+  };
+
+  const handleAppDescriptionChange = (event) => {
+    setAppDescription(event.target.value);
   };
 
   const handleRnumChange = (event) => {
@@ -164,7 +184,7 @@ function Modal() {
                   <div className="col-6 py-lg-3">
                     <div className="form-group">
                       <label for="app-description">Description</label>
-                      <textarea className="form-control" id="app-description" rows="5"></textarea>
+                      <textarea onChange={handleAppDescriptionChange} className="form-control" id="app-description" rows="5"></textarea>
                     </div>
                   </div>
                 </div>

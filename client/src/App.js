@@ -29,10 +29,6 @@ import ApplicationBoard from "./components/Board"
 
 function App() {
 
-  useEffect(() => {
-    const userData = sessionStorage.getItem("user")
-  });
-
   return (
     <AuthProvider>
     <BoardProvider>

@@ -5,7 +5,7 @@ import AuthContext from "../context/authContext"
 
 function Footer() {
 
-  const {doLogin, isLoggedIn, setLoggedIn, userAdmin, setUserAdmin, setThisUserID} = useContext(AuthContext);
+  const {doLogin, isLoggedIn, setLoggedIn, userAdmin, setUserAdmin} = useContext(AuthContext);
 
   const authFooter = () => {
     if(isLoggedIn !== true) {

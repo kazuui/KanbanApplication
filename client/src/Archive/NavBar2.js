@@ -5,18 +5,18 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/authContext"
 
 function NavBar() {
-  const { setThisUserID } = useContext(AuthContext);
+  // const { setThisUserID } = useContext(AuthContext);
 
   const [userData,  setUserData] = useState({});
 
-  useEffect(() => {
-    const data = JSON.parse(sessionStorage.getItem("user"));
-    setUserData(data);
-  });
+  // useEffect(() => {
+  //   const data = JSON.parse(sessionStorage.getItem("user"));
+  //   setUserData(data);
+  // });
 
   const doLogout  = () => {
     sessionStorage.clear();
-    setThisUserID("");
+    // setThisUserID("");
   }
 
   const navIcon = () => {

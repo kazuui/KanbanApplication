@@ -39,11 +39,11 @@ function ProfileTable (props) {
   }
   
   //Get users
+  const [Users, setUsers] = useState([]);
+
   useEffect( () => {
     fetchUser();
   }, []);
-
-  const [Users, setUsers] = useState([]);
 
   const fetchUser = async() => {
     const data = await fetch(`/users/${thisUserID}`); //fetching data from port 5000 on proxy

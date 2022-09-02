@@ -7,6 +7,9 @@ const appli = require("../controllers/applicationController");
 //Get all applications
 router.route('/apps').get(appli.getAllApps);
 
+//Create application
+router.route('/apps/create').post(appli.createApp);
+
 //Get one specific application
 // router.route('/apps/:id').get(appli.getOneApp);
 
