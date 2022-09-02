@@ -34,7 +34,7 @@ function App() {
     <BoardProvider>
     <BrowserRouter>
       <ToastContainer />
-      <NavBar />
+      <NavBar allowedRoles={["admin", "user"]} />
       <Routes>
         {/* Public */}
         <Route path="/" element={<Login />} />

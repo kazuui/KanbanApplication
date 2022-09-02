@@ -2,18 +2,16 @@ import React, { useState, useEffect ,  useContext } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
-import AuthContext from "../context/authContext"
+// import AuthContext from "../context/authContext"
 
 function NavBar() {
-  const {setThisUserID} = useContext(AuthContext);
+  // const {setThisUserID} = useContext(AuthContext);
   const [userData,  setUserData] = useState({});
 
   var user = sessionStorage.getItem("user");
   user = JSON.parse(user);
 
-  useEffect(() => {
-    setUserData(user);
-  });
+  
 
   const doLogout  = () => {
     sessionStorage.clear();
@@ -21,7 +19,7 @@ function NavBar() {
   }
 
   const navIcon = () => {
-    if(!userData){
+    if(!user){
       return(
         <h4 className="my-0 mr-md-auto font-weight-normal no-underline">
           <Link to="/" className="text-white">{" "}Kanban App{" "}</Link>
@@ -37,7 +35,7 @@ function NavBar() {
   }
 
   const authLink = () =>{
-    if(!userData){
+    if(!user){
       return (
         <div>
           <Link to="/" className="text-white navBarLink nav-link">{" "}Login</Link>
@@ -45,7 +43,7 @@ function NavBar() {
       )
     } else {
 
-      if(userData.role === "admin"){
+      if(user.role === "admin"){
         return (
           <div>
 
