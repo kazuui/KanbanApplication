@@ -13,6 +13,11 @@ function Modal() {
   const [planStartDate, setPlanStartDate] = useState("");
   const [planEndDate, setPlanEndDate] = useState("");
 
+  //Submit Create Plan
+  async function handleCreatePlanSubmit(e) {
+
+  }
+
   const handlePlanMVPNameChange = (event) => {
     setPlanMVPName(event.target.value);
   };
@@ -37,14 +42,14 @@ function Modal() {
             </div>
 
             <div className="modal-body">
-              <form>
+              <form id="createPlanForm" onSubmit={handleCreatePlanSubmit}>
                 <div className="form row">
                   {/* Left */}
                   <div className="col-12">
                     <div className="form-row py-lg-3">
                       <div className="col-12">
                         <label className="" for="app-acronym">Plan MVP Name</label>
-                        <input id="app-acronym" onChange={handlePlanMVPNameChange} type="text" className="form-control"/>
+                        <input required id="app-acronym" onChange={handlePlanMVPNameChange} type="text" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
@@ -64,7 +69,7 @@ function Modal() {
 
             <div className="modal-footer">
             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" className="btn btn-primary">Create</button>
+            <button type="submit" form="createPlanForm" className="btn btn-primary">Create</button>
             </div>
         </div>
         </div>

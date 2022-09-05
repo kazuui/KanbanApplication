@@ -8,17 +8,18 @@ function taskPanel() {
 
   return (
     <div>
-    <button type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal">
       <div className="task-panel">
-        <div className="top-section doFlex">
-          <div id="helloHello" className="indicate-colour"></div>
-          <div className="task-info">
-            <p className="task-owner-name">Owner: XXXX</p>
-            <p>Sprint 1</p>
-            <h4>Task</h4>
-            <p>Description...</p>
+        <button type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal">
+          <div className="top-section doFlex">
+            <div id="helloHello" className="indicate-colour"></div>
+            <div className="task-info">
+              <p className="task-owner-name">Owner: XXXX</p>
+              <p>Sprint 1</p>
+              <h4>Task</h4>
+              <p>Description...</p>
+            </div>
           </div>
-        </div>
+        </button>
         <div className="task-navigation">
           {/* Left button */}
           <button type="button" className="btn-arrow">
@@ -35,7 +36,6 @@ function taskPanel() {
           </button>
         </div>
       </div>
-    </button>
     </div>
   )
 }

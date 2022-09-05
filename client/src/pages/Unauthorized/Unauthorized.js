@@ -6,7 +6,7 @@ function Unauthorized() {
     <Page title="Login">
       <div className="align-items-center">
         <h1 className="display-3 display-3-center center_align">Unauthorized</h1>
-        <p className="lead text-muted display-3-center">Please log in.</p>
+        {/* <p className="lead text-muted display-3-center">Please log in.</p> */}
       </div>
     </Page>
   )

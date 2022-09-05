@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
+import { Dialog } from "@mui/material";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,10 +10,48 @@ import ListItemText from '@mui/material/ListItemText';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 //Context
 import BoardContext from "../../context/boardContext"
 
 function Modal() {
+
+  //Toast
+  const notify = (status) => {
+    if(status === "success") {
+      toast.success('Application successfully created', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "warning") {
+      toast.warn('User has not been updated', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "app exists") {
+      toast.warn('App acronym already exists', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+  }
 
   const { GroupsArray } = useContext(BoardContext);
 
@@ -55,8 +94,15 @@ function Modal() {
         permitDoing,
         permitDone
       });
-    } catch {
 
+      if (response.data === "App acronym already exists"){
+        notify("app exists");
+      } else if (response.data === "success"){
+        notify("success");
+      }
+    } catch {
+      notify("warning");
+      console.log("There was a problem.")
     }
   }
 
@@ -141,7 +187,10 @@ function Modal() {
     );
   };
 
-
+  //reload form
+  async function reloadForm(e) {
+    document.getElementById("createAppForm").reset();
+  }
 
   return (
     // Testing
@@ -150,11 +199,11 @@ function Modal() {
         <div className="modal-content">
             <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">Create New Application</h5>
-            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={reloadForm}></button>
             </div>
 
             <div className="modal-body">
-              <form onSubmit={handleCreateAppSubmit}>
+              <form id="createAppForm" onSubmit={handleCreateAppSubmit}>
                 <div className="form row">
                   {/* Left */}
                   <div className="col-6">
@@ -193,7 +242,9 @@ function Modal() {
                   <div className="col-4">
                     <FormControl>
                       <InputLabel id="demo-multiple-name-label">Create</InputLabel>
+                      <Dialog disableEnforceFocus></Dialog>
                       <Select 
+                        required
                         className="select-form"
                         labelId="multiple-checkbox-label"
                         id="multiple-checkbox"
@@ -204,7 +255,7 @@ function Modal() {
                         renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
                       >
-                        {GroupsArray.map((groups) => {
+                        {GroupsArray?.map((groups) => {
                           return(
                             <MenuItem key={groups} value={groups}>
                             <Checkbox checked={permitCreate.indexOf(groups) > -1} />
@@ -218,7 +269,9 @@ function Modal() {
                   <div className="col-4">
                     <FormControl>
                       <InputLabel id="demo-multiple-name-label">Open</InputLabel>
-                      <Select 
+                      <Dialog disableEnforceFocus></Dialog>
+                      <Select
+                        required 
                         className="select-form"
                         labelId="multiple-checkbox-label"
                         id="multiple-checkbox"
@@ -243,7 +296,9 @@ function Modal() {
                   <div className="col-4">
                     <FormControl>
                       <InputLabel id="demo-multiple-name-label">To-Do</InputLabel>
-                      <Select 
+                      <Dialog disableEnforceFocus></Dialog>
+                      <Select
+                        required 
                         className="select-form"
                         labelId="multiple-checkbox-label"
                         id="multiple-checkbox"
@@ -271,7 +326,9 @@ function Modal() {
                   <div className="col-4">
                     <FormControl>
                       <InputLabel id="demo-multiple-name-label">Doing</InputLabel>
-                      <Select 
+                      <Dialog disableEnforceFocus></Dialog>
+                      <Select
+                        required 
                         className="select-form"
                         labelId="multiple-checkbox-label"
                         id="multiple-checkbox"
@@ -296,7 +353,9 @@ function Modal() {
                   <div className="col-4">
                     <FormControl>
                       <InputLabel id="demo-multiple-name-label">Done</InputLabel>
-                      <Select 
+                      <Dialog disableEnforceFocus></Dialog>
+                      <Select
+                        required 
                         className="select-form"
                         labelId="multiple-checkbox-label"
                         id="multiple-checkbox"
@@ -322,12 +381,11 @@ function Modal() {
 
               </form>
             </div>
-
             <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" className="btn btn-primary">Create</button>
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={reloadForm}>Close</button>
+              <button type="submit" form="createAppForm" className="btn btn-primary">Create</button>
             </div>
-        </div>
+          </div>
         </div>
     </div>
   )

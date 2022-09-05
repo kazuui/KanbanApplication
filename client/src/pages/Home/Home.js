@@ -34,7 +34,7 @@ function Home() {
     },
   };
 
-  const [application, setApplication] = React.useState('');
+  const [application, setApplication] = React.useState("");
   const [allApplication, setAllApplication] = React.useState([]);
 
   useEffect( () => {
@@ -78,6 +78,8 @@ function Home() {
 
   const handleAppChange = (event) => {
     setApplication(event.target.value);
+    console.log(event.target.value);
+    // setCurrentAppID(event.target.value);
   };
 
   const handleAddApplications = () => {

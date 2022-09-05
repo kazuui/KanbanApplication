@@ -10,9 +10,19 @@ function Modal() {
 
   const [application, setApplication] = React.useState('');
 
+  //Submit Create Task
+  async function handleCreateTaskSubmit(e) {
+
+  }
+
   const handleChange = (event) => {
     setApplication(event.target.value);
   };
+
+  //reload form
+  async function reloadForm(e) {
+    document.getElementById("createTaskForm").reset();
+  }
 
   return (
     // Testing
@@ -25,26 +35,26 @@ function Modal() {
             </div>
 
             <div className="modal-body">
-              <form>
+              <form id="createTaskForm" onSubmit={handleCreateTaskSubmit}>
                 <div className="form row">
                   {/* Left */}
                   <div className="col-6">
                     <div className="form-row py-lg-3">
                       <div className="col-12">
-                        <label className="" for="app-acronym">Task Name</label>
-                        <input id="app-acronym" type="text" className="form-control"/>
+                        <label className="" for="task-name">Task Name</label>
+                        <input required id="task-name" type="text" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-12">
                         <Box sx={{ minWidth: 120 }} className="py-md-2">
                           <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Add To Plan</InputLabel>
+                            <InputLabel id="demo-simple-select-label">Add Task to Plan</InputLabel>
                             <Select
                               labelId="demo-simple-select-label"
                               id="demo-simple-select"
                               defaultValue={10}
-                              label="Add To Plan"
+                              label="Add Task to Plan"
                               onChange={handleChange}>
                               <MenuItem value={10}>Application 1</MenuItem>
                               <MenuItem value={20}>Application 2</MenuItem>
@@ -59,8 +69,8 @@ function Modal() {
                   {/* Right */}
                   <div className="col-6 py-lg-3">
                     <div className="form-group">
-                      <label for="app-description">Task Description</label>
-                      <textarea className="form-control" id="app-description" rows="5"></textarea>
+                      <label for="task-description">Task Description</label>
+                      <textarea className="form-control" id="task-description" rows="5"></textarea>
                     </div>
                   </div>
                 </div>
@@ -89,8 +99,8 @@ function Modal() {
             </div>
 
             <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" className="btn btn-primary">Create</button>
+            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={reloadForm}>Close</button>
+            <button type="submit" form="createTaskForm" className="btn btn-primary">Create</button>
             </div>
         </div>
         </div>

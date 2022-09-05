@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {BrowserRouter, Routes, Route , Outlet } from "react-router-dom"
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
@@ -34,7 +34,7 @@ function App() {
     <BoardProvider>
     <BrowserRouter>
       <ToastContainer />
-      <NavBar allowedRoles={["admin", "user"]} />
+      <NavBar/>
       <Routes>
         {/* Public */}
         <Route path="/" element={<Login />} />

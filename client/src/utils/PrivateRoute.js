@@ -9,7 +9,6 @@ const PrivateRoutes = ({ allowedRoles }) => {
 
   var user = sessionStorage.getItem("user");
   user = JSON.parse(user);
-  console.log(user?.role)
   return(     
     allowedRoles.includes(user?.role)
     // user?.role?.find(role => allowedRoles?.includes(role))

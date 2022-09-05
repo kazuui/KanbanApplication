@@ -36,7 +36,10 @@ export const AuthProvider = ({ children, ...rest }) => {
         });
     }
   }
-  
+
+  //Check admin
+  const [userRole, setUserRole] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState("");
   const [auth, setAuth] = useState({});
   const [thisUserID, setThisUserID] = useState("");
   const [userInfo, setUserInfo] = useState("");
@@ -55,6 +58,7 @@ export const AuthProvider = ({ children, ...rest }) => {
     } else if (response.data === "deactivated"){
       notify("deactivated");
     }else if (response.data.token){
+      setIsLoggedIn(true);
 
       const role = response.data.role;
       const token = response.data.token;
@@ -67,7 +71,10 @@ export const AuthProvider = ({ children, ...rest }) => {
         role
       }))
 
+      setUserRole(role);
+
       setAuth({username : username , role: role , token : token});
+      // setIsLoggedIn(true);
       setUserInfo(response.data);
       // setThisUserID(response.data.user_id);
       return(true);
@@ -79,7 +86,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 };
 
   return(
-    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID }}>
+    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID , userRole, isLoggedIn, setIsLoggedIn }}>
         {children}
     </AuthContext.Provider>
   )
