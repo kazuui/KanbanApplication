@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 import TaskPanels from "./taskPanel"
 import CreateTaskModal from "./Modals/createTaskModal"
+import TaskInfoModal from "./Modals/taskInfoModal"
 
 function Board(props) {
 
@@ -14,7 +15,6 @@ function Board(props) {
           {/* Create Tasks */}
           <button type="button" className="btn btn-add btn-lg btn-add btn-block" 
           data-bs-toggle="modal" data-bs-target="#createTaskModal">+</button>
-          <CreateTaskModal/>
           <TaskPanels/>
 
         </div>
@@ -36,7 +36,8 @@ function Board(props) {
         </div>
 
         {/* Modals */}
-        {/* <Modals/> */}
+        <CreateTaskModal/>
+        <TaskInfoModal/>
 
       </div>
   )

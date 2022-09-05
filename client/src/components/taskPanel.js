@@ -36,8 +36,6 @@ function taskPanel() {
         </div>
       </div>
     </button>
-
-      <TaskInfoModal/>
     </div>
   )
 }
