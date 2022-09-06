@@ -76,7 +76,7 @@ export const AuthProvider = ({ children, ...rest }) => {
       setAuth({username : username , role: role , token : token});
       // setIsLoggedIn(true);
       setUserInfo(response.data);
-      // setThisUserID(response.data.user_id);
+      setThisUserID(response.data.user_id);
       return(true);
     }
 

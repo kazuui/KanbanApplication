@@ -27,7 +27,7 @@ exports.getOneApp = catchAsyncErrors ( async (appAcronym) => {
 
 //Get all application
 exports.getAllApps = catchAsyncErrors ( async (req, res, next) => {
-    let sql = `SELECT * FROM application`;
+    let sql = `SELECT * FROM application ORDER BY app_startDate ASC`;
     db.query(sql, (error, results) => {
         if (error) {
             res.send("Error");
@@ -72,8 +72,8 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
                 console.log(error);
                 res.send("Error");
             } else {
-                console.log("done")
-                res.send(results);
+                // console.log("done")
+                res.send("success");
             }
         })
     }

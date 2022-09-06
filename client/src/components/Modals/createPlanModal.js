@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -6,16 +10,72 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-function Modal() {
+function Modal(props) {
 
-  const [application, setApplication] = React.useState('');
+  const { application, update } = props;
+
+  //Toast
+  const notify = (status) => {
+    if(status === "success") {
+      toast.success(`Plan successfully created [${application}]`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "warning") {
+      toast.warn('There was an error', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "plan exists") {
+      toast.warn(`Plan already exists [${application}]`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+  }
+
+  // const [application, setApplication] = React.useState('');
   const [planMVPName, setPlanMVPName] = useState("");
   const [planStartDate, setPlanStartDate] = useState("");
   const [planEndDate, setPlanEndDate] = useState("");
 
   //Submit Create Plan
   async function handleCreatePlanSubmit(e) {
+    e.preventDefault();
+    try{
+      const response = await axios.post('/apps/plans/create', {
+        application,
+        planMVPName,
+        planStartDate,
+        planEndDate
+      });
 
+      if (response.data === "plan exists"){
+        notify("plan exists");
+      } else if (response.data === "success"){
+        notify("success");
+        document.getElementById("createAppForm").reset();
+      }
+    } catch {
+      notify("warning");
+      console.log("There was a problem.")
+    }
+    update();
   }
 
   const handlePlanMVPNameChange = (event) => {

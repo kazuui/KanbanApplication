@@ -99,6 +99,7 @@ function Modal() {
         notify("app exists");
       } else if (response.data === "success"){
         notify("success");
+        document.getElementById("createAppForm").reset();
       }
     } catch {
       notify("warning");

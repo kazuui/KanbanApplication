@@ -19,8 +19,9 @@ import CreatePlanModal from "../../components/Modals/createPlanModal"
 function Home() {
   document.title = `Home | Task Management App`;
 
-  const {currentAppID, setCurrentAppID} = useContext(BoardContext);
-  const {GroupsArray, setGroupsArray} = useContext(BoardContext);
+  const {currentAppID, setCurrentAppID, GroupsArray, setGroupsArray} = useContext(BoardContext);
+  const [currentAppTasks, setCurrentAppTasks] = useState([]);
+  const [currentAppPlans, setCurrentAppPlans] = useState([]);
 
   //Application selector
   const ITEM_HEIGHT = 48;
@@ -49,8 +50,8 @@ function Home() {
     setApplication(app.app_acronym);
 
     //Get current app data
-    const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
-    const currAppData = await data1.json();
+    // const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
+    // const currAppData = await data1.json();
 
     var appsArray = apps.map(function(apps) {
       return apps['app_acronym'];
@@ -69,26 +70,43 @@ function Home() {
     // console.log(groupArray);
   };
 
+  // Fetch current app task
+  useEffect(() => {
+    fetchCurrentAppTask();
+    fetchCurrentAppPlan();
+  }, [application]);
+
+  const updatePlans = async() => {
+    fetchCurrentAppPlan();
+  };
+
+  const updateTasks = async() => {
+    fetchCurrentAppTask();
+  };
+
   const fetchCurrentAppTask = async() => {
     const data = await fetch(`/apps/tasks/${application}`); //fetching data from port 5000 on proxy
-    const currentAppTasks = await data.json();
+    setCurrentAppTasks(await data.json());
+    // console.log(application, " " , currentAppTasks);
+  };
 
-    console.log(currentAppTasks);
+  const fetchCurrentAppPlan = async() => {
+    const data = await fetch(`/apps/plans/${application}`); //fetching data from port 5000 on proxy
+    setCurrentAppPlans(await data.json());
+    // console.log(application, " " , currentAppPlans);
   };
 
   const handleAppChange = (event) => {
     setApplication(event.target.value);
-    console.log(event.target.value);
+    // console.log(event.target.value);
     // setCurrentAppID(event.target.value);
   };
 
-  const handleAddApplications = () => {
+  // const handleAddApplications = () => {
+  // }
 
-  }
-
-  const handleAddPlans = () => {
-
-  }
+  // const handleAddPlans = () => {
+  // }
 
   return (
     <div title="Home" className="py-md-5">
@@ -103,7 +121,7 @@ function Home() {
         <div className="col-lg-2 application-panel">
           {/* Create App */}
           <button type="button" className="btn btn-add btn-lg btn-block create-app" 
-          data-bs-toggle="modal" data-bs-target="#createAppModal" onClick={handleAddApplications}>+</button>
+          data-bs-toggle="modal" data-bs-target="#createAppModal">+</button>
           <CreateAppModal/>
 
           {/* Application selector */}
@@ -130,17 +148,20 @@ function Home() {
           {/* Plans */}
           <h5 className="create-text">Current Plans:</h5>
           <button type="button" className="btn btn-add btn-lg btn-block create-app" 
-          data-bs-toggle="modal" data-bs-target="#createPlanModal" onClick={handleAddPlans}>+</button>
-          <CreatePlanModal/>
+          data-bs-toggle="modal" data-bs-target="#createPlanModal">+</button>
+          <CreatePlanModal application={application} update={updatePlans}/>
 
           <div className="py-lg-3 center_align text-align-center">
-            <p className="app-items"><Link to="#">{" "}Plan 1{" "}</Link></p>
-            <p className="app-items"><Link to="#">{" "}Plan 2{" "}</Link></p>
-            <p className="app-items"><Link to="#">{" "}Plan 3{" "}</Link></p>
+
+          {currentAppPlans.map((plan) => {
+            return(
+              <p className="app-items"><Link to="#">{" "}{plan.plan_MVP_name}{" "}</Link></p>
+            )
+          })}
           </div>
         </div>
         <div className="col-lg-8 py-lg-4">
-          <ApplicationBoard/>
+          <ApplicationBoard tasks={currentAppTasks} updateTasks={updateTasks}/>
         </div>
       </div>
     </div>

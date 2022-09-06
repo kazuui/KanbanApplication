@@ -6,7 +6,7 @@ import AuthContext from "../context/authContext"
 
 function NavBar(props) {
 
-  const { auth, userRole , isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { auth, thisUserID, setThisUserID , isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
   const [userData,  setUserData] = useState({});
 
@@ -18,7 +18,8 @@ function NavBar(props) {
 
   const doLogout  = () => {
     sessionStorage.clear();
-    setUserData({})
+    setThisUserID("");
+    setUserData({});
     setIsLoggedIn(false);
   }
 

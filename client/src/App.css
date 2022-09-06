@@ -23,6 +23,30 @@
   color: rgb(161, 161, 161);
 }
 
+.plan-name{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  min-height: 24px ;
+}
+
+.task-name{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  min-height: 32px ;
+}
+
+.task-panel-description {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  min-height: 24px ;
+}
+
 /* .panel-title {
   background-color: #f3f3f3;
   padding: 16px;

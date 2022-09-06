@@ -3,12 +3,16 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Page from '../../components/Page';
 import axios from "axios";
 
+//Context
 import AuthContext from "../../context/authContext"
+import BoardContext from "../../context/boardContext"
 
 function Login() {
 
-  let Navigate = useNavigate();
   const { doLogin } = useContext(AuthContext);
+  const {currentAppID, setCurrentAppID, GroupsArray, setGroupsArray} = useContext(BoardContext);
+
+  let Navigate = useNavigate();
 
   //Redirect if user is logged in
   useEffect(() => {
