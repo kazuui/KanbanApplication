@@ -35,46 +35,45 @@ function Home() {
     },
   };
 
-  const [application, setApplication] = React.useState("");
+  const [currApplication, setCurrApplication] = React.useState("");
   const [allApplication, setAllApplication] = React.useState([]);
 
   useEffect( () => {
+
+    const fetchAll = async() => {
+      //Get all apps
+      const data = await fetch('/apps'); //fetching data from port 5000 on proxy
+      const apps = await data.json();
+      const [app] = apps;
+      setCurrApplication(app.app_acronym);
+  
+      //Get current app data
+      // const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
+      // const currAppData = await data1.json();
+  
+      var appsArray = apps.map(function(apps) {
+        return apps['app_acronym'];
+      });
+      setAllApplication(appsArray);
+  
+       //Get all groups
+      const data2 = await fetch('/groups'); //fetching data from port 5000 on proxy
+      const groups = await data2.json();
+  
+      var groupArray = groups.map(function(group) {
+        return group['group_name'];
+      });
+      setGroupsArray(groupArray);
+    };
+
     fetchAll();
   }, []);
-
-  const fetchAll = async() => {
-    //Get all apps
-    const data = await fetch('/apps'); //fetching data from port 5000 on proxy
-    const apps = await data.json();
-    const [app] = apps;
-    setApplication(app.app_acronym);
-
-    //Get current app data
-    // const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
-    // const currAppData = await data1.json();
-
-    var appsArray = apps.map(function(apps) {
-      return apps['app_acronym'];
-    });
-    setAllApplication(appsArray);
-
-     //Get all groups
-    const data2 = await fetch('/groups'); //fetching data from port 5000 on proxy
-    const groups = await data2.json();
-
-    var groupArray = groups.map(function(group) {
-      return group['group_name'];
-    });
-    setGroupsArray(groupArray);
-    // console.log(currAppData);
-    // console.log(groupArray);
-  };
 
   // Fetch current app task
   useEffect(() => {
     fetchCurrentAppTask();
     fetchCurrentAppPlan();
-  }, [application]);
+  }, [currApplication]);
 
   const updatePlans = async() => {
     fetchCurrentAppPlan();
@@ -85,19 +84,23 @@ function Home() {
   };
 
   const fetchCurrentAppTask = async() => {
-    const data = await fetch(`/apps/tasks/${application}`); //fetching data from port 5000 on proxy
-    setCurrentAppTasks(await data.json());
-    // console.log(application, " " , currentAppTasks);
+    if(currApplication){
+      const data = await fetch(`/apps/tasks/${currApplication}`); //fetching data from port 5000 on proxy
+      setCurrentAppTasks(await data.json());
+      // console.log(application, " " , currentAppTasks);
+    }
   };
 
   const fetchCurrentAppPlan = async() => {
-    const data = await fetch(`/apps/plans/${application}`); //fetching data from port 5000 on proxy
-    setCurrentAppPlans(await data.json());
-    // console.log(application, " " , currentAppPlans);
+    if(currApplication){
+      const data = await fetch(`/apps/plans/${currApplication}`); //fetching data from port 5000 on proxy
+      setCurrentAppPlans(await data.json());
+      // console.log(application, " " , currentAppPlans);
+    }
   };
 
   const handleAppChange = (event) => {
-    setApplication(event.target.value);
+    setCurrApplication(event.target.value);
     // console.log(event.target.value);
     // setCurrentAppID(event.target.value);
   };
@@ -131,7 +134,7 @@ function Home() {
               <Select
                 labelId="demo-multiple-name-label"
                 id="demo-multiple-name"
-                value={application}
+                value={currApplication}
                 onChange={handleAppChange}
                 input={<OutlinedInput label="Current Application" />}
                 MenuProps={MenuProps}
@@ -149,7 +152,7 @@ function Home() {
           <h5 className="create-text">Current Plans:</h5>
           <button type="button" className="btn btn-add btn-lg btn-block create-app" 
           data-bs-toggle="modal" data-bs-target="#createPlanModal">+</button>
-          <CreatePlanModal application={application} update={updatePlans}/>
+          <CreatePlanModal application={currApplication} update={updatePlans}/>
 
           <div className="py-lg-3 center_align text-align-center">
 
@@ -161,7 +164,7 @@ function Home() {
           </div>
         </div>
         <div className="col-lg-8 py-lg-4">
-          <ApplicationBoard tasks={currentAppTasks} updateTasks={updateTasks}/>
+          <ApplicationBoard tasks={currentAppTasks} update={updateTasks} plans={currentAppPlans}/>
         </div>
       </div>
     </div>

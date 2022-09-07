@@ -175,7 +175,7 @@ function CreateUser() {
             <div className="form-group">
             <label>Groups:</label>
               <Select 
-                className="select-form"
+                className="select-form2"
                 labelId="demo-multiple-checkbox-label"
                 id="demo-multiple-checkbox"
                 multiple

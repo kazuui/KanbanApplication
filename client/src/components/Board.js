@@ -6,7 +6,7 @@ import TaskInfoModal from "./Modals/taskInfoModal"
 
 function Board(props) {
 
-  const { tasks } = props;
+  const { tasks, update, plans } = props;
 
   const [openTasks, setOpenTasks] = useState([]);
   const [toDoTasks, setToDoTasks] = useState([]);
@@ -41,6 +41,16 @@ function Board(props) {
     setCloseTasks(closeArr);
   }, [tasks])
 
+  //View Modal
+  const [show, setShow] = useState(false);
+
+  //Show task info modal
+  const handleShowTaskInfo = (e) => {
+    setShow(true);
+    const task = tasks.find((task) => task.task_id === e.target.id);
+    // setDisplayedUser(user);
+  };
+
   return (
       <div className="doFlex kanban-board">
         {/* Open */}
@@ -51,41 +61,41 @@ function Board(props) {
           <button type="button" className="btn btn-add btn-lg btn-add btn-block" 
           data-bs-toggle="modal" data-bs-target="#createTaskModal">+</button>
 
-          <TaskPanels taskState={openTasks}/>
+          <TaskPanels taskState={openTasks} showModal={handleShowTaskInfo}/>
 
         </div>
         {/* To-do */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-toDO">TO-DO</h4>
 
-          <TaskPanels taskState={toDoTasks}/>
+          <TaskPanels taskState={toDoTasks} showModal={handleShowTaskInfo}/>
 
         </div>
         {/* Doing */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-doing">DOING</h4>
 
-          <TaskPanels taskState={doingTasks}/>
+          <TaskPanels taskState={doingTasks} showModal={handleShowTaskInfo}/>
 
         </div>
         {/* Done */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-done">DONE</h4>
 
-          <TaskPanels taskState={doneTasks}/>
+          <TaskPanels taskState={doneTasks} showModal={handleShowTaskInfo}/>
 
         </div>
         {/* Close */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-close">CLOSE</h4>
 
-          <TaskPanels taskState={closeTasks}/>
+          <TaskPanels taskState={closeTasks} showModal={handleShowTaskInfo}/>
 
         </div>
 
         {/* Modals */}
-        <CreateTaskModal/>
-        <TaskInfoModal/>
+        <CreateTaskModal plans={plans} updateTasks={update}/>
+        <TaskInfoModal show={show}/>
 
       </div>
   )

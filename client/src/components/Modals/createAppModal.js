@@ -210,21 +210,21 @@ function Modal() {
                   <div className="col-6">
                     <div className="form-row py-lg-3">
                       <div className="col-6">
-                        <label className="" for="app-acronym">Application Acronym</label>
+                        <label className="" htmlFor="app-acronym">Application Acronym</label>
                         <input required id="app-acronym" onChange={handleAcronymChange} type="text" className="form-control"/>
                       </div>
                       <div className="col-6">
-                        <label className="" for="app-Rnumber">Running Number</label>
+                        <label className="" htmlFor="app-Rnumber">Running Number</label>
                         <input required id="app-Rnumber" onChange={handleRnumChange} type="number" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-6">
-                        <label className="" for="app-startDate">Start Date</label>
+                        <label className="" htmlFor="app-startDate">Start Date</label>
                         <input id="app-startDate" onChange={handleStartDateChange} type="date" className="form-control"/>
                       </div>
                       <div className="col-6">
-                        <label className="" for="app-endDate">End Date</label>
+                        <label className="" htmlFor="app-endDate">End Date</label>
                         <input id="app-endDate" onChange={handleEndDateChange} type="date" className="form-control"/>
                       </div>
                     </div>
@@ -233,7 +233,7 @@ function Modal() {
                   {/* Right */}
                   <div className="col-6 py-lg-3">
                     <div className="form-group">
-                      <label for="app-description">Description</label>
+                      <label htmlFor="app-description">Description</label>
                       <textarea onChange={handleAppDescriptionChange} className="form-control" id="app-description" rows="5"></textarea>
                     </div>
                   </div>

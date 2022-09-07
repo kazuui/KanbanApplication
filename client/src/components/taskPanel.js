@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import TaskInfoModal from "./Modals/taskInfoModal"
-
 function taskPanel(props) {
 
   const { taskState } = props;
@@ -9,12 +7,12 @@ function taskPanel(props) {
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
 
   return (
-    
+
     taskState.map((task) => {
       return(
         <div>
           <div className="task-panel">
-            <button type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal">
+            <button id={task.task_id} type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal">
               <div className="top-section doFlex">
                 <div id="helloHello" className="indicate-colour"></div>
                 <div className="task-info">
@@ -77,6 +75,8 @@ function taskPanel(props) {
     //     </div>
     //   </div>
     // </div>
+
+    
   )
 }
 

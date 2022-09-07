@@ -3,6 +3,11 @@
   width: 0px !important;
 }
 
+.select-form2 {
+  min-width: 380px;
+  width: 0px !important;
+}
+
 .indicate-colour{
   background-color:lightblue;
   min-width: 5px;
@@ -184,13 +189,17 @@ body {
   font-family: "Public Sans", sans-serif;
 }
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
 .form-user form{
   padding-right: 16px !important;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   display: none;
-}
+} */
 
 .navBarLink {
   font-size: 18px !important;

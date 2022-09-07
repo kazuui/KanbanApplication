@@ -108,17 +108,17 @@ function Modal(props) {
                   <div className="col-12">
                     <div className="form-row py-lg-3">
                       <div className="col-12">
-                        <label className="" for="app-acronym">Plan MVP Name</label>
+                        <label className="" htmlFor="app-acronym">Plan MVP Name</label>
                         <input required id="app-acronym" onChange={handlePlanMVPNameChange} type="text" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-6">
-                        <label className="" for="app-startDate">Start Date</label>
+                        <label className="" htmlFor="app-startDate">Start Date</label>
                         <input id="app-startDate" onChange={handlePlanStartDateChange} type="date" className="form-control"/>
                       </div>
                       <div className="col-6">
-                        <label className="" for="app-endDate">End Date</label>
+                        <label className="" htmlFor="app-endDate">End Date</label>
                         <input id="app-endDate" onChange={handlePlanEndDateChange} type="date" className="form-control"/>
                       </div>
                     </div>

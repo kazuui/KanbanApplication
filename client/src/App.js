@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {BrowserRouter, Routes, Route , Outlet } from "react-router-dom"
 import './App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
-import { useImmerReducer } from "use-immer";
+// import { useImmerReducer } from "use-immer";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 //Context
 import { AuthProvider } from "./context/authContext";
 import { BoardProvider } from "./context/boardContext";
+import { ModalProvider } from "./context/modalContext";
 
 // Components
 import PrivateRoutes from "./utils/PrivateRoute";
@@ -31,6 +32,7 @@ function App() {
 
   return (
     <AuthProvider>
+    <ModalProvider>
     <BoardProvider>
     <BrowserRouter>
       <ToastContainer />
@@ -59,6 +61,7 @@ function App() {
       <Footer />
     </BrowserRouter>
     </BoardProvider>
+    </ModalProvider>
     </AuthProvider>
   );
 }

@@ -1,22 +1,36 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-function Modal() {
+function Modal(props) {
 
-  const [application, setApplication] = React.useState('');
+  const { plans , updateTasks } = props;
+
+  //Plan selector
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 3.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
+
+  const [addToPlan, setAddToPlan] = React.useState();
 
   //Submit Create Task
   async function handleCreateTaskSubmit(e) {
 
   }
 
-  const handleChange = (event) => {
-    setApplication(event.target.value);
+  const handlePlanChange = (event) => {
+    setAddToPlan(event.target.value);
   };
 
   //reload form
@@ -41,27 +55,31 @@ function Modal() {
                   <div className="col-6">
                     <div className="form-row py-lg-3">
                       <div className="col-12">
-                        <label className="" for="task-name">Task Name</label>
+                        <label className="" htmlFor="task-name">Task Name</label>
                         <input required id="task-name" type="text" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-12">
-                        <Box sx={{ minWidth: 120 }} className="py-md-2">
-                          <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Add Task to Plan</InputLabel>
-                            <Select
-                              labelId="demo-simple-select-label"
-                              id="demo-simple-select"
-                              defaultValue={10}
-                              label="Add Task to Plan"
-                              onChange={handleChange}>
-                              <MenuItem value={10}>Application 1</MenuItem>
-                              <MenuItem value={20}>Application 2</MenuItem>
-                              <MenuItem value={30}>Application 3</MenuItem>
-                            </Select>
-                          </FormControl>
-                        </Box>
+                        <FormControl fullWidth>
+                          <InputLabel id="demo-multiple-name-label">Add to Plan</InputLabel>
+                          <Select
+                            labelId="demo-multiple-name-label"
+                            id="demo-multiple-name"
+                            defaultValue={" "}
+                            value={addToPlan}
+                            onChange={handlePlanChange}
+                            input={<OutlinedInput label="Add to Plan" />}
+                            MenuProps={MenuProps}
+                          >
+                            <MenuItem key={" "} value={" "}>None</MenuItem>
+                            {plans.map((plan) => (
+                              <MenuItem key={plan.plan_MVP_name} value={plan.plan_MVP_name}>
+                                {plan.plan_MVP_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </div>
                     </div>
                   </div>
@@ -69,7 +87,7 @@ function Modal() {
                   {/* Right */}
                   <div className="col-6 py-lg-3">
                     <div className="form-group">
-                      <label for="task-description">Task Description</label>
+                      <label htmlFor="task-description">Task Description</label>
                       <textarea className="form-control" id="task-description" rows="5"></textarea>
                     </div>
                   </div>

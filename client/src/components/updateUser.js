@@ -18,8 +18,17 @@ import AuthContext from "../context/authContext"
 
 function UpdateUser() {
 
-  const { userAdmin } = useContext(AuthContext);
   let Navigate = useNavigate();
+
+  const { isLoggedIn } = useContext(AuthContext);
+
+  const [userData,  setUserData] = useState({});
+
+  useEffect(() => {
+    var user = sessionStorage.getItem("user");
+    user = JSON.parse(user);
+    setUserData(user);
+  }, [isLoggedIn])
 
    //Toast
    const notify = (status) => {
@@ -58,12 +67,12 @@ function UpdateUser() {
 
   //Update group selection if user is admin
   const updateGroupSelect = () =>{
-    if(userAdmin === true){
+    if(userData.role === "admin"){
       return (
         <div className="form-group">
           <label>Groups:</label>
           <Select 
-            className="select-form"
+            className="select-form2"
             labelId="multiple-checkbox-label"
             id="multiple-checkbox"
             multiple
