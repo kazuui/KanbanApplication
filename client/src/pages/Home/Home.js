@@ -38,38 +38,17 @@ function Home() {
   const [currApplication, setCurrApplication] = React.useState("");
   const [allApplication, setAllApplication] = React.useState([]);
 
-  useEffect( () => {
-
-    const fetchAll = async() => {
-      //Get all apps
-      const data = await fetch('/apps'); //fetching data from port 5000 on proxy
-      const apps = await data.json();
-      const [app] = apps;
-      setCurrApplication(app.app_acronym);
-  
-      //Get current app data
-      // const data1 = await fetch(`/apps/tasks/${app.app_acronym}`); //fetching data from port 5000 on proxy
-      // const currAppData = await data1.json();
-  
-      var appsArray = apps.map(function(apps) {
-        return apps['app_acronym'];
-      });
-      setAllApplication(appsArray);
-  
-       //Get all groups
-      const data2 = await fetch('/groups'); //fetching data from port 5000 on proxy
-      const groups = await data2.json();
-  
-      var groupArray = groups.map(function(group) {
-        return group['group_name'];
-      });
-      setGroupsArray(groupArray);
+  useEffect(() => {
+    const fetchAllApplications = async () => {
+      await Promise.all([
+        fetchAllApps(),
+        fetchAllGroups()
+      ]);
     };
-
-    fetchAll();
+    fetchAllApplications();
   }, []);
 
-  // Fetch current app task
+  // Fetch current app task when application changes
   useEffect(() => {
     fetchCurrentAppTask();
     fetchCurrentAppPlan();
@@ -82,6 +61,33 @@ function Home() {
   const updateTasks = async() => {
     fetchCurrentAppTask();
   };
+
+  const fetchAllApps = async() => {
+    //Get all apps
+    const data = await fetch('/apps'); //fetching data from port 5000 on proxy
+    const apps = await data.json();
+    const [app] = apps;
+
+    //Set first app as current
+    setCurrApplication(app.app_acronym);
+
+    //Set array of apps
+    var appsArray = apps.map(function(apps) {
+      return apps['app_acronym'];
+    });
+    setAllApplication(appsArray);
+  };
+
+  const fetchAllGroups = async() => {
+    //Get all groups
+    const data2 = await fetch('/groups'); //fetching data from port 5000 on proxy
+    const groups = await data2.json();
+
+    var groupArray = groups.map(function(group) {
+      return group['group_name'];
+    });
+    setGroupsArray(groupArray);
+  }
 
   const fetchCurrentAppTask = async() => {
     if(currApplication){

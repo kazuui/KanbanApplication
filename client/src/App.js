@@ -26,6 +26,7 @@ import GroupManagement from "./components/GroupManagement"
 import UpdateUser from "./components/updateUser"
 import CreateUser from "./components/createUser"
 import ApplicationBoard from "./components/Board"
+import Testing from "./pages/Testing";
 
 
 function App() {
@@ -42,6 +43,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route path="/test" element={<Testing/>} />
+
         
         {/* Protected all users */}
         <Route element={<PrivateRoutes allowedRoles={["admin", "user"]}/>}>

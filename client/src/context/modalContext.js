@@ -1,8 +1,8 @@
-import { createContext, useState } from "react";
+import { createContext, useState , useEffect } from "react";
 
-export const ModalContext = createContext();
+const ModalContext = createContext();
 
-const ModalProvider = (props) => {
+export const ModalProvider = ({ children, ...rest }) => {
   //const [modalTitle, setModalTitle] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -12,7 +12,7 @@ const ModalProvider = (props) => {
 
   return (
     <ModalContext.Provider value={{ handleShowModal, showModal, setShowModal }}>
-      {props.children}
+      {children}
     </ModalContext.Provider>
   );
 };

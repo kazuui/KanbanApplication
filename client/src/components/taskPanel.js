@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 function taskPanel(props) {
 
-  const { taskState } = props;
+  const { taskState, handleShowModal } = props;
 
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
 
@@ -12,7 +12,8 @@ function taskPanel(props) {
       return(
         <div>
           <div className="task-panel">
-            <button id={task.task_id} type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal">
+          <button id={task.task_id} type="button" className="task-button" onClick={handleShowModal}>
+            {/* <button id={task.task_id} type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal"> */}
               <div className="top-section doFlex">
                 <div id="helloHello" className="indicate-colour"></div>
                 <div className="task-info">

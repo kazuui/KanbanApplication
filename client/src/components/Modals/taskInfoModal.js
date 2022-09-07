@@ -11,7 +11,7 @@ import Select from '@mui/material/Select';
 
 function TaskInfoModal(props) {
 
-  const { show } = props;
+  const { showModal, handleCloseModal } = props;
 
   const [application, setApplication] = React.useState('');
 
@@ -20,16 +20,77 @@ function TaskInfoModal(props) {
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal size="lg" show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Task Information</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+        <Modal.Body>
+          <form>
+            <div className="form row">
+              {/* Left */}
+              <div className="col-6">
+                <div className="form-row py-lg-3">
+                  <div className="col-12">
+                    <label className="" htmlFor="task-name">Task Name</label>
+                    <input disabled id="task-name" type="text" className="form-control"/>
+                  </div>
+                </div>
+                <div className="form-row py-lg-2">
+                  <div className="col-12">
+                    <Box sx={{ minWidth: 120 }} className="py-md-2">
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Plan</InputLabel>
+                        <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        defaultValue={10}
+                        label="Add To Plan"
+                        onChange={handleChange}>
+                          <MenuItem value={10}>Application 1</MenuItem>
+                          <MenuItem value={20}>Application 2</MenuItem>
+                          <MenuItem value={30}>Application 3</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right */}
+              <div className="col-6 py-lg-3">
+                <div className="form-group">
+                  <label htmlFor="app-description">Task Description</label>
+                  <textarea className="form-control" id="app-description" rows="5"></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <div className="form-row">
+              <div className="col-12">
+                <div className="accordion accordion-flush" id="accordionFlushExample">
+                  <div className="accordion-item">
+                    <h2 className="accordion-header" id="flush-headingOne">
+                      <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                        Task Notes
+                      </button>
+                    </h2>
+                    <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                      <div className="accordion-body">
+                        <textarea className="form-control" id="app-description" rows="5" defaultValue="Hello" disabled></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleCloseModal}>
             Save Changes
           </Button>
         </Modal.Footer>
