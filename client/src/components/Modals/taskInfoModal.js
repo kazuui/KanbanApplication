@@ -11,13 +11,15 @@ import Select from '@mui/material/Select';
 
 function TaskInfoModal(props) {
 
-  const { showModal, handleCloseModal } = props;
+  const { showModal, handleCloseModal , taskInfo } = props;
 
   const [application, setApplication] = React.useState('');
 
   const handleChange = (event) => {
     setApplication(event.target.value);
   };
+
+  // console.log(taskInfo)
 
   return (
     <Modal size="lg" show={showModal} onHide={handleCloseModal}>
@@ -32,12 +34,14 @@ function TaskInfoModal(props) {
                 <div className="form-row py-lg-3">
                   <div className="col-12">
                     <label className="" htmlFor="task-name">Task Name</label>
-                    <input disabled id="task-name" type="text" className="form-control"/>
+                    <input disabled id="task-name" type="text" value={taskInfo.task_name} className="form-control"/>
                   </div>
                 </div>
                 <div className="form-row py-lg-2">
                   <div className="col-12">
-                    <Box sx={{ minWidth: 120 }} className="py-md-2">
+                    <label className="" htmlFor="task-plan-name">Plan</label>
+                    <input disabled id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/>
+                    {/* <Box sx={{ minWidth: 120 }} className="py-md-2">
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Plan</InputLabel>
                         <Select
@@ -51,7 +55,7 @@ function TaskInfoModal(props) {
                           <MenuItem value={30}>Application 3</MenuItem>
                         </Select>
                       </FormControl>
-                    </Box>
+                    </Box> */}
                   </div>
                 </div>
               </div>
@@ -60,13 +64,17 @@ function TaskInfoModal(props) {
               <div className="col-6 py-lg-3">
                 <div className="form-group">
                   <label htmlFor="app-description">Task Description</label>
-                  <textarea className="form-control" id="app-description" rows="5"></textarea>
+                  <textarea disabled className="form-control" id="app-description" rows="5" value={taskInfo.task_descripton? taskInfo.task_descripton: "None"}></textarea>
                 </div>
               </div>
             </div>
             
             <div className="form-row">
-              <div className="col-12">
+            <div className="col-12">
+              <label htmlFor="app-description">Comments</label>
+              <textarea className="form-control" id="app-description" rows="5"></textarea>
+            </div>
+              <div className="col-12 py-lg-3">
                 <div className="accordion accordion-flush" id="accordionFlushExample">
                   <div className="accordion-item">
                     <h2 className="accordion-header" id="flush-headingOne">
@@ -76,7 +84,7 @@ function TaskInfoModal(props) {
                     </h2>
                     <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                       <div className="accordion-body">
-                        <textarea className="form-control" id="app-description" rows="5" defaultValue="Hello" disabled></textarea>
+                        <textarea className="form-control" id="app-description" rows="5" defaultValue={taskInfo.task_notes} disabled></textarea>
                       </div>
                     </div>
                   </div>
@@ -89,9 +97,6 @@ function TaskInfoModal(props) {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
-          </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
-            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>

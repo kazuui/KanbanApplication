@@ -1,3 +1,49 @@
+//////////////////////////////// UNUSED CODE ///////////////////
+
+//////////////////// FROM BOARD JS //////////////////////////////
+
+// useEffect(() => {
+  //   if (displayedTasks) {
+  //     setTaskName(displayedTasks.task_name);
+  //     setTaskPlan(displayedTasks.task_plan);
+  //     setTaskDescription(displayedTasks.task_description);
+  //     setTaskNotes(displayedTasks.task_notes);
+  //   }
+  // }, [displayedTasks]);
+
+// const handleShowTaskInfo = (e) => {
+  //   setShow(true);
+  // };
+  
+  // const handleShowTaskInfo = () => {
+  //   show ? setShow(false) : setShow(true);
+  // };
+
+  // //Close task info model
+  // const handleCloseTaskInfo = (e) =>{
+  //   setShow(false);
+  // }
+
+//////////////// FROM PRIVATE ROUTE ////////////////////////////
+    // user.role.find(role => allowedRoles.include(role))
+    //   ? <Outlet/>
+    //   : user.username
+    //   ? <Navigate to="/unauthorized" state={{ from: location }} replace />
+    //   : <Navigate to="/" state={{ from: location }} replace />
+
+    // auth?.username
+    // ? <Outlet/> 
+    //   : <Navigate to="/unauthorized" 
+    //   />
+
+    // auth?.isAdmin?.find(admin => isAdmin?.includes(true))
+    //   ? <Outlet/> 
+    //   : auth?.username
+    //     ?<Navigate to="/unauthorized" // state={{ from: location }} replace
+    //     />
+    //     :<Navigate to="/unauthorized"/>
+
+////////////////////////////////////////////////////////////////
 // exports.checkGroupName = async (userid, groupname) => {
 //     const query = `SELECT t1.* FROM assignment.user_groups t1 INNER JOIN assignment.groups t2 ON t1.group_id = t2.id WHERE t1.user_id = ? AND t2.name = ?`;
 //     const results = await db.promise().query(query, [userid, groupname]);
@@ -24,7 +70,7 @@
 // }
 
 
-/////////// UNUSED CODE ///////////////////
+///////////////////////////////////////////////////////////////////////////
 
 // Get Users and their groups
 // exports.getUsersAndGroups = catchAsyncErrors ( async (req, res, next) => {

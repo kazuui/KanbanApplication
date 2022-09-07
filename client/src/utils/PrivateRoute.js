@@ -16,25 +16,6 @@ const PrivateRoutes = ({ allowedRoles }) => {
       : user?.username
         ? <Navigate to="/unauthorized" state={{ from: location }} replace />
         : <Navigate to="/" state={{ from: location }} replace />
-
-    //////////////// UNUSED ////////////////////////////
-    // user.role.find(role => allowedRoles.include(role))
-    //   ? <Outlet/>
-    //   : user.username
-    //   ? <Navigate to="/unauthorized" state={{ from: location }} replace />
-    //   : <Navigate to="/" state={{ from: location }} replace />
-
-    // auth?.username
-    // ? <Outlet/> 
-    //   : <Navigate to="/unauthorized" 
-    //   />
-
-    // auth?.isAdmin?.find(admin => isAdmin?.includes(true))
-    //   ? <Outlet/> 
-    //   : auth?.username
-    //     ?<Navigate to="/unauthorized" // state={{ from: location }} replace
-    //     />
-    //     :<Navigate to="/unauthorized"/>
   )
 }
 

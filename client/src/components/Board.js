@@ -17,18 +17,14 @@ function Board(props) {
   const [displayedPlans, setDisplayedPlans] = useState([]);
   const [displayedTasks, setDisplayedTasks] = useState([]);
 
+  const [taskName, setTaskName] = useState("");
+  const [taskPlan, setTaskPlan] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [taskNotes, setTaskNotes] = useState("");
+
+
   //View Modal
   const [show, setShow] = useState(false);
-
-  // useEffect(() => {
-  //   if (displayedUser) {
-  //     setEmail(displayedUser.userEmail);
-  //     setUsername(displayedUser.userName);
-  //     setPwd(displayedUser.userPwd);
-  //     setStatus(displayedUser.userStatus);
-  //     setGroup(displayedUser.groupName);
-  //   }
-  // }, [displayedUser]);
 
   //Show task info modal
   const handleShowTaskInfo = (e) => {
@@ -37,26 +33,15 @@ function Board(props) {
     } else{
       setShow(true);
       const task = tasks.find((task) => task.task_id === e.currentTarget.id);
-      console.log(task)
-      console.log(e.currentTarget)
+      setDisplayedTasks(task);
+      // console.log(e.currentTarget)
+      // console.log(task)
+      // console.log(displayedTasks);
 
       //This selected the other elements like <p> rather than the button
       // console.log(e.target)
     }
   };
-
-  // const handleShowTaskInfo = (e) => {
-  //   setShow(true);
-  // };
-  
-  // const handleShowTaskInfo = () => {
-  //   show ? setShow(false) : setShow(true);
-  // };
-
-  // //Close task info model
-  // const handleCloseTaskInfo = (e) =>{
-  //   setShow(false);
-  // }
 
   useEffect(() => {
     const openArr = tasks.filter((task) => {
@@ -130,7 +115,8 @@ function Board(props) {
         {/* Modals */}
         <CreateTaskModal plans={plans} updateTasks={update}/>
         
-        <TaskInfoModal showModal={show} handleCloseModal={handleShowTaskInfo}/>
+        <TaskInfoModal showModal={show} handleCloseModal={handleShowTaskInfo} 
+        taskInfo={displayedTasks}/>
 
       </div>
   )
