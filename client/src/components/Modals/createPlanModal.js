@@ -10,9 +10,15 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+//Context
+import ApplicationContext from "../../context/appContext"
+
 function Modal(props) {
 
-  const { application, update } = props;
+  const { update } = props;
+
+  const { currApplication } = useContext(ApplicationContext);
+  const application = currApplication;
 
   //Toast
   const notify = (status) => {

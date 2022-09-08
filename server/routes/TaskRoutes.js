@@ -12,4 +12,7 @@ const task = require("../controllers/taskController.js");
 //Get all tasks from a specific application
 router.route('/apps/tasks/:acronym').get(task.getTasksOfApp);
 
+//Create task of application
+router.route('/apps/tasks/create').post(task.createTask);
+
 module.exports = router;

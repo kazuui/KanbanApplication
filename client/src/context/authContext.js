@@ -43,6 +43,7 @@ export const AuthProvider = ({ children, ...rest }) => {
   const [auth, setAuth] = useState({});
   const [thisUserID, setThisUserID] = useState("");
   const [userInfo, setUserInfo] = useState("");
+  const [thisUsername, setThisUsername] = useState("");
 
   //Login form 
   async function doLogin(username, password) {
@@ -71,6 +72,8 @@ export const AuthProvider = ({ children, ...rest }) => {
         role
       }))
 
+      setThisUsername(username);
+
       setUserRole(role);
 
       setAuth({username : username , role: role , token : token});
@@ -86,7 +89,7 @@ export const AuthProvider = ({ children, ...rest }) => {
 };
 
   return(
-    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID , userRole, isLoggedIn, setIsLoggedIn }}>
+    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID , userRole, isLoggedIn, setIsLoggedIn, thisUsername }}>
         {children}
     </AuthContext.Provider>
   )

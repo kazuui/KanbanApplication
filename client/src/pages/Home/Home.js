@@ -9,7 +9,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 //Context
-import BoardContext from "../../context/boardContext"
+import ApplicationContext from "../../context/appContext"
 
 //Components
 import ApplicationBoard from "../../components/Board"
@@ -19,7 +19,9 @@ import CreatePlanModal from "../../components/Modals/createPlanModal"
 function Home() {
   document.title = `Home | Task Management App`;
 
-  const {currentAppID, setCurrentAppID, GroupsArray, setGroupsArray} = useContext(BoardContext);
+  const { currApplication, setCurrApplication, GroupsArray, setGroupsArray} = useContext(ApplicationContext);
+  
+  // const [firstApp, setFirstApp] = useState("");
   const [currentAppTasks, setCurrentAppTasks] = useState([]);
   const [currentAppPlans, setCurrentAppPlans] = useState([]);
 
@@ -35,7 +37,6 @@ function Home() {
     },
   };
 
-  const [currApplication, setCurrApplication] = React.useState("");
   const [allApplication, setAllApplication] = React.useState([]);
 
   useEffect(() => {
@@ -54,6 +55,10 @@ function Home() {
     fetchCurrentAppPlan();
   }, [currApplication]);
 
+  const updateApps = async() => {
+    fetchAllApps()
+  };
+
   const updatePlans = async() => {
     fetchCurrentAppPlan();
   };
@@ -66,10 +71,15 @@ function Home() {
     //Get all apps
     const data = await fetch('/apps'); //fetching data from port 5000 on proxy
     const apps = await data.json();
-    const [app] = apps;
+
+    const firstApp = ((apps[0]).app_acronym);
+    // const [app] = apps;
 
     //Set first app as current
-    setCurrApplication(app.app_acronym);
+    // setCurrApplication(firstApp);
+    if(!currApplication){
+      setCurrApplication(firstApp);
+    }
 
     //Set array of apps
     var appsArray = apps.map(function(apps) {
@@ -118,7 +128,7 @@ function Home() {
   // }
 
   return (
-    <div title="Home" className="py-md-5">
+    <div title="Home" className="py-md-2">
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">What's currently happening...</p>
         {/* <div className="col-lg-12 py-lg-3 center_align">
@@ -131,7 +141,7 @@ function Home() {
           {/* Create App */}
           <button type="button" className="btn btn-add btn-lg btn-block create-app" 
           data-bs-toggle="modal" data-bs-target="#createAppModal">+</button>
-          <CreateAppModal/>
+          <CreateAppModal update={updateApps}/>
 
           {/* Application selector */}
           <div className="py-md-3">
@@ -154,11 +164,16 @@ function Home() {
             </FormControl>
           </div>
 
+          {/* Edit App */}
+          <button type="button" className="btn btn-primary btn-lg btn-block" 
+          data-bs-toggle="modal" data-bs-target="#createAppModal">Edit Permits</button>
+          <CreateAppModal/>
+
           {/* Plans */}
           <h5 className="create-text">Current Plans:</h5>
           <button type="button" className="btn btn-add btn-lg btn-block create-app" 
           data-bs-toggle="modal" data-bs-target="#createPlanModal">+</button>
-          <CreatePlanModal application={currApplication} update={updatePlans}/>
+          <CreatePlanModal update={updatePlans}/>
 
           <div className="py-lg-3 center_align text-align-center">
 

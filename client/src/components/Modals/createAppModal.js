@@ -14,9 +14,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 //Context
-import BoardContext from "../../context/boardContext"
+import ApplicationContext from "../../context/appContext"
 
-function Modal() {
+function CreateAppModal(props) {
+
+  const { update } = props;
 
   //Toast
   const notify = (status) => {
@@ -53,7 +55,7 @@ function Modal() {
     }
   }
 
-  const { GroupsArray } = useContext(BoardContext);
+  const { GroupsArray } = useContext(ApplicationContext);
 
   const [appAcronym, setAppAcronym] = useState("");
   const [appDescription, setAppDescription] = useState("");
@@ -100,6 +102,7 @@ function Modal() {
       } else if (response.data === "success"){
         notify("success");
         document.getElementById("createAppForm").reset();
+        update();
       }
     } catch {
       notify("warning");
@@ -221,11 +224,11 @@ function Modal() {
                     <div className="form-row py-lg-2">
                       <div className="col-6">
                         <label className="" htmlFor="app-startDate">Start Date</label>
-                        <input id="app-startDate" onChange={handleStartDateChange} type="date" className="form-control"/>
+                        <input required id="app-startDate" onChange={handleStartDateChange} type="date" className="form-control"/>
                       </div>
                       <div className="col-6">
                         <label className="" htmlFor="app-endDate">End Date</label>
-                        <input id="app-endDate" onChange={handleEndDateChange} type="date" className="form-control"/>
+                        <input required id="app-endDate" onChange={handleEndDateChange} type="date" className="form-control"/>
                       </div>
                     </div>
                   </div>
@@ -392,4 +395,4 @@ function Modal() {
   )
 }
 
-export default Modal;
+export default CreateAppModal;

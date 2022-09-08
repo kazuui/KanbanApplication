@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 //Context
 import { AuthProvider } from "./context/authContext";
-import { BoardProvider } from "./context/boardContext";
+import { ApplicationProvider } from "./context/appContext";
 import { ModalProvider } from "./context/modalContext";
 
 // Components
@@ -34,7 +34,7 @@ function App() {
   return (
     <AuthProvider>
     <ModalProvider>
-    <BoardProvider>
+    <ApplicationProvider>
     <BrowserRouter>
       <ToastContainer />
       <NavBar/>
@@ -63,7 +63,7 @@ function App() {
       </Routes>
       <Footer />
     </BrowserRouter>
-    </BoardProvider>
+    </ApplicationProvider>
     </ModalProvider>
     </AuthProvider>
   );

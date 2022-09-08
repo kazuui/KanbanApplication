@@ -24,10 +24,19 @@ exports.getOneApp = catchAsyncErrors ( async (appAcronym) => {
 //     })
 // });
 
+//Get one Application
+// exports.appRNumber = catchAsyncErrors ( async (appAcronym) => {
+//     let sql = `SELECT * FROM kanban_web_app.application WHERE app_acronym = ${JSON.stringify(appAcronym)}`;
+
+//     const results = await db.promise().query(sql);
+//     return results[0][0]
+// });
+
 
 //Get all application
 exports.getAllApps = catchAsyncErrors ( async (req, res, next) => {
-    let sql = `SELECT * FROM application ORDER BY app_startDate ASC`;
+    let sql = `SELECT * FROM application ORDER BY app_acronym ASC`;
+    // let sql = `SELECT * FROM application ORDER BY app_startDate ASC`;
     db.query(sql, (error, results) => {
         if (error) {
             res.send("Error");

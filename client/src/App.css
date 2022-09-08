@@ -9,14 +9,14 @@
 }
 
 .indicate-colour{
-  background-color:lightblue;
+  /* background-color:lightblue; */
   min-width: 5px;
 }
 
-.task-description{
+/* .task-description{
   resize: none;
   display: flex;
-}
+} */
 
 .task-info{
   width: 100%;

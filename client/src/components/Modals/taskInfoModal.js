@@ -19,8 +19,6 @@ function TaskInfoModal(props) {
     setApplication(event.target.value);
   };
 
-  // console.log(taskInfo)
-
   return (
     <Modal size="lg" show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -46,7 +44,7 @@ function TaskInfoModal(props) {
                 <div className="form-row">
                   <div className="col-12">
                     <label className="" htmlFor="task-plan-name">Plan</label>
-                    <input disabled id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/>
+                    <input disabled={taskInfo.task_state === "open"? "" : true} id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/>
                     {/* <Box sx={{ minWidth: 120 }} className="py-md-2">
                       <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Plan</InputLabel>
@@ -76,10 +74,10 @@ function TaskInfoModal(props) {
             </div>
             
             <div className="form-row">
-            <div className="col-12">
+            {/* <div className="col-12">
               <label htmlFor="app-description">Comments</label>
               <textarea className="form-control" id="app-description" rows="5"></textarea>
-            </div>
+            </div> */}
               <div className="col-12 py-lg-3">
                 <div className="accordion accordion-flush" id="accordionFlushExample">
                   <div className="accordion-item">
@@ -103,6 +101,9 @@ function TaskInfoModal(props) {
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
+          </Button>
+          <Button variant="primary" onClick={handleCloseModal}>
+            Save Changes
           </Button>
         </Modal.Footer>
       </Modal>

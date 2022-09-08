@@ -9,13 +9,37 @@ function taskPanel(props) {
   return (
 
     taskState.map((task) => {
+
+      let state = task.task_state;
+      var bgColour = "";
+
+      switch (state) {
+        case "open":
+          bgColour = "#7376D0"
+          break;
+        case "toDo":
+          bgColour = "#FF8282"
+          break;
+        case "doing":
+          bgColour = "#FECA65"
+          break;
+        case "done":
+          bgColour = "#5FC656"
+          break;
+        case "close":
+          bgColour = "#646363"
+          break;
+        default:
+          bgColour = "lightblue"
+      }
+
       return(
         <div>
           <div className="task-panel">
           <button id={task.task_id} type="button" className="task-button" onClick={handleShowModal}>
             {/* <button id={task.task_id} type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal"> */}
               <div className="top-section doFlex">
-                <div id="helloHello" className="indicate-colour"></div>
+                <div id="task-colour" className="indicate-colour" style={{ backgroundColor: bgColour }}></div>
                 <div className="task-info">
                   <p className="task-owner-name">Owner: {task.task_owner}</p>
                   <p className="plan-name">{task.task_plan? task.task_plan : ''}</p>
@@ -27,14 +51,14 @@ function taskPanel(props) {
             <div className="task-navigation">
               
               {/* Left button */}
-              <button type="button" className="btn-arrow">
+              <button disabled={task.task_state==="open"? true : false} type="button" className="btn-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-left-fill" viewBox="0 0 16 16">
                   <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                 </svg>
               </button>
               
               {/* Right Button */}
-              <button type="button" className="btn-arrow btn-align-right">
+              <button disabled={task.task_state==="close"? true : false} type="button" className="btn-arrow btn-align-right">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-right-fill" viewBox="0 0 16 16">
                   <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                 </svg>

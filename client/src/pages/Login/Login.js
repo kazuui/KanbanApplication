@@ -5,12 +5,12 @@ import axios from "axios";
 
 //Context
 import AuthContext from "../../context/authContext"
-import BoardContext from "../../context/boardContext"
+import ApplicationContext from "../../context/appContext"
 
 function Login() {
 
   const { doLogin } = useContext(AuthContext);
-  const {currentAppID, setCurrentAppID, GroupsArray, setGroupsArray} = useContext(BoardContext);
+  const {currentAppID, setCurrentAppID, GroupsArray, setGroupsArray} = useContext(ApplicationContext);
 
   let Navigate = useNavigate();
 

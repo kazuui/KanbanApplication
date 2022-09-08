@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -6,9 +7,61 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+//Context
+import ApplicationContext from "../../context/appContext"
+import AuthContext from "../../context/authContext"
+
 function Modal(props) {
 
   const { plans , updateTasks } = props;
+
+  const {  thisUsername } = useContext(AuthContext);
+  const { currApplication } = useContext(ApplicationContext);
+  const application = currApplication;
+
+  //Toast
+  const notify = (status) => {
+    if(status === "success") {
+      toast.success('Application successfully created', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "warning") {
+      toast.warn('User has not been updated', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "app exists") {
+      toast.warn('App acronym already exists', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+  }
+
+  const [taskName, setTaskName] = useState("");
+  const [addToPlan, setAddToPlan] = React.useState();
+  const [taskDescription, setTaskDescription] = useState("");
+  const [taskNote, setTaskNote] = useState("");
+  
 
   //Plan selector
   const ITEM_HEIGHT = 48;
@@ -22,15 +75,47 @@ function Modal(props) {
     },
   };
 
-  const [addToPlan, setAddToPlan] = React.useState();
-
   //Submit Create Task
   async function handleCreateTaskSubmit(e) {
+    e.preventDefault();
 
+    let username = thisUsername;
+
+    try{
+      const response = await axios.post('/apps/tasks/create', {
+        application,
+        taskName,
+        addToPlan,
+        taskDescription,
+        taskNote,
+        username
+      });
+
+      console.log(response.data);
+
+      if(response.data === "success"){
+        
+      }
+
+    }catch{
+
+    }
   }
+
+  const handleTaskNameChange = (event) => {
+    setTaskName(event.target.value);
+  };
+
+  const handleTaskDescriptionChange = (event) => {
+    setTaskDescription(event.target.value);
+  };
 
   const handlePlanChange = (event) => {
     setAddToPlan(event.target.value);
+  };
+
+  const handleTaskNoteChange = (event) => {
+    setTaskNote(event.target.value);
   };
 
   //reload form
@@ -56,7 +141,7 @@ function Modal(props) {
                     <div className="form-row py-lg-3">
                       <div className="col-12">
                         <label className="" htmlFor="task-name">Task Name</label>
-                        <input required id="task-name" type="text" className="form-control"/>
+                        <input required id="task-name" type="text" className="form-control" onChange={handleTaskNameChange}/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
@@ -66,13 +151,13 @@ function Modal(props) {
                           <Select
                             labelId="demo-multiple-name-label"
                             id="demo-multiple-name"
-                            defaultValue={" "}
+                            defaultValue={"none"}
                             value={addToPlan}
                             onChange={handlePlanChange}
                             input={<OutlinedInput label="Add to Plan" />}
                             MenuProps={MenuProps}
                           >
-                            <MenuItem key={" "} value={" "}>None</MenuItem>
+                            <MenuItem key={"none"} value={"none"}>None</MenuItem>
                             {plans.map((plan) => (
                               <MenuItem key={plan.plan_MVP_name} value={plan.plan_MVP_name}>
                                 {plan.plan_MVP_name}
@@ -88,14 +173,20 @@ function Modal(props) {
                   <div className="col-6 py-lg-3">
                     <div className="form-group">
                       <label htmlFor="task-description">Task Description</label>
-                      <textarea className="form-control" id="task-description" rows="5"></textarea>
+                      <textarea className="form-control" id="task-description" rows="5" onChange={handleTaskDescriptionChange}></textarea>
                     </div>
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="col-12">
-                    <div className="accordion accordion-flush" id="accordionFlushExample">
+
+                  <div className="form-group">
+                    <label htmlFor="task-note">Notes</label>
+                    <textarea className="form-control" id="task-note" rows="5" onChange={handleTaskNoteChange}></textarea>
+                  </div>
+
+                    {/* <div className="accordion accordion-flush" id="accordionFlushExample">
                       <div className="accordion-item">
                         <h2 className="accordion-header" id="flush-headingOne">
                           <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
@@ -108,7 +199,7 @@ function Modal(props) {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
 
                   </div>
                 </div>

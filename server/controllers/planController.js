@@ -32,6 +32,7 @@ exports.createPlan = catchAsyncErrors ( async (req, res, next) => {
         planEndDate,
         application
     } = req.body;
+    
     const existingPlan = await this.checkPlanName(JSON.stringify(planMVPName), application);
 
     if(existingPlan){
