@@ -24,20 +24,26 @@ function TaskInfoModal(props) {
   return (
     <Modal size="lg" show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Task Information</Modal.Title>
+          <Modal.Title> Task Information </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
-            <div className="form row">
+            <div className="form row  py-lg-3">
               {/* Left */}
               <div className="col-6">
-                <div className="form-row py-lg-3">
+                <div className="form-row">
                   <div className="col-12">
                     <label className="" htmlFor="task-name">Task Name</label>
                     <input disabled id="task-name" type="text" value={taskInfo.task_name} className="form-control"/>
                   </div>
                 </div>
-                <div className="form-row py-lg-2">
+                <div className="form-row">
+                  <div className="col-12 py-lg-2">
+                    <label className="" htmlFor="task-id">Task ID</label>
+                    <input disabled id="task-id" type="text" value={taskInfo.task_id} className="form-control"/>
+                  </div>
+                </div>
+                <div className="form-row">
                   <div className="col-12">
                     <label className="" htmlFor="task-plan-name">Plan</label>
                     <input disabled id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/>
@@ -61,10 +67,10 @@ function TaskInfoModal(props) {
               </div>
               
               {/* Right */}
-              <div className="col-6 py-lg-3">
+              <div className="col-6">
                 <div className="form-group">
-                  <label htmlFor="app-description">Task Description</label>
-                  <textarea disabled className="form-control" id="app-description" rows="5" value={taskInfo.task_descripton? taskInfo.task_descripton: "None"}></textarea>
+                  <label htmlFor="task-description">Task Description</label>
+                  <textarea className="form-control task-description" id="task-description" rows="8" value={taskInfo.task_descripton? taskInfo.task_descripton: "None"}></textarea>
                 </div>
               </div>
             </div>
