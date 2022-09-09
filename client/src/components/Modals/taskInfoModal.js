@@ -68,7 +68,7 @@ function TaskInfoModal(props) {
               <div className="col-6">
                 <div className="form-group">
                   <label htmlFor="task-description">Task Description</label>
-                  <textarea className="form-control task-description" id="task-description" rows="8" value={taskInfo.task_descripton? taskInfo.task_descripton: "None"}></textarea>
+                  <textarea className="form-control task-description" id="task-description" rows="8" value={taskInfo.task_description? taskInfo.task_description : "None"}></textarea>
                 </div>
               </div>
             </div>
@@ -88,7 +88,7 @@ function TaskInfoModal(props) {
                     </h2>
                     <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                       <div className="accordion-body">
-                        <textarea className="form-control" id="app-description" rows="5" defaultValue={taskInfo.task_notes} disabled></textarea>
+                        <textarea disabled className="form-control" id="app-description" rows="8" defaultValue={taskInfo.task_notes}></textarea>
                       </div>
                     </div>
                   </div>

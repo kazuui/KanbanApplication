@@ -25,7 +25,7 @@ function Modal(props) {
   //Toast
   const notify = (status) => {
     if(status === "success") {
-      toast.success('Application successfully created', {
+      toast.success('Task successfully created', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -35,7 +35,7 @@ function Modal(props) {
         progress: undefined,
         });
     } else if (status === "warning") {
-      toast.warn('User has not been updated', {
+      toast.warn('Something went wrong', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -44,8 +44,8 @@ function Modal(props) {
         draggable: true,
         progress: undefined,
         });
-    } else if (status === "app exists") {
-      toast.warn('App acronym already exists', {
+    } else if (status === "task exists") {
+      toast.warn('Task already exists', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -58,10 +58,9 @@ function Modal(props) {
   }
 
   const [taskName, setTaskName] = useState("");
-  const [addToPlan, setAddToPlan] = React.useState();
+  const [addToPlan, setAddToPlan] = useState([]);
   const [taskDescription, setTaskDescription] = useState("");
   const [taskNote, setTaskNote] = useState("");
-  
 
   //Plan selector
   const ITEM_HEIGHT = 48;
@@ -81,6 +80,8 @@ function Modal(props) {
 
     let username = thisUsername;
 
+    console.log(application,taskName,addToPlan,taskDescription,taskNote,username)
+
     try{
       const response = await axios.post('/apps/tasks/create', {
         application,
@@ -93,12 +94,15 @@ function Modal(props) {
 
       console.log(response.data);
 
-      if(response.data === "success"){
-        
+      if(response.data === "task exists"){
+        notify("task exists");
+      }else if(response.data === "success"){
+        notify("success");
+        reloadForm();
+        updateTasks();
       }
-
     }catch{
-
+      notify("warning");
     }
   }
 
@@ -121,6 +125,11 @@ function Modal(props) {
   //reload form
   async function reloadForm(e) {
     document.getElementById("createTaskForm").reset();
+    document.getElementById("task-name").focus();
+    setTaskName("");
+    setAddToPlan("");
+    setTaskDescription("");
+    setTaskNote("");
   }
 
   return (
@@ -151,8 +160,7 @@ function Modal(props) {
                           <Select
                             labelId="demo-multiple-name-label"
                             id="demo-multiple-name"
-                            defaultValue={"none"}
-                            value={addToPlan}
+                            value={addToPlan.length !== 0 ? addToPlan :"none"}
                             onChange={handlePlanChange}
                             input={<OutlinedInput label="Add to Plan" />}
                             MenuProps={MenuProps}

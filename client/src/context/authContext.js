@@ -45,6 +45,16 @@ export const AuthProvider = ({ children, ...rest }) => {
   const [userInfo, setUserInfo] = useState("");
   const [thisUsername, setThisUsername] = useState("");
 
+  //Permit access rights
+  const [userAccess, setUserAccess] = useState("");
+
+  useEffect(() =>{
+    let session = JSON.parse(sessionStorage.getItem('user'));
+    if(session){
+      setThisUsername(session.username);
+    }
+  },[])
+
   //Login form 
   async function doLogin(username, password) {
 
@@ -63,21 +73,14 @@ export const AuthProvider = ({ children, ...rest }) => {
 
       const role = response.data.role;
       const token = response.data.token;
-      // sessionStorage.setItem("username", username);
-      // sessionStorage.setItem("token", token);
-      // sessionStorage.setItem("role", role);
       sessionStorage.setItem('user', JSON.stringify({
         username,
         token,
         role
       }))
 
-      setThisUsername(username);
-
       setUserRole(role);
-
       setAuth({username : username , role: role , token : token});
-      // setIsLoggedIn(true);
       setUserInfo(response.data);
       setThisUserID(response.data.user_id);
       return(true);
@@ -86,7 +89,7 @@ export const AuthProvider = ({ children, ...rest }) => {
     } catch(e){
     console.log("There was a problem.")
     }
-};
+  };
 
   return(
     <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID , userRole, isLoggedIn, setIsLoggedIn, thisUsername }}>

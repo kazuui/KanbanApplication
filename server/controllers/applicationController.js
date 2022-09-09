@@ -10,29 +10,6 @@ exports.getOneApp = catchAsyncErrors ( async (appAcronym) => {
     return results[0][0]
 });
 
-//Get specific application tasks and plans
-// exports.getOneApp = catchAsyncErrors ( async (req, res, next) => {
-//     const application = await JSON.stringify(req.body.application);
-
-//     let sql = `SELECT * FROM application WHERE app_acronym = ${application}`;
-//     db.query(sql, (error, results) => {
-//         if (error) {
-//             res.send("Error");
-//         } else {
-//             res.send(results);
-//         }
-//     })
-// });
-
-//Get one Application
-// exports.appRNumber = catchAsyncErrors ( async (appAcronym) => {
-//     let sql = `SELECT * FROM kanban_web_app.application WHERE app_acronym = ${JSON.stringify(appAcronym)}`;
-
-//     const results = await db.promise().query(sql);
-//     return results[0][0]
-// });
-
-
 //Get all application
 exports.getAllApps = catchAsyncErrors ( async (req, res, next) => {
     let sql = `SELECT * FROM application ORDER BY app_acronym ASC`;

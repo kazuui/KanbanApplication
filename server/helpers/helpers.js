@@ -3,18 +3,24 @@ const db = require('../config/db.js');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 
 //Check if user is in a specific group
-exports.checkUserGroup = async (id, groupName) => {
+exports.checkUserGroup = catchAsyncErrors ( async (id, groupName) => {
     let sql = `SELECT user.user_id, user.username, kanban_web_app.group.group_id, 
     kanban_web_app.group.group_name FROM user LEFT JOIN user_in_group ON user.user_id = user_in_group.user_id 
     LEFT JOIN kanban_web_app.group ON user_in_group.group_id = kanban_web_app.group.group_id 
     WHERE kanban_web_app.group.group_name = ${groupName} AND user.user_id = ${id}`;
-    
-    db.query(sql, (error, results) => {
-        if (error) {
-            return ("Error");
-        } else {
-            // if(results)
-            console.log(results);
-        }
-    })
+    const results = await db.promise().query(sql);
+    return results[0][0]
+});
+
+//Create Date
+exports.createDateTime = () => {
+    return new Date().toLocaleString();
 };
+
+//Get user group
+// exports.getUserGroup = catchAsyncErrors ( async (username) => {
+//     let sql = `SELECT user.user_id, user.username, group_concat(kanban_web_app.group.group_name) AS group, group_concat(kanban_web_app.group.group_id) AS group_id FROM user LEFT JOIN user_in_group ON user.user_id = user_in_group.user_id LEFT JOIN kanban_web_app.group ON user_in_group.group_id = kanban_web_app.group.group_id WHERE user.username=${JSON.stringify(username)}`;
+    
+//     const results = await db.promise().query(sql);
+//     return results[0]
+// });

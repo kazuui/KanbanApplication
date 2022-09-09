@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
 
-function taskPanel(props) {
+function TaskPanel(props) {
 
   const { taskState, handleShowModal } = props;
-
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
+  const [promote, setPromote] = useState(null);
+  const [demote, setDemote] = useState(null);
 
   return (
-
     taskState.map((task) => {
-
+      
       let state = task.task_state;
       var bgColour = "";
 
@@ -105,4 +105,4 @@ function taskPanel(props) {
   )
 }
 
-export default taskPanel;
+export default TaskPanel;

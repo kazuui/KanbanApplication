@@ -257,3 +257,18 @@ exports.addUserGroups = catchAsyncErrors ( async (req, res, next) => {
         }
     });
 });
+
+//Get user access rights
+exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
+    const { id } = req.params;
+    const groupID = req.body.getGroupID;
+
+    let sql = `INSERT INTO user_in_group (user_id, group_id) VALUES (${id}, ${groupID})`;
+        db.query(sql, (error, results) => {
+            if (error){
+                res.send("failed");
+            } else {
+                res.send("success");
+            }
+        });
+});

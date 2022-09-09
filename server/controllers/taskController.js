@@ -2,17 +2,27 @@ require('dotenv/config');
 const db = require('../config/db.js');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 
-//Get task Rnumber
-// exports.getTaskAudit = catchAsyncErrors ( async (task_name,task_app_acronym) => {
-//     let sql = `SELECT task_notes FROM kanban_web_app.task WHERE task_name = ${task_name} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
+const { getOneApp } = require("./applicationController");
+const { createDateTime } = require("../helpers/helpers");
 
-//     const results = await db.promise().query(sql);
-//     return results[0][0]
-// });
+//Get amount of task in app
+exports.getTaskAmount = catchAsyncErrors ( async (task_app_acronym) => {
+    let sql = `SELECT * FROM kanban_web_app.task WHERE task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
+
+    const results = await db.promise().query(sql);
+    return (results[0]).length
+});
+
+//get task name
+exports.getTaskName = catchAsyncErrors ( async (task_name,task_app_acronym) => {
+    let sql = `SELECT * FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
+    const results = await db.promise().query(sql);
+    return results[0][0];
+});
 
 //Get Audit note of task
 exports.getTaskAudit = catchAsyncErrors ( async (task_name,task_app_acronym) => {
-    let sql = `SELECT task_notes FROM kanban_web_app.task WHERE task_name = ${task_name} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
+    let sql = `SELECT task_notes FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
 
     const results = await db.promise().query(sql);
     return results[0][0]
@@ -43,20 +53,33 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
         username
     } = req.body;
 
-    const taskID = "";
+    const existingTask = await this.getTaskName(taskName, application);
 
-    // const date = createDateTime();
-    const createTaskNote = `${username} created ${taskName} on date?? \n${taskNote}`
+    if(existingTask){
+        res.status(200).send("task exists");
+    } else {
+        const appData = await getOneApp(application);
+        const taskAmount = await this.getTaskAmount(application);
 
-    console.log(createTaskNote);
-    res.send(createTaskNote);
+        const taskID = `${appData.app_acronym}_${+appData.app_Rnumber + taskAmount}`;
+        const taskState= "open";
 
-    let sql = `INSERT INTO task (task_id, task_name, task_description, task_notes, task_plan, task_app_acronym, task_state, task_creator, task_owner, task_createDate) VALUES()`;
-    // db.query(sql, (error, results) => {
-    //     if (error) {
-    //         res.send("Error");
-    //     } else {
-    //         res.send(results);
-    //     }
-    // })
+        const createDate = new Date().toISOString().slice(0, 10);
+        const date = createDateTime();
+
+        const createTaskNote = JSON.stringify(`[${username}] created task "${taskName}" on ${date} \nCurrent state: ${taskState} 
+        \n${taskNote? "Notes:\n" + taskNote : ""}`);
+
+        let sql = `INSERT INTO task (task_id, task_name, task_description, task_notes, task_plan, task_app_acronym, task_state, task_creator
+        , task_owner, task_createDate) VALUES(${JSON.stringify(taskID)},${JSON.stringify(taskName)},${JSON.stringify(taskDescription)},${createTaskNote},${addToPlan.length? JSON.stringify(addToPlan) : null},${JSON.stringify(application)},${JSON.stringify(taskState)}
+        ,${JSON.stringify(username)}, ${JSON.stringify(username)}, ${JSON.stringify(createDate)})`;
+        db.query(sql, (error, results) => {
+            if (error) {
+                console.log(error);
+                res.send("Error");
+            } else {
+                res.send("success");
+            }
+        })
+    }
 });

@@ -11,8 +11,6 @@ export const ApplicationProvider = ({ children, ...rest }) => {
 
   const { thisUsername , isLoggedIn } = useContext(AuthContext);
   const [GroupsArray, setGroupsArray] = useState([]);
-  //Permit access rights
-  const [userAccess, setUserAccess] = useState("");
   //Current Application
   const [currApplication, setCurrApplication] = useState("");
 

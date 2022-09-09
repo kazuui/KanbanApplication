@@ -101,7 +101,7 @@ function CreateAppModal(props) {
         notify("app exists");
       } else if (response.data === "success"){
         notify("success");
-        document.getElementById("createAppForm").reset();
+        reloadForm();
         update();
       }
     } catch {
@@ -193,7 +193,13 @@ function CreateAppModal(props) {
 
   //reload form
   async function reloadForm(e) {
+    setPermitCreate([]);
+    setPermitOpen([]);
+    setPermitToDo([]);
+    setPermitDoing([]);
+    setPermitDone([]);
     document.getElementById("createAppForm").reset();
+    document.getElementById("app-acronym").focus();
   }
 
   return (

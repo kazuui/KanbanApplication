@@ -165,7 +165,7 @@ function Home() {
           </div>
 
           {/* Edit App */}
-          <button type="button" className="btn btn-primary btn-lg btn-block" 
+          <button disabled type="button" className="btn btn-primary btn-lg btn-block" 
           data-bs-toggle="modal" data-bs-target="#createAppModal">Edit Permits</button>
           <CreateAppModal/>
 

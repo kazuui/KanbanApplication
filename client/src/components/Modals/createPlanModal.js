@@ -23,7 +23,7 @@ function Modal(props) {
   //Toast
   const notify = (status) => {
     if(status === "success") {
-      toast.success(`Plan successfully created [${application}]`, {
+      toast.success(`Plan successfully created`, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -43,7 +43,7 @@ function Modal(props) {
         progress: undefined,
         });
     } else if (status === "plan exists") {
-      toast.warn(`Plan already exists [${application}]`, {
+      toast.warn(`Plan already exists`, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -75,13 +75,13 @@ function Modal(props) {
         notify("plan exists");
       } else if (response.data === "success"){
         notify("success");
-        document.getElementById("createAppForm").reset();
+        reloadForm();
+        update();
       }
     } catch {
       notify("warning");
       console.log("There was a problem.")
     }
-    update();
   }
 
   const handlePlanMVPNameChange = (event) => {
@@ -95,6 +95,13 @@ function Modal(props) {
   const handlePlanEndDateChange = (event) => {
     setPlanEndDate(event.target.value);
   };
+
+  //reload form
+  async function reloadForm(e) {
+    document.getElementById("createPlanForm").reset();
+    document.getElementById("plan-name").focus();
+
+  }
   
 
   return (
@@ -114,8 +121,8 @@ function Modal(props) {
                   <div className="col-12">
                     <div className="form-row py-lg-3">
                       <div className="col-12">
-                        <label className="" htmlFor="app-acronym">Plan MVP Name</label>
-                        <input required id="app-acronym" onChange={handlePlanMVPNameChange} type="text" className="form-control"/>
+                        <label className="" htmlFor="plan-name">Plan MVP Name</label>
+                        <input required id="plan-name" onChange={handlePlanMVPNameChange} type="text" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
