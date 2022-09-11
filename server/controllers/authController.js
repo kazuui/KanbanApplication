@@ -5,8 +5,10 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
-const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const UserModel = require ('../models/UserModel');
+const catchAsyncErrors = require('../middleware/catchAsyncErrors');
+const helpers = require('../helpers/helpers');
+const Groups = require('./groupController');
 
 //Min 8 Max 10; Aplha, Num , Special
 const validPassword = (password) => {
@@ -260,15 +262,11 @@ exports.addUserGroups = catchAsyncErrors ( async (req, res, next) => {
 
 //Get user access rights
 exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
-    const { id } = req.params;
-    const groupID = req.body.getGroupID;
+    const { username } = req.body;
 
-    let sql = `INSERT INTO user_in_group (user_id, group_id) VALUES (${id}, ${groupID})`;
-        db.query(sql, (error, results) => {
-            if (error){
-                res.send("failed");
-            } else {
-                res.send("success");
-            }
-        });
+
+    // const admin = await helpers.checkUserGroup("admin", username);
+
+    // console.log(admin);
+    // res.send("hello")
 });

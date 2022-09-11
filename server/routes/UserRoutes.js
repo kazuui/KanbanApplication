@@ -23,7 +23,7 @@ router.route('/users/deactivate/:id').post(users.deactivateUser);
 // router.route('/users/create').post(users.createUser);
 
 //Check user in specific group
-router.route('/users/check-group').get(users.checkGroup);
+router.route('/check-group').get(users.checkIfAdmin);
 
 
 module.exports = router;

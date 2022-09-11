@@ -65,6 +65,8 @@ export const AuthProvider = ({ children, ...rest }) => {
     })
 
     if(response.data === "Wrong password/username"){
+      const response = await axios.post('/test-access');
+      console.log(response);
       notify("warning");
     } else if (response.data === "deactivated"){
       notify("deactivated");
@@ -78,6 +80,8 @@ export const AuthProvider = ({ children, ...rest }) => {
         token,
         role
       }))
+
+      // sessionStorage.setItem('accessRights',)
 
       setUserRole(role);
       setAuth({username : username , role: role , token : token});

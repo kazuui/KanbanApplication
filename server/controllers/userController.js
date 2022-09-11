@@ -1,6 +1,7 @@
 require('dotenv/config');
 const db = require('../config/db.js');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
+
 const helpers = require('../helpers/helpers');
 
 //User Model
@@ -58,10 +59,13 @@ exports.deactivateUser = (req, res, next) => {
     });
 };
 
-//Check if user is in a specific group
-exports.checkGroup = catchAsyncErrors ( async (req, res, next) => {
-    const id = await req.body.id;
+//Check if user is in a specific group (Assignment 1)
+exports.checkIfAdmin = catchAsyncErrors ( async (req, res, next) => {
+    // const id = await req.body.id;
+    const { username } = req.body;
 
     //Check if user is admin
-    const admin = await helpers.checkUserGroup(id, "admin");
+    const admin = await helpers.checkUserGroup("admin", username);
+    // const admin = await helpers.checkUserGroup("admin", id);
+    res.send("admin");
 });

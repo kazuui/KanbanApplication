@@ -53,14 +53,16 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         ${JSON.stringify(appDescription)}, ${appRNum}, ${JSON.stringify(appStartDate)}, ${JSON.stringify(appEndDate)}, 
         '${JSON.stringify(permitCreate)}', '${JSON.stringify(permitOpen)}', '${JSON.stringify(permitToDo)}', '${JSON.stringify(permitDoing)}', 
         '${JSON.stringify(permitDone)}')`;
-        db.query(sql, (error, results) => {
-            if (error) {
-                console.log(error);
-                res.send("Error");
-            } else {
-                // console.log("done")
-                res.send("success");
-            }
-        })
+
+        console.log(sql);
+        // db.query(sql, (error, results) => {
+        //     if (error) {
+        //         console.log(error);
+        //         res.send("Error");
+        //     } else {
+        //         // console.log("done")
+        //         res.send("success");
+        //     }
+        // })
     }
 });

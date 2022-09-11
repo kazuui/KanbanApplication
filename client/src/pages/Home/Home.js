@@ -19,7 +19,7 @@ import CreatePlanModal from "../../components/Modals/createPlanModal"
 function Home() {
   document.title = `Home | Task Management App`;
 
-  const { currApplication, setCurrApplication, GroupsArray, setGroupsArray} = useContext(ApplicationContext);
+  const { currApplication, setCurrApplication, setGroupsArray} = useContext(ApplicationContext);
   
   // const [firstApp, setFirstApp] = useState("");
   const [currentAppTasks, setCurrentAppTasks] = useState([]);
@@ -40,13 +40,13 @@ function Home() {
   const [allApplication, setAllApplication] = React.useState([]);
 
   useEffect(() => {
-    const fetchAllApplications = async () => {
+    const fetchAll = async () => {
       await Promise.all([
         fetchAllApps(),
-        fetchAllGroups()
+        fetchAllGroups(),
       ]);
     };
-    fetchAllApplications();
+    fetchAll();
   }, []);
 
   // Fetch current app task when application changes
@@ -73,10 +73,8 @@ function Home() {
     const apps = await data.json();
 
     const firstApp = ((apps[0]).app_acronym);
-    // const [app] = apps;
 
     //Set first app as current
-    // setCurrApplication(firstApp);
     if(!currApplication){
       setCurrApplication(firstApp);
     }
@@ -86,6 +84,7 @@ function Home() {
       return apps['app_acronym'];
     });
     setAllApplication(appsArray);
+    accessRights(apps);
   };
 
   const fetchAllGroups = async() => {
@@ -115,20 +114,21 @@ function Home() {
     }
   };
 
+  const accessRights = async(apps) => {
+    var accessArr = [];
+
+    for(var i = 0 ; i < apps.length; i++){
+      console.log(apps[i])
+    }
+  }
+
   const handleAppChange = (event) => {
     setCurrApplication(event.target.value);
-    // console.log(event.target.value);
-    // setCurrentAppID(event.target.value);
   };
-
-  // const handleAddApplications = () => {
-  // }
-
-  // const handleAddPlans = () => {
-  // }
 
   return (
     <div title="Home" className="py-md-2">
+      <React.StrictMode>
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">What's currently happening...</p>
         {/* <div className="col-lg-12 py-lg-3 center_align">
@@ -188,6 +188,7 @@ function Home() {
           <ApplicationBoard tasks={currentAppTasks} update={updateTasks} plans={currentAppPlans}/>
         </div>
       </div>
+      </React.StrictMode>
     </div>
   )
 }
