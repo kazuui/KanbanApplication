@@ -55,14 +55,14 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         '${JSON.stringify(permitDone)}')`;
 
         console.log(sql);
-        // db.query(sql, (error, results) => {
-        //     if (error) {
-        //         console.log(error);
-        //         res.send("Error");
-        //     } else {
-        //         // console.log("done")
-        //         res.send("success");
-        //     }
-        // })
+        db.query(sql, (error, results) => {
+            if (error) {
+                console.log(error);
+                res.send("Error");
+            } else {
+                // console.log("done")
+                res.send("success");
+            }
+        })
     }
 });
