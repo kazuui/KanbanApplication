@@ -1,5 +1,71 @@
 //////////////////////////////// UNUSED CODE ///////////////////
 
+////////////////////////// FROM HOME JS ////////////////////////
+
+  // const accessRights = async(apps) => {
+  //   var accessArr = [];
+
+  //   //Loop app data
+  //   for(var i = 0 ; i < apps.length; i++){
+  //     let currentApp = apps[i]
+  //     let appName = currentApp.app_acronym;
+  //     //Get permit data
+  //     let permitData = Object.entries(currentApp).slice(5, 10)
+
+  //     let app = {app: appName}
+
+  //     //Loop app states
+  //     for(var x = 0 ; x < permitData.length; x++){
+        
+  //       var stateName
+
+  //       switch (permitData[x][0]) {
+  //         case "app_permit_create":
+  //           stateName = "create"
+  //           break;
+  //         case "app_permit_open":
+  //           stateName = "open"
+  //           break;
+  //         case "app_permit_toDoList":
+  //           stateName = "toDoList"
+  //           break;
+  //         case "app_permit_doing":
+  //           stateName = "doing"
+  //           break;
+  //         case "app_permit_done":
+  //           stateName = "done"
+  //           break;
+  //       }
+
+  //       let stateGroups = JSON.parse(permitData[x][1])
+  //       let accessOutcome
+
+  //       //Check if user is in state groups
+  //       for(var a = 0 ; a < stateGroups.length; a++){
+
+  //         let groupName = stateGroups[a];
+  //         let username = (await JSON.parse(sessionStorage.getItem('user'))).username
+
+  //         let response = await axios.post('/users/check-group', {
+  //           groupName,
+  //           username
+  //         })
+
+  //         if(response.data === true){
+  //           accessOutcome = true
+  //           break
+  //         } else if (response.data === false){
+  //           accessOutcome = false
+  //         }
+  //       }
+  //       //Set state access
+  //       app[stateName] = accessOutcome
+  //     }
+  //     accessArr.push(app)
+  //   }
+  //   console.log(accessArr)
+  // }
+
 //////////////////// FROM BOARD JS //////////////////////////////
 
 // useEffect(() => {

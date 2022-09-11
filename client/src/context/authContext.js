@@ -46,12 +46,14 @@ export const AuthProvider = ({ children, ...rest }) => {
   const [thisUsername, setThisUsername] = useState("");
 
   //Permit access rights
-  const [userAccess, setUserAccess] = useState("");
+  // const [userAccess, setUserAccess] = useState("");
 
   useEffect(() =>{
-    let session = JSON.parse(sessionStorage.getItem('user'));
-    if(session){
-      setThisUsername(session.username);
+    const setUsername = async () => {
+      let session = await JSON.parse(sessionStorage.getItem('user'));
+      if(session){
+        setThisUsername(session.username);
+      }
     }
   },[])
 
@@ -65,8 +67,6 @@ export const AuthProvider = ({ children, ...rest }) => {
     })
 
     if(response.data === "Wrong password/username"){
-      const response = await axios.post('/test-access');
-      console.log(response);
       notify("warning");
     } else if (response.data === "deactivated"){
       notify("deactivated");
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children, ...rest }) => {
         role
       }))
 
-      // sessionStorage.setItem('accessRights',)
+      userAccessRights(username);
 
       setUserRole(role);
       setAuth({username : username , role: role , token : token});
@@ -95,8 +95,27 @@ export const AuthProvider = ({ children, ...rest }) => {
     }
   };
 
+  const userAccessRights = async(username, update) =>{
+    //Access rights
+    if(!sessionStorage.getItem('accessRights')) {
+      const accessRes = await axios.post('/apps/access', {
+        username
+      })
+      sessionStorage.setItem('accessRights', JSON.stringify(accessRes.data)); 
+    } else if (sessionStorage.getItem('accessRights') && update === "update"){
+      //Updating when new app created
+      sessionStorage.removeItem('accessRights')
+
+      //New access
+      const accessRes = await axios.post('/apps/access', {
+        username
+      })
+      sessionStorage.setItem('accessRights', JSON.stringify(accessRes.data));
+    }
+  }
+
   return(
-    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID , userRole, isLoggedIn, setIsLoggedIn, thisUsername }}>
+    <AuthContext.Provider value={{ doLogin , auth , setAuth , thisUserID, setThisUserID , userRole, isLoggedIn, setIsLoggedIn, thisUsername, userAccessRights }}>
         {children}
     </AuthContext.Provider>
   )

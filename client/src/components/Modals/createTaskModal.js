@@ -78,9 +78,9 @@ function Modal(props) {
   async function handleCreateTaskSubmit(e) {
     e.preventDefault();
 
-    let username = thisUsername;
+    // console.log(application,taskName,addToPlan,taskDescription,taskNote,username)
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
 
-    console.log(application,taskName,addToPlan,taskDescription,taskNote,username)
 
     try{
       const response = await axios.post('/apps/tasks/create', {
@@ -92,7 +92,7 @@ function Modal(props) {
         username
       });
 
-      console.log(response.data);
+      // console.log(response.data);
 
       if(response.data === "task exists"){
         notify("task exists");

@@ -4,12 +4,25 @@ import TaskPanels from "./taskPanel"
 import CreateTaskModal from "./Modals/createTaskModal"
 import TaskInfoModal from "./Modals/taskInfoModal"
 
+//Context
+import AuthContext from "../context/authContext";
+
 function Board(props) {
 
-  const { tasks, update, plans } = props;
+  const { tasks, update, plans, accessRights } = props;
 
+  // console.log(accessRights);
+
+  //Rights
+  const [createRights, setCreateRights] = useState(false)
+  const [openRights, setOpenRights] = useState(false)
+  const [toDoListRights, setToDoListRights] = useState(false)
+  const [doingRights, setDoingRights] = useState(false)
+  const [doneRights, setDoneRights] = useState(false)
+
+  //Tasks
   const [openTasks, setOpenTasks] = useState([]);
-  const [toDoTasks, setToDoTasks] = useState([]);
+  const [toDoListTasks, setToDoListTasks] = useState([]);
   const [doingTasks, setDoingTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState([]);
   const [closeTasks, setCloseTasks] = useState([]);
@@ -21,7 +34,6 @@ function Board(props) {
   const [taskPlan, setTaskPlan] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [taskNotes, setTaskNotes] = useState("");
-
 
   //View Modal
   const [show, setShow] = useState(false);
@@ -43,13 +55,28 @@ function Board(props) {
     }
   };
 
+  //Rights (updates when task changes)
+  useEffect(() => {
+    const setRights = async () => {
+      await Promise.all([
+        setCreateRights(accessRights.create),
+        setOpenRights(accessRights.open),
+        setToDoListRights(accessRights.toDoList),
+        setDoingRights(accessRights.doing),
+        setDoneRights(accessRights.done)
+      ]);
+    };
+    setRights();
+  },[tasks])
+
+  //Seperating current app task to states (updates when task changes)
   useEffect(() => {
     const openArr = tasks.filter((task) => {
       return task.task_state === "open";
     });
 
-    const toDoArr = tasks.filter((task) => {
-      return task.task_state === "toDo";
+    const toDoListArr = tasks.filter((task) => {
+      return task.task_state === "toDoList";
     });
 
     const doingArr = tasks.filter((task) => {
@@ -64,7 +91,7 @@ function Board(props) {
       return task.task_state === "close";
     });
     setOpenTasks(openArr);
-    setToDoTasks(toDoArr);
+    setToDoListTasks(toDoListArr);
     setDoingTasks(doingArr);
     setDoneTasks(doneArr);
     setCloseTasks(closeArr);
@@ -77,38 +104,57 @@ function Board(props) {
           <h4 className="display-3-center kanban-state state-open">OPEN</h4>
 
           {/* Create Tasks */}
-          <button type="button" className="btn btn-add btn-lg btn-add btn-block" 
+          <button disabled={!createRights? true : false} type="button" className="btn btn-add btn-lg btn-add btn-block" 
           data-bs-toggle="modal" data-bs-target="#createTaskModal">+</button>
 
-          <TaskPanels taskState={openTasks} handleShowModal={handleShowTaskInfo}/>
+          <TaskPanels
+          taskState={openTasks} 
+          handleShowModal={handleShowTaskInfo} 
+          rights={openRights}
+          />
 
         </div>
         {/* To-do */}
         <div className="col-lg-3 kanban-panel">
-          <h4 className="display-3-center kanban-state state-toDO">TO-DO</h4>
+          <h4 className="display-3-center kanban-state state-toDoList">TO-DO</h4>
 
-          <TaskPanels taskState={toDoTasks} handleShowModal={handleShowTaskInfo}/>
+          <TaskPanels
+          taskState={toDoListTasks}
+          handleShowModal={handleShowTaskInfo}
+          rights={toDoListRights}
+          />
 
         </div>
         {/* Doing */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-doing">DOING</h4>
 
-          <TaskPanels taskState={doingTasks} handleShowModal={handleShowTaskInfo}/>
+          <TaskPanels
+          taskState={doingTasks}
+          handleShowModal={handleShowTaskInfo}
+          rights={doingRights}
+          />
 
         </div>
         {/* Done */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-done">DONE</h4>
 
-          <TaskPanels taskState={doneTasks} handleShowModal={handleShowTaskInfo}/>
+          <TaskPanels
+          taskState={doneTasks}
+          handleShowModal={handleShowTaskInfo}
+          rights={doneRights}
+          />
 
         </div>
         {/* Close */}
         <div className="col-lg-3 kanban-panel">
           <h4 className="display-3-center kanban-state state-close">CLOSE</h4>
 
-          <TaskPanels taskState={closeTasks} handleShowModal={handleShowTaskInfo}/>
+          <TaskPanels
+          taskState={closeTasks}
+          handleShowModal={handleShowTaskInfo}
+          />
 
         </div>
 

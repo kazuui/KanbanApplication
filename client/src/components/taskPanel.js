@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 
 function TaskPanel(props) {
 
-  const { taskState, handleShowModal } = props;
+  const { taskState, handleShowModal, rights } = props;
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
   const [promote, setPromote] = useState(null);
   const [demote, setDemote] = useState(null);
@@ -17,7 +17,7 @@ function TaskPanel(props) {
         case "open":
           bgColour = "#7376D0"
           break;
-        case "toDo":
+        case "toDoList":
           bgColour = "#FF8282"
           break;
         case "doing":
@@ -51,14 +51,30 @@ function TaskPanel(props) {
             <div className="task-navigation">
               
               {/* Left button */}
-              <button disabled={task.task_state==="open"? true : false} type="button" className="btn-arrow">
+              <button disabled={
+                task.task_state==="close"
+                  ? true 
+                  : task.task_state==="open" 
+                    ? true 
+                    : !rights
+                      ? true
+                      : false
+              }
+                type="button" className="btn-arrow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-left-fill" viewBox="0 0 16 16">
                   <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                 </svg>
               </button>
               
               {/* Right Button */}
-              <button disabled={task.task_state==="close"? true : false} type="button" className="btn-arrow btn-align-right">
+              <button disabled={
+                task.task_state==="close"
+                  ? true 
+                  : !rights
+                    ? true
+                    : false
+              }
+                 type="button" className="btn-arrow btn-align-right">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-right-fill" viewBox="0 0 16 16">
                   <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                 </svg>

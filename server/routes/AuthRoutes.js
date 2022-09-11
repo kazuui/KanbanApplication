@@ -22,7 +22,10 @@ router.route('/users/group/:id').post(auth.refreshUserGroups);
 //Add New User to Group
 router.route('/users/create/add-to-group').post(auth.addUserGroups);
 
+//Check group
+router.route('/users/check-group').post(auth.checkUserInGroup);
+
 //Access rights
-router.route('/user/access-rights').get(auth.getAccessRights);
+router.route('/apps/access').post(auth.getAccessRights);
 
 module.exports = router;

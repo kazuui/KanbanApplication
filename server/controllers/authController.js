@@ -9,6 +9,8 @@ const UserModel = require ('../models/UserModel');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const helpers = require('../helpers/helpers');
 const Groups = require('./groupController');
+const application = require('./applicationController');
+const e = require('express');
 
 //Min 8 Max 10; Aplha, Num , Special
 const validPassword = (password) => {
@@ -261,12 +263,76 @@ exports.addUserGroups = catchAsyncErrors ( async (req, res, next) => {
 });
 
 //Get user access rights
+exports.checkUserInGroup = catchAsyncErrors ( async (req, res, next) => {
+    const { groupName, username } = req.body;
+
+    const check = await helpers.checkGroup(groupName, username);
+    if (!check.length){
+        res.send(false)
+    }else {
+        res.send(true)
+    }
+});
+
+//Get user access rights
 exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
     const { username } = req.body;
+    
+    const apps = await application.allApps()
+    var accessArr = [];
+    
+    //Loop app data
+    for(var i = 0 ; i < apps.length; i++){
+        let currentApp = apps[i]
+        let appName = currentApp.app_acronym;
+        //Get permit data
+        let permitData = Object.entries(currentApp).slice(5, 10)
 
+        let app = {app: appName}
 
-    // const admin = await helpers.checkUserGroup("admin", username);
+        // console.log(permitData)
 
-    // console.log(admin);
-    // res.send("hello")
+        //Loop app states
+        for(var x = 0 ; x < permitData.length; x++){
+        
+        var stateName
+
+        if (permitData[x][0] === "app_permit_create"){
+            stateName = "create"
+        } else if(permitData[x][0] === "app_permit_open"){
+            stateName = "open"
+        } else if(permitData[x][0] === "app_permit_toDoList"){
+            stateName = "toDoList"
+        } else if(permitData[x][0] === "app_permit_doing"){
+            stateName = "doing"
+        } else if(permitData[x][0] === "app_permit_done"){
+            stateName = "done"
+        }
+
+        let stateGroups = JSON.parse(permitData[x][1])
+        let accessOutcome
+
+        //Check if user is in state groups
+        for(var a = 0 ; a < stateGroups.length; a++){
+
+            let groupName = stateGroups[a];
+
+            let response = await helpers.checkGroup(groupName, username)
+            // console.log(response);
+
+            if(!response.length){
+                accessOutcome = false
+            } else {
+                accessOutcome = true
+                break
+            }
+        }
+        //Set state access
+        app[stateName] = accessOutcome
+        }
+        accessArr.push(app)
+    }
+    // console.log(accessArr)
+    res.send(accessArr)
+    // res.send(JSON.stringify(accessArr))
 });

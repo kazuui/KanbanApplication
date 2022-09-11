@@ -67,7 +67,7 @@
   background-color: #7376D0;
 }
 
-.state-toDO{
+.state-toDoList{
   color: white;
   background-color: #FF8282;
 }
@@ -188,6 +188,10 @@
 .btn-add:hover{
   background-color: rgb(199, 199, 199) !important;
   border: rgb(224, 224, 223) 1px solid !important;
+}
+
+.btn:disabled, .btn:hover, .btn:focus {
+  border: transparent 1px solid !important;
 }
 
 body {

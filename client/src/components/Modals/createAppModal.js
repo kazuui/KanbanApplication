@@ -64,7 +64,7 @@ function CreateAppModal(props) {
   const [appEndDate, setAppEndDate] = useState("");
   const [permitCreate, setPermitCreate] = useState([]);
   const [permitOpen, setPermitOpen] = useState([]);
-  const [permitToDo, setPermitToDo] = useState([]);
+  const [permitToDoList, setPermitToDoList] = useState([]);
   const [permitDoing, setPermitDoing] = useState([]);
   const [permitDone, setPermitDone] = useState([]);
 
@@ -92,7 +92,7 @@ function CreateAppModal(props) {
         appEndDate,
         permitCreate,
         permitOpen,
-        permitToDo,
+        permitToDoList,
         permitDoing,
         permitDone
       });
@@ -158,12 +158,12 @@ function CreateAppModal(props) {
     );
   };
   
-  const handleToDoChange = (event) => {
+  const handleToDoListChange = (event) => {
     const {
       target: { value },
     } = event;
 
-    setPermitToDo(
+    setPermitToDoList(
       // On autofill we get a stringified value.
       typeof value === 'string' ? value.split(',') : value,
     );
@@ -195,7 +195,7 @@ function CreateAppModal(props) {
   async function reloadForm(e) {
     setPermitCreate([]);
     setPermitOpen([]);
-    setPermitToDo([]);
+    setPermitToDoList([]);
     setPermitDoing([]);
     setPermitDone([]);
     document.getElementById("createAppForm").reset();
@@ -313,8 +313,8 @@ function CreateAppModal(props) {
                         labelId="multiple-checkbox-label"
                         id="multiple-checkbox"
                         multiple
-                        value={permitToDo}
-                        onChange={handleToDoChange}
+                        value={permitToDoList}
+                        onChange={handleToDoListChange}
                         input={<OutlinedInput label="To-Do" />}
                         renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
@@ -322,7 +322,7 @@ function CreateAppModal(props) {
                         {GroupsArray.map((groups) => {
                           return(
                             <MenuItem key={groups} value={groups}>
-                            <Checkbox checked={permitToDo.indexOf(groups) > -1} />
+                            <Checkbox checked={permitToDoList.indexOf(groups) > -1} />
                             <ListItemText primary={groups} />
                             </MenuItem>
                           )

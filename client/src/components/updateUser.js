@@ -167,7 +167,7 @@ function UpdateUser() {
         // selectedGroups,
       })
 
-      console.log(response.data);
+      // console.log(response.data);
       if(response.data === "password criteria"){
         notify("password criteria");
       } else {

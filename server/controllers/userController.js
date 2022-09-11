@@ -65,7 +65,7 @@ exports.checkIfAdmin = catchAsyncErrors ( async (req, res, next) => {
     const { username } = req.body;
 
     //Check if user is admin
-    const admin = await helpers.checkUserGroup("admin", username);
-    // const admin = await helpers.checkUserGroup("admin", id);
+    const admin = await helpers.checkGroup("admin", username);
+    // const admin = await helpers.checkGroup("admin", id);
     res.send("admin");
 });

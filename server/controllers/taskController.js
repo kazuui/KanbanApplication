@@ -83,3 +83,17 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
         })
     }
 });
+
+//Update task
+exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
+    const { acronym } = req.params;
+
+    // let sql = `SELECT * FROM task WHERE task_app_acronym = "${acronym}"`;
+    // db.query(sql, (error, results) => {
+    //     if (error) {
+    //         res.send("Error");
+    //     } else {
+    //         res.send(results);
+    //     }
+    // })
+});

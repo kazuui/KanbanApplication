@@ -23,6 +23,14 @@ exports.getAllApps = catchAsyncErrors ( async (req, res, next) => {
     })
 });
 
+exports.allApps = catchAsyncErrors ( async (req, res, next) => {
+    let sql = `SELECT * FROM application ORDER BY app_acronym ASC`;
+    // let sql = `SELECT * FROM application ORDER BY app_startDate ASC`;
+
+    const results = await db.promise().query(sql);
+    return results[0]
+});
+
 //Create application
 exports.createApp = catchAsyncErrors ( async (req, res, next) => {
     // const appAcronym = await JSON.stringify(req.body.appAcronym);
@@ -35,7 +43,7 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         appEndDate,
         permitCreate,
         permitOpen,
-        permitToDo,
+        permitToDoList,
         permitDoing,
         permitDone
     } = req.body;
@@ -43,7 +51,7 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
     const existingApplication = await this.getOneApp(appAcronym);
 
     if(existingApplication){
-        console.log("App acronym already exists")
+        // console.log("App acronym already exists")
         res.send("App acronym already exists");
     } else {
         
@@ -51,10 +59,8 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
     
         let sql = `INSERT INTO application (app_acronym, app_description, app_Rnumber, app_startDate, app_endDate, app_permit_create, app_permit_open, app_permit_toDoList, app_permit_doing, app_permit_done) VALUES (${JSON.stringify(appAcronym)}, 
         ${JSON.stringify(appDescription)}, ${appRNum}, ${JSON.stringify(appStartDate)}, ${JSON.stringify(appEndDate)}, 
-        '${JSON.stringify(permitCreate)}', '${JSON.stringify(permitOpen)}', '${JSON.stringify(permitToDo)}', '${JSON.stringify(permitDoing)}', 
+        '${JSON.stringify(permitCreate)}', '${JSON.stringify(permitOpen)}', '${JSON.stringify(permitToDoList)}', '${JSON.stringify(permitDoing)}', 
         '${JSON.stringify(permitDone)}')`;
-
-        console.log(sql);
         db.query(sql, (error, results) => {
             if (error) {
                 console.log(error);

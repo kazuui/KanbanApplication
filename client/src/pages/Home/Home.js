@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from 'react-router-dom';
 import Page from '../../components/Page';
+import axios from "axios";
 
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
@@ -9,6 +10,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 //Context
+import AuthContext from "../../context/authContext";
 import ApplicationContext from "../../context/appContext"
 
 //Components
@@ -19,11 +21,13 @@ import CreatePlanModal from "../../components/Modals/createPlanModal"
 function Home() {
   document.title = `Home | Task Management App`;
 
+  const { userAccessRights, thisUsername } = useContext(AuthContext);
   const { currApplication, setCurrApplication, setGroupsArray} = useContext(ApplicationContext);
   
   // const [firstApp, setFirstApp] = useState("");
   const [currentAppTasks, setCurrentAppTasks] = useState([]);
   const [currentAppPlans, setCurrentAppPlans] = useState([]);
+  const [currentAppRights, setCurrentAppRights] = useState([]);
 
   //Application selector
   const ITEM_HEIGHT = 48;
@@ -43,7 +47,7 @@ function Home() {
     const fetchAll = async () => {
       await Promise.all([
         fetchAllApps(),
-        fetchAllGroups(),
+        fetchAllGroups()
       ]);
     };
     fetchAll();
@@ -53,10 +57,12 @@ function Home() {
   useEffect(() => {
     fetchCurrentAppTask();
     fetchCurrentAppPlan();
+    getCurrentAppRights();
   }, [currApplication]);
 
   const updateApps = async() => {
-    fetchAllApps()
+    fetchAllApps();
+    userAccessRights(thisUsername, "update");
   };
 
   const updatePlans = async() => {
@@ -84,7 +90,7 @@ function Home() {
       return apps['app_acronym'];
     });
     setAllApplication(appsArray);
-    accessRights(apps);
+    // accessRights(apps);
   };
 
   const fetchAllGroups = async() => {
@@ -113,22 +119,21 @@ function Home() {
       // console.log(application, " " , currentAppPlans);
     }
   };
-
-  const accessRights = async(apps) => {
-    var accessArr = [];
-
-    for(var i = 0 ; i < apps.length; i++){
-      console.log(apps[i])
-    }
+  
+  const getCurrentAppRights = async() => {
+    let sessionRights = await JSON.parse(sessionStorage.getItem('accessRights'));
+    const appRights = await sessionRights.find((app) => app.app === currApplication);
+    setCurrentAppRights(appRights);
   }
 
   const handleAppChange = (event) => {
     setCurrApplication(event.target.value);
   };
+  
+  // console.log(currentAppRights)
 
   return (
-    <div title="Home" className="py-md-2">
-      <React.StrictMode>
+    <div className="py-md-2">
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">What's currently happening...</p>
         {/* <div className="col-lg-12 py-lg-3 center_align">
@@ -185,10 +190,9 @@ function Home() {
           </div>
         </div>
         <div className="col-lg-8 py-lg-4">
-          <ApplicationBoard tasks={currentAppTasks} update={updateTasks} plans={currentAppPlans}/>
+          <ApplicationBoard tasks={currentAppTasks} update={updateTasks} plans={currentAppPlans} accessRights={currentAppRights}/>
         </div>
       </div>
-      </React.StrictMode>
     </div>
   )
 }
