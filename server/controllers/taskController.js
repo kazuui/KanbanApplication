@@ -25,7 +25,7 @@ exports.getTaskAudit = catchAsyncErrors ( async (task_name,task_app_acronym) => 
     let sql = `SELECT task_notes FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
 
     const results = await db.promise().query(sql);
-    return results[0][0]
+    return (JSON.stringify((results[0][0]).task_notes))
 });
 
 //Get all task
@@ -67,7 +67,7 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
         const createDate = new Date().toISOString().slice(0, 10);
         const date = createDateTime();
 
-        const createTaskNote = JSON.stringify(`[${username}] created task "${taskName}" on ${date} \nCurrent state: ${taskState} 
+        const createTaskNote = JSON.stringify(`[${username}] created task "${taskName}" on ${date} \nTask state: ${taskState} 
         \n${taskNote? "Notes:\n" + taskNote : ""}`);
 
         let sql = `INSERT INTO task (task_id, task_name, task_description, task_notes, task_plan, task_app_acronym, task_state, task_creator
@@ -86,9 +86,17 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
 
 //Update task
 exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
-    const { acronym } = req.params;
+    const { 
+        application,
+        updateType,
+        currentState,
+        taskName
+    } = req.body;
 
-    // let sql = `SELECT * FROM task WHERE task_app_acronym = "${acronym}"`;
+    let existingAudit = await this.getTaskAudit(taskName,application);
+    console.log(existingAudit)
+
+    // let sql = `UPDATE task SET task_description = 'dadsa' WHERE (task_id = 'App1_1');`;
     // db.query(sql, (error, results) => {
     //     if (error) {
     //         res.send("Error");
@@ -96,4 +104,5 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
     //         res.send(results);
     //     }
     // })
+    res.send("hello")
 });

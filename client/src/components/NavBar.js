@@ -62,7 +62,7 @@ function NavBar(props) {
                 <Link to="/groups" className="text-white navBarLink nav-link">{" "}Group Management</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
+                <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
               </li>
             </ul>
           </div>
@@ -75,7 +75,7 @@ function NavBar(props) {
                 <Link to="/profile" className="text-white navBarLink nav-link">{" "}Profile{" "}</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
+                <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
               </li>
             </ul>
           </div>

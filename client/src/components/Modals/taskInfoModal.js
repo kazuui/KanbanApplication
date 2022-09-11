@@ -99,10 +99,10 @@ function TaskInfoModal(props) {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
+          <Button variant="secondary" onClick={() => handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
+          <Button variant="primary" onClick={() => handleCloseModal}>
             Save Changes
           </Button>
         </Modal.Footer>

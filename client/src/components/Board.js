@@ -108,6 +108,7 @@ function Board(props) {
           data-bs-toggle="modal" data-bs-target="#createTaskModal">+</button>
 
           <TaskPanels
+          updateTasks={update}
           taskState={openTasks} 
           handleShowModal={handleShowTaskInfo} 
           rights={openRights}
@@ -119,6 +120,7 @@ function Board(props) {
           <h4 className="display-3-center kanban-state state-toDoList">TO-DO</h4>
 
           <TaskPanels
+          updateTasks={update}
           taskState={toDoListTasks}
           handleShowModal={handleShowTaskInfo}
           rights={toDoListRights}
@@ -130,6 +132,7 @@ function Board(props) {
           <h4 className="display-3-center kanban-state state-doing">DOING</h4>
 
           <TaskPanels
+          updateTasks={update}
           taskState={doingTasks}
           handleShowModal={handleShowTaskInfo}
           rights={doingRights}
@@ -141,6 +144,7 @@ function Board(props) {
           <h4 className="display-3-center kanban-state state-done">DONE</h4>
 
           <TaskPanels
+          updateTasks={update}
           taskState={doneTasks}
           handleShowModal={handleShowTaskInfo}
           rights={doneRights}

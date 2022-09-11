@@ -99,7 +99,7 @@ function ProfileTable (props) {
           })}
         </tbody>
       </table>
-      <button onClick={scrollToTop} className="scrollTop btn" title="Go to top">Scroll up</button>
+      <button onClick={() => scrollToTop} className="scrollTop btn" title="Go to top">Scroll up</button>
     </section>
   )
 }

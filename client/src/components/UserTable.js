@@ -131,7 +131,7 @@ function UserTable (props) {
           })}
         </tbody>
       </table>
-      <button onClick={scrollToTop} className="scrollTop btn btn-primary" title="Go to top">Scroll up</button>
+      <button onClick={() => scrollToTop} className="scrollTop btn btn-primary" title="Go to top">Scroll up</button>
     </section>
   )
 }
