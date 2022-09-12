@@ -74,9 +74,11 @@ function TaskPanel(props) {
                   ? true 
                   : task.task_state==="open" 
                     ? true 
-                    : !rights
+                    : task.task_state==="toDoList"
                       ? true
-                      : false
+                      :!rights
+                        ? true
+                        : false
               }
                 type="button" className="btn-arrow" 
                 onClick={() => handleShowModal(task,"demote")}>

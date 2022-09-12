@@ -63,6 +63,7 @@ function Home() {
   const updateApps = async(username) => {
     await userAccessRights(username, "update")
     await fetchAllApps();
+    //Wait for rights after update
     await getCurrentAppRights();
   };
 
@@ -76,10 +77,14 @@ function Home() {
 
   const fetchAllApps = async() => {
     //Get all apps
+    var firstApp
+
     const data = await fetch('/apps'); //fetching data from port 5000 on proxy
     const apps = await data.json();
 
-    const firstApp = ((apps[0]).app_acronym);
+    if(apps){
+      firstApp = ((apps[0]).app_acronym);
+    }
 
     //Set first app as current
     if(!currApplication){

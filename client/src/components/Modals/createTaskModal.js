@@ -54,6 +54,16 @@ function Modal(props) {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "no task name") {
+      toast.warn('Enter task name', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     }
   }
 
@@ -95,7 +105,10 @@ function Modal(props) {
 
       if(response.data === "task exists"){
         notify("task exists");
-      }else if(response.data === "success"){
+      }else if(response.data === "no task name"){
+        notify("no task name");
+        document.getElementById("task-name").focus();
+      } else if(response.data === "success"){
         notify("success");
         reloadForm();
         updateTasks();
@@ -107,6 +120,7 @@ function Modal(props) {
 
   const handleTaskNameChange = (event) => {
     setTaskName(event.target.value);
+    console.log(taskName);
   };
 
   const handleTaskDescriptionChange = (event) => {
@@ -146,7 +160,7 @@ function Modal(props) {
             </div>
 
             <div className="modal-body">
-              <form id="createTaskForm" onSubmit={handleCreateTaskSubmit}>
+              <form id="createTaskForm" onSubmit={handleCreateTaskSubmit} autocomplete="off">
                 <div className="form row">
                   {/* Left */}
                   <div className="col-6">

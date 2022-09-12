@@ -71,7 +71,9 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
 
     const existingTask = await this.getTaskName(taskName, application);
 
-    if(existingTask){
+    if (!taskName){
+        res.status(200).send("no task name");
+    } else if(existingTask){
         res.status(200).send("task exists");
     } else {
         const appData = await getOneApp(application);
@@ -121,7 +123,7 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
     
     let checkPlan = (await this.getTaskPlan(taskName, application) !== addToPlan)
     if (checkPlan){
-        if(!addToPlan || addToPlan === "none" ){
+        if(addToPlan.length === 0 || addToPlan === "none" || !addToPlan ){
             changePlan = null
         } else {
             changePlan = JSON.stringify(addToPlan)
@@ -145,17 +147,11 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
         }
     } else {
         switch (currentState) {
-            case "open":
+            case "doing":
                 newState = "toDoList"
                 break;
-            case "toDoList":
-                newState = "doing"
-                break;
-            case "doing":
-                newState = "done"
-                break;
             case "done":
-                newState = "close"
+                newState = "doing"
                 break;
         }
     }
