@@ -117,10 +117,11 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
     var updateNote
     var newState
     var changePlan
+
     
     let checkPlan = (await this.getTaskPlan(taskName, application) !== addToPlan)
     if (checkPlan){
-        if(!addToPlan){
+        if(!addToPlan || addToPlan === "none" ){
             changePlan = null
         } else {
             changePlan = JSON.stringify(addToPlan)
@@ -160,9 +161,9 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
     }
 
     // let existingAudit = await this.getTaskAudit(taskName,application);
-    updateNote = `[${username}] moved ${JSON.stringify(taskName)} to ${newState} on ${date} \nTask State: ${newState}\n${taskNote? "\nNotes:\n" + taskNote : ""} \n`
+    updateNote = JSON.stringify(`[${username}] moved "${taskName}" to ${newState} on ${date} \nTask State: ${newState}\n${taskNote?"\nNotes:\n" + taskNote +"\n" : ""} \n`)
 
-    let sql = `UPDATE task SET ${checkPlan? 'task_plan = '+ changePlan : "" }, ${taskDescription? 'task_description = ' + JSON.stringify(taskDescription) : ""}, task_state = ${JSON.stringify(newState)} , task_notes = CONCAT('${updateNote}', task_notes), task_owner = ${JSON.stringify(username)} WHERE (task_id = ${JSON.stringify(taskID)})`;
+    let sql = `UPDATE task SET ${checkPlan? "task_plan = "+ changePlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_state = ${JSON.stringify(newState)} , task_notes = CONCAT(${updateNote}, task_notes), task_owner = ${JSON.stringify(username)} WHERE (task_id = ${JSON.stringify(taskID)})`;
     db.query(sql, (error, results) => {
         if (error) {
             console.log(error)

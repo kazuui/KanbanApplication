@@ -83,6 +83,9 @@ function CreateAppModal(props) {
   //Submit Create Application
   async function handleCreateAppSubmit(e) {
     e.preventDefault();
+
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
+
     try{
       const response = await axios.post('/apps/create', {
         appAcronym,
@@ -102,7 +105,7 @@ function CreateAppModal(props) {
       } else if (response.data === "success"){
         notify("success");
         reloadForm();
-        update();
+        update(username);
       }
     } catch {
       notify("warning");

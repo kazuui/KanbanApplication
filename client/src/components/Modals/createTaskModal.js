@@ -78,9 +78,8 @@ function Modal(props) {
   async function handleCreateTaskSubmit(e) {
     e.preventDefault();
 
-    // console.log(application,taskName,addToPlan,taskDescription,taskNote,username)
     let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
-
+    // console.log(application,taskName,addToPlan,taskDescription,taskNote,username)
 
     try{
       const response = await axios.post('/apps/tasks/create', {
@@ -120,6 +119,10 @@ function Modal(props) {
 
   const handleTaskNoteChange = (event) => {
     setTaskNote(event.target.value);
+  };
+
+  const handleCloseCreateModal = (event) =>{
+
   };
 
   //reload form
@@ -216,7 +219,7 @@ function Modal(props) {
             </div>
 
             <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={reloadForm}>Close</button>
+            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseCreateModal}>Close</button>
             <button type="submit" form="createTaskForm" className="btn btn-primary">Create</button>
             </div>
         </div>

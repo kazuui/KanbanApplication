@@ -60,9 +60,10 @@ function Home() {
     getCurrentAppRights();
   }, [currApplication]);
 
-  const updateApps = async() => {
-    fetchAllApps();
-    userAccessRights(thisUsername, "update");
+  const updateApps = async(username) => {
+    await userAccessRights(username, "update")
+    await fetchAllApps();
+    await getCurrentAppRights();
   };
 
   const updatePlans = async() => {
@@ -122,15 +123,15 @@ function Home() {
   
   const getCurrentAppRights = async() => {
     let sessionRights = await JSON.parse(sessionStorage.getItem('accessRights'));
-    const appRights = await sessionRights.find((app) => app.app === currApplication);
-    setCurrentAppRights(appRights);
+    if (sessionRights){
+      const appRights = await sessionRights.find((app) => app.app === currApplication);
+      setCurrentAppRights(appRights);
+    }
   }
 
   const handleAppChange = (event) => {
     setCurrApplication(event.target.value);
   };
-  
-  // console.log(currentAppRights)
 
   return (
     <div className="py-md-2">
