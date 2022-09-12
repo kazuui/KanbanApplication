@@ -36,7 +36,7 @@ function UserLoggedOut(props) {
         }}/>
       </div>
 
-      <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block" onClick={() => doLogin}> Login</button>
+      <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block" onClick={doLogin}> Login</button>
 
     </form>
   )

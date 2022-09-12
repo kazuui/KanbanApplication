@@ -59,14 +59,14 @@ function NavBar() {
                 <Link to="/groups" className="text-white navBarLink nav-link">{" "}Group Management</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
+                <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
               </li>
             </ul>
 
             {/* <Link to="/profile" className="text-white navBarLink">{" "}Profile{" "}</Link>
             <Link to="/users" className="text-white navBarLink">{" "}User Management{" "}</Link>
             <Link to="/groups" className="text-white navBarLink">{" "}Group Management</Link>
-            <Link to="/" className="text-white navBarLink" onClick={() => doLogout}>{" "}Logout</Link> */}
+            <Link to="/" className="text-white navBarLink" onClick={doLogout}>{" "}Logout</Link> */}
         </div>
         ) 
       } else {
@@ -77,7 +77,7 @@ function NavBar() {
                 <Link to="/profile" className="text-white navBarLink nav-link">{" "}Profile{" "}</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
+                <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
               </li>
             </ul>
           </div>
@@ -126,14 +126,14 @@ function NavBar() {
   //               <Link to="/groups" className="text-white navBarLink nav-link">{" "}Group Management</Link>
   //             </li>
   //             <li className="nav-item">
-  //               <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
+  //               <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
   //             </li>
   //           </ul>
 
   //           {/* <Link to="/profile" className="text-white navBarLink">{" "}Profile{" "}</Link>
   //           <Link to="/users" className="text-white navBarLink">{" "}User Management{" "}</Link>
   //           <Link to="/groups" className="text-white navBarLink">{" "}Group Management</Link>
-  //           <Link to="/" className="text-white navBarLink" onClick={() => doLogout}>{" "}Logout</Link> */}
+  //           <Link to="/" className="text-white navBarLink" onClick={doLogout}>{" "}Logout</Link> */}
   //       </div>
   //       ) 
   //     } else {
@@ -144,7 +144,7 @@ function NavBar() {
   //               <Link to="/profile" className="text-white navBarLink nav-link">{" "}Profile{" "}</Link>
   //             </li>
   //             <li className="nav-item">
-  //               <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
+  //               <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
   //             </li>
   //           </ul>
   //         </div>

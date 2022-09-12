@@ -317,6 +317,8 @@ exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
 
             let groupName = stateGroups[a];
 
+            // console.log(username)
+            // console.log(groupName)
             let response = await helpers.checkGroup(groupName, username)
             // console.log(response);
 

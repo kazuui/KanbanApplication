@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import axios from "axios";
 
 //Context
 import ApplicationContext from "../context/appContext"
@@ -9,23 +8,21 @@ function TaskPanel(props) {
   const { updateTasks, taskState, handleShowModal, rights } = props;
   const { currApplication } = useContext(ApplicationContext);
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
-  const [promote, setPromote] = useState(null);
-  const [demote, setDemote] = useState(null);
 
-  const handleTaskUpdate = async (task, updateType) => {
+  // const handleTaskUpdate = async (task, updateType) => {
 
-    let application = currApplication
-    let taskName = task.task_name
-    let currentState = task.task_state
+  //   let application = currApplication
+  //   let taskName = task.task_name
+  //   let currentState = task.task_state
 
-    const response = await axios.post('/apps/tasks/update', {
-      application,
-      updateType,
-      currentState,
-      taskName
-    });
-    updateTasks();
-  };
+  //   const response = await axios.post('/apps/tasks/update', {
+  //     application,
+  //     updateType,
+  //     currentState,
+  //     taskName
+  //   });
+  //   updateTasks();
+  // };
 
   return (
     taskState.map((task) => {
@@ -57,7 +54,7 @@ function TaskPanel(props) {
         <div>
           <div className="task-panel">
           <button id={task.task_id} type="button" className="task-button" 
-          onClick={() => handleShowModal}>
+          onClick={()=>handleShowModal(task)}>
             {/* <button id={task.task_id} type="button" className="task-button" data-bs-toggle="modal" data-bs-target="#taskInfoModal"> */}
               <div className="top-section doFlex">
                 <div id="task-colour" className="indicate-colour" style={{ backgroundColor: bgColour }}></div>
@@ -82,7 +79,7 @@ function TaskPanel(props) {
                       : false
               }
                 type="button" className="btn-arrow" 
-                onClick={() => handleTaskUpdate(task.task_name,"demote")}>
+                onClick={() => handleShowModal(task,"demote")}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-left-fill" viewBox="0 0 16 16">
                   <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                 </svg>
@@ -97,7 +94,7 @@ function TaskPanel(props) {
                     : false
               }
                  type="button" className="btn-arrow btn-align-right"
-                 onClick={() =>handleTaskUpdate(task,"promote")}>
+                 onClick={() => handleShowModal(task,"promote")}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-right-fill" viewBox="0 0 16 16">
                   <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                 </svg>

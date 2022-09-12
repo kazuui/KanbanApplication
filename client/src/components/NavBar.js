@@ -2,11 +2,14 @@ import React, { useState, useEffect ,  useContext } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
+//Context
 import AuthContext from "../context/authContext"
+import ApplicationContext from "../context/appContext"
 
 function NavBar(props) {
 
   const { auth, thisUserID, setThisUserID , isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  const { setCurrApplication } = useContext(ApplicationContext);
 
   const [userData,  setUserData] = useState({});
 
@@ -19,6 +22,7 @@ function NavBar(props) {
   const doLogout  = () => {
     sessionStorage.clear();
     setThisUserID("");
+    setCurrApplication("");
     setUserData({});
     setIsLoggedIn(false);
   }
@@ -62,7 +66,7 @@ function NavBar(props) {
                 <Link to="/groups" className="text-white navBarLink nav-link">{" "}Group Management</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
+                <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
               </li>
             </ul>
           </div>
@@ -75,7 +79,7 @@ function NavBar(props) {
                 <Link to="/profile" className="text-white navBarLink nav-link">{" "}Profile{" "}</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="text-white navBarLink nav-link" onClick={() => doLogout}>{" "}Logout</Link>
+                <Link to="/" className="text-white navBarLink nav-link" onClick={doLogout}>{" "}Logout</Link>
               </li>
             </ul>
           </div>

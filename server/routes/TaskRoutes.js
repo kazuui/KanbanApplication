@@ -15,7 +15,10 @@ router.route('/apps/tasks/:acronym').get(tasks.getTasksOfApp);
 //Create task of application
 router.route('/apps/tasks/create').post(tasks.createTask);
 
-//Create task of application
+//Update task in same state
 router.route('/apps/tasks/update').post(tasks.updateTask);
+
+//Update task in same state
+router.route('/apps/tasks/move').post(tasks.moveTask);
 
 module.exports = router;

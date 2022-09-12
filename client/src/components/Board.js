@@ -34,22 +34,24 @@ function Board(props) {
   const [taskPlan, setTaskPlan] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [taskNotes, setTaskNotes] = useState("");
+  
+  const [taskAction, setTaskAction] = useState("");
+  // const [promote, setPromote] = useState(null);
+  // const [demote, setDemote] = useState(null);
 
   //View Modal
   const [show, setShow] = useState(false);
 
   //Show task info modal
-  const handleShowTaskInfo = (e) => {
+  const handleShowTaskInfo = (task, action) => {
     if(show){
       setShow(false)
     } else{
       setShow(true);
-      const task = tasks.find((task) => task.task_id === e.currentTarget.id);
       setDisplayedTasks(task);
-      // console.log(e.currentTarget)
-      // console.log(task)
-      // console.log(displayedTasks);
+      setTaskAction(action);
 
+      // const task = tasks.find((task) => task.task_id === e.currentTarget.id);
       //This selected the other elements like <p> rather than the button
       // console.log(e.target)
     }
@@ -165,8 +167,14 @@ function Board(props) {
         {/* Modals */}
         <CreateTaskModal plans={plans} updateTasks={update}/>
         
-        <TaskInfoModal showModal={show} handleCloseModal={handleShowTaskInfo} 
-        taskInfo={displayedTasks}/>
+        <TaskInfoModal
+        plans={plans}
+        showModal={show}
+        handleCloseModal={handleShowTaskInfo} 
+        taskInfo={displayedTasks}
+        taskAction={taskAction}
+        updateTask={update}
+        />
 
       </div>
   )

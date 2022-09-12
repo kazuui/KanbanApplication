@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-import Box from '@mui/material/Box';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -11,22 +12,106 @@ import Select from '@mui/material/Select';
 
 function TaskInfoModal(props) {
 
-  const { showModal, handleCloseModal , taskInfo } = props;
+  const { showModal, handleCloseModal , taskInfo, taskAction, updateTask, plans } = props;
 
   const [application, setApplication] = React.useState('');
+  const [taskDescription, setTaskDescription] = useState("");
+  const [taskNote, setTaskNote] = useState("");
+  const [addToPlan, setAddToPlan] = useState([]);
 
-  const handleChange = (event) => {
-    setApplication(event.target.value);
+   //Plan selector
+   const ITEM_HEIGHT = 48;
+   const ITEM_PADDING_TOP = 8;
+   const MenuProps = {
+     PaperProps: {
+       style: {
+         maxHeight: ITEM_HEIGHT * 3.5 + ITEM_PADDING_TOP,
+         width: 250,
+       },
+     },
+   };
+
+  const handleDescriptionChange = (event) => {
+    setTaskDescription(event.target.value);
   };
+
+  const handleNotesChange = (event) => {
+    setTaskNote(event.target.value)
+  };
+
+  const handlePlanChange = (event) => {
+    setAddToPlan(event.target.value);
+  };
+
+
+  const handleUpdateTask = async (event) => {
+
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
+    let application = taskInfo.task_app_acronym
+    let taskID = taskInfo.task_id
+    let updateType = taskAction
+    let taskName = taskInfo.task_name
+    let currentState = taskInfo.task_state
+
+    const response = await axios.post('/apps/tasks/move', {
+      username,
+      application,
+      updateType,
+      currentState,
+      taskID,
+      taskName,
+      addToPlan,
+      taskDescription,
+      taskNote
+    });
+
+    updateTask()
+    handleCloseModal()
+    reloadForm()
+    // setApplication(event.target.value);
+  };
+
+  const handleUpdateInfo = async (event) => {
+    let application = taskInfo.task_app_acronym
+    let taskID = taskInfo.task_id
+    let taskName = taskInfo.task_name
+
+    const response = await axios.post('/apps/tasks/update', {
+      application,
+      taskID,
+      taskName,
+      addToPlan,
+      taskDescription
+    });
+
+    updateTask()
+    handleCloseModal()
+    reloadForm()
+  };
+
+   //reload form
+   async function reloadForm() {
+    document.getElementById("updateForm").reset();
+    document.getElementById("app-notes").focus();
+    setTaskDescription("");
+    setTaskNote("");
+  }
 
   return (
     <Modal size="lg" show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title> Task Information </Modal.Title>
+          <Modal.Title>
+            {taskAction === "promote"
+              ? "Promote Task"
+              : taskAction === "demote"
+                ? "Demote Task"
+                : "Task Information"
+            }
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form>
-            <div className="form row  py-lg-3">
+          <form id="updateForm">
+            <div className="form row  py-lg-2">
               {/* Left */}
               <div className="col-6">
                 <div className="form-row">
@@ -42,24 +127,31 @@ function TaskInfoModal(props) {
                   </div>
                 </div>
                 <div className="form-row">
-                  <div className="col-12">
-                    <label className="" htmlFor="task-plan-name">Plan</label>
-                    <input disabled={taskInfo.task_state === "open"? "" : true} id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/>
-                    {/* <Box sx={{ minWidth: 120 }} className="py-md-2">
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label">Plan</InputLabel>
-                        <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        defaultValue={10}
-                        label="Add To Plan"
-                        onChange={handleChange}>
-                          <MenuItem value={10}>Application 1</MenuItem>
-                          <MenuItem value={20}>Application 2</MenuItem>
-                          <MenuItem value={30}>Application 3</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box> */}
+                  <div className="col-12 py-lg-3">
+                    {/* <label className="" htmlFor="task-plan-name">Plan</label>
+                    <input disabled={taskInfo.task_state === "open"? "" : true} id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/> */}
+                    <FormControl fullWidth 
+                    disabled={taskInfo.task_state === "open"
+                      ? false
+                      : true
+                    }>
+                      <InputLabel id="demo-multiple-name-label">Add to Plan</InputLabel>
+                      <Select
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
+                        value={addToPlan.length !== 0 ? addToPlan :"none"}
+                        onChange={handlePlanChange}
+                        input={<OutlinedInput label="Add to Plan" />}
+                        MenuProps={MenuProps}
+                      >
+                        <MenuItem key={"none"} value={"none"}>None</MenuItem>
+                        {plans.map((plan) => (
+                          <MenuItem key={plan.plan_MVP_name} value={plan.plan_MVP_name}>
+                            {plan.plan_MVP_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </div>
                 </div>
               </div>
@@ -68,16 +160,24 @@ function TaskInfoModal(props) {
               <div className="col-6">
                 <div className="form-group">
                   <label htmlFor="task-description">Task Description</label>
-                  <textarea className="form-control task-description" id="task-description" rows="8" value={taskInfo.task_description? taskInfo.task_description : "None"}></textarea>
+                  <textarea className="form-control task-description" id="task-description" rows="8" 
+                  defaultValue={taskInfo.task_description? taskInfo.task_description : "None"}
+                  onChange={handleDescriptionChange}
+                  ></textarea>
                 </div>
               </div>
             </div>
             
             <div className="form-row">
-            {/* <div className="col-12">
-              <label htmlFor="app-description">Comments</label>
-              <textarea className="form-control" id="app-description" rows="5"></textarea>
-            </div> */}
+              {taskAction
+              ?<div className="col-12">
+                  <label htmlFor="app-notes">Notes</label>
+                  <textarea autoFocus className="form-control" id="app-notes" rows="4"
+                  onChange={handleNotesChange}
+                  ></textarea>
+                </div>
+              : null
+              }
               <div className="col-12 py-lg-3">
                 <div className="accordion accordion-flush" id="accordionFlushExample">
                   <div className="accordion-item">
@@ -99,11 +199,20 @@ function TaskInfoModal(props) {
           </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => handleCloseModal}>
+          <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" onClick={() => handleCloseModal}>
-            Save Changes
+          <Button variant="primary" 
+          onClick={taskAction
+            ? handleUpdateTask
+            : handleUpdateInfo
+          }>
+            {taskAction === "promote"
+            ? "Promote Task"
+            : taskAction === "demote"
+              ? "Demote Task"
+              : "Save Changes"
+          }
           </Button>
         </Modal.Footer>
       </Modal>
