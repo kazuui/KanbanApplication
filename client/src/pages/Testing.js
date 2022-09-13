@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import axios from "axios";
 
 function Testing() {
 
@@ -8,6 +9,22 @@ function Testing() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [isInLead, setIsInLead] = useState(false);
+
+  useEffect(() =>{
+    checkLead()
+  })
+
+  const checkLead = async()=>{
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
+    const response = await axios.post('/check-lead', {
+      username
+    })
+    setIsInLead(response.data)
+  }
+
+  console.log(isInLead);
 
   return (
     <>

@@ -16,7 +16,7 @@ import AuthContext from "../../context/authContext"
 
 function Modal(props) {
 
-  const { plans , updateTasks } = props;
+  const { plans , updateTasks, openRights } = props;
 
   const {  thisUsername } = useContext(AuthContext);
   const { currApplication } = useContext(ApplicationContext);
@@ -160,7 +160,7 @@ function Modal(props) {
             </div>
 
             <div className="modal-body">
-              <form id="createTaskForm" onSubmit={handleCreateTaskSubmit} autocomplete="off">
+              <form id="createTaskForm" onSubmit={handleCreateTaskSubmit} autoComplete="off">
                 <div className="form row">
                   {/* Left */}
                   <div className="col-6">
@@ -172,7 +172,12 @@ function Modal(props) {
                     </div>
                     <div className="form-row py-lg-2">
                       <div className="col-12">
-                        <FormControl fullWidth>
+                        <FormControl fullWidth
+                        disabled={
+                          !openRights
+                            ? true
+                            : false
+                        }>
                           <InputLabel id="demo-multiple-name-label">Add to Plan</InputLabel>
                           <Select
                             labelId="demo-multiple-name-label"

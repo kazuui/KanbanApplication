@@ -18,24 +18,25 @@ function Board(props) {
   const [doingRights, setDoingRights] = useState(false)
   const [doneRights, setDoneRights] = useState(false)
 
-  //Tasks
+  //Tasks states
   const [openTasks, setOpenTasks] = useState([]);
   const [toDoListTasks, setToDoListTasks] = useState([]);
   const [doingTasks, setDoingTasks] = useState([]);
   const [doneTasks, setDoneTasks] = useState([]);
   const [closeTasks, setCloseTasks] = useState([]);
 
+  //Current Plans & Tasks
   const [displayedPlans, setDisplayedPlans] = useState([]);
   const [displayedTasks, setDisplayedTasks] = useState([]);
 
+  //Current Task Info
   const [taskName, setTaskName] = useState("");
   const [taskPlan, setTaskPlan] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
   const [taskNotes, setTaskNotes] = useState("");
   
+  //Promote or Demote
   const [taskAction, setTaskAction] = useState("");
-  // const [promote, setPromote] = useState(null);
-  // const [demote, setDemote] = useState(null);
 
   //View Modal
   const [show, setShow] = useState(false);
@@ -163,7 +164,7 @@ function Board(props) {
         </div>
 
         {/* Modals */}
-        <CreateTaskModal plans={plans} updateTasks={update}/>
+        <CreateTaskModal plans={plans} updateTasks={update} openRights={openRights}/>
         
         <TaskInfoModal
         plans={plans}

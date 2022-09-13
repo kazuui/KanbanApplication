@@ -77,3 +77,16 @@ exports.checkIfAdmin = catchAsyncErrors ( async (req, res, next) => {
     // const admin = await helpers.checkGroup("admin", id);
     res.send("admin");
 });
+
+//Get user access rights
+exports.checkUserInLead = catchAsyncErrors ( async (req, res, next) => {
+    const { username } = req.body;
+
+    const check = await helpers.checkGroup("Lead", username);
+    // console.log(check)
+    if (!check.length){
+        res.send(false)
+    }else {
+        res.send(true)
+    }
+});

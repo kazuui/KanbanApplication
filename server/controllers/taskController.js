@@ -186,38 +186,48 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
     } = req.body;
 
     const date = createDateTime();
-    var addPlan = addToPlan
-    let planChange
+    var addPlan
+    let planChanged
     let descriptionChange
+    let existingPlan = (await this.getTaskPlan(taskName, application))
 
-    if (!addToPlan.length){
+    if (addToPlan === "none"){
         addPlan = null
-    }
-    let checkPlan = (await this.getTaskPlan(taskName, application) !== addPlan)
-
-    console.log(checkPlan);
-    if(!checkPlan && !descriptionChange){
-        res.send("no changes")
+    } else {
+        addPlan = JSON.stringify(addToPlan)
     }
 
-    var updateNote = JSON.stringify(`[${username}] edited ${taskName}
-    ${planChange && descriptionChange? "'s plan and description":planChange && !descriptionChange?"'s plan":descriptionChange && !planChange?"'s description":""}on ${date} \nTask State: ${currentState}\n`)
-    let sql = `UPDATE task SET ${checkPlan? "task_plan = "+ addPlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
-    db.query(sql, (error, results) => {
-        if (error) {
-            console.log(error)
-            res.send("Error");
-        } else {
-            if (checkPlan && !descriptionChange){
-                res.send("plan change")
-            } else if (descriptionChange && !checkPlan){
-                res.send("desc change")
+    let checkPlanChanged = (existingPlan !== addPlan)
+
+    if (!checkPlanChanged) {
+        planChanged = false
+    } else if (checkPlanChanged){
+        planChanged = true
+    }
+
+    if(!checkPlanChanged && !taskDescription){
+        res.send("no changes");
+    } else {
+        var updateNote = JSON.stringify(`[${username}] edited ${taskName}${planChanged && descriptionChange?"'s plan and description":planChanged && !descriptionChange?"'s plan":descriptionChange && !planChanged?"'s description":""} on ${date} \nTask State: ${currentState}\n\n`)
+
+        let sql = `UPDATE task SET ${addPlan !== existingPlan? "task_plan = "+ addPlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
+
+        db.query(sql, (error, results) => {
+            if (error) {
+                console.log(error)
+                res.send("Error");
             } else {
-                console.log("success")
-                res.send("success");
+                if (addPlan !== existingPlan && !descriptionChange){
+                    res.send("plan change")
+                } else if (descriptionChange && addPlan === existingPlan){
+                    res.send("desc change")
+                } else {
+                    res.send("plan desc");
+                }
             }
-        }
-    })
+        })
+
+    }
 });
 
 //Testing email

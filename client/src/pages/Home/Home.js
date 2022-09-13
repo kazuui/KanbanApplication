@@ -17,17 +17,25 @@ import ApplicationContext from "../../context/appContext"
 import ApplicationBoard from "../../components/Board"
 import CreateAppModal from "../../components/Modals/createAppModal"
 import CreatePlanModal from "../../components/Modals/createPlanModal"
+import ApplicationModal from "../../components/Modals/appModal"
 
 function Home() {
   document.title = `Home | Task Management App`;
 
   const { userAccessRights, thisUsername } = useContext(AuthContext);
-  const { currApplication, setCurrApplication, setGroupsArray} = useContext(ApplicationContext);
+  const { currApplication, setCurrApplication, setGroupsArray, currentAppData, setCurrentAppData } = useContext(ApplicationContext);
+
+  //User is in "Lead" group
+  const [isInLead, setIsInLead] = useState(false);
   
   // const [firstApp, setFirstApp] = useState("");
   const [currentAppTasks, setCurrentAppTasks] = useState([]);
   const [currentAppPlans, setCurrentAppPlans] = useState([]);
   const [currentAppRights, setCurrentAppRights] = useState([]);
+
+  //View App Info Modal
+  const [allApplicationArray, setAllApplicationArray] = useState("");
+  const [showAppInfo, setShowAppInfo] = useState(false);
 
   //Application selector
   const ITEM_HEIGHT = 48;
@@ -47,7 +55,8 @@ function Home() {
     const fetchAll = async () => {
       await Promise.all([
         fetchAllApps(),
-        fetchAllGroups()
+        fetchAllGroups(),
+        checkLead(),
       ]);
     };
     fetchAll();
@@ -58,6 +67,7 @@ function Home() {
     fetchCurrentAppTask();
     fetchCurrentAppPlan();
     getCurrentAppRights();
+    getCurrentAppData(currApplication);
   }, [currApplication]);
 
   const updateApps = async(username) => {
@@ -81,6 +91,7 @@ function Home() {
 
     const data = await fetch('/apps'); //fetching data from port 5000 on proxy
     const apps = await data.json();
+    setAllApplicationArray(apps);
 
     if(apps){
       firstApp = ((apps[0]).app_acronym);
@@ -89,9 +100,10 @@ function Home() {
     //Set first app as current
     if(!currApplication){
       setCurrApplication(firstApp);
+      getCurrentAppData(firstApp);
     }
 
-    //Set array of apps
+    //Set array of apps (for app select)
     var appsArray = apps.map(function(apps) {
       return apps['app_acronym'];
     });
@@ -125,6 +137,15 @@ function Home() {
       // console.log(application, " " , currentAppPlans);
     }
   };
+
+  const getCurrentAppData = async(currApp) =>{
+    if(allApplicationArray){
+      const currAppArr = await allApplicationArray.filter((app) => {
+        return app.app_acronym === currApp;
+      });
+      setCurrentAppData(currAppArr[0]);
+    }
+  }
   
   const getCurrentAppRights = async() => {
     let sessionRights = await JSON.parse(sessionStorage.getItem('accessRights'));
@@ -134,14 +155,34 @@ function Home() {
     }
   }
 
+  const checkLead = async()=>{
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
+    const response = await axios.post('/check-lead', {
+      username
+    })
+    setIsInLead(response.data)
+  }
+
   const handleAppChange = (event) => {
     setCurrApplication(event.target.value);
   };
+
+  //Show task info modal
+  const handleShowAppInfo = (currApplication) => {
+    if(showAppInfo){
+      setShowAppInfo(false)
+    } else{
+      setShowAppInfo(true);
+    }
+  };
+
+  // console.log(currentAppData);
 
   return (
     <div className="py-md-2">
       <div className="align-items-center">
         <p className="lead text-muted display-3-center">What's currently happening...</p>
+        <p className="display-3-center">{JSON.parse(sessionStorage.getItem("user")).username}</p>
         {/* <div className="col-lg-12 py-lg-3 center_align">
         <p className="display-3-center">Kanban board here</p>
         </div> */}
@@ -150,7 +191,11 @@ function Home() {
         {/* Application Panel */}
         <div className="col-lg-2 application-panel">
           {/* Create App */}
-          <button type="button" className="btn btn-add btn-lg btn-block create-app" 
+          <button disabled={
+            !isInLead
+            ? true
+            : false 
+          } type="button" className="btn btn-add btn-lg btn-block create-app" 
           data-bs-toggle="modal" data-bs-target="#createAppModal">+</button>
           <CreateAppModal update={updateApps}/>
 
@@ -176,9 +221,11 @@ function Home() {
           </div>
 
           {/* Edit App */}
-          <button disabled type="button" className="btn btn-primary btn-lg btn-block" 
-          data-bs-toggle="modal" data-bs-target="#createAppModal">Edit Permits</button>
-          <CreateAppModal/>
+          <button type="button" className="btn btn-primary btn-lg btn-block"
+          onClick={handleShowAppInfo}>
+            View App
+          </button>
+          <ApplicationModal showModal={showAppInfo} handleShowModal={handleShowAppInfo} appData={currentAppData}/>
 
           {/* Plans */}
           <h5 className="create-text">Current Plans:</h5>

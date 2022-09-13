@@ -8,7 +8,9 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import ListItemText from '@mui/material/ListItemText';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Checkbox from '@mui/material/Checkbox';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,6 +21,46 @@ function TaskInfoModal(props) {
    const notify = (status, taskName) => {
     if(status === "success") {
       toast.success(`"${taskName}" ${taskAction}d`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "plan change") {
+      toast.success(`"${taskName}" plan changed`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "desc change") {
+      toast.success(`"${taskName}" description changed`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "plan desc") {
+      toast.success(`"${taskName}" information changed`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "no changes") {
+      toast.warn('Nothing was updated', {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -59,6 +101,14 @@ function TaskInfoModal(props) {
      },
    };
 
+  // useEffect(() => {
+  //   getCurrentPlan();
+  // }, [])
+
+  // const getCurrentPlan = async() =>{
+  //   setAddToPlan([taskInfo.task_plan]);
+  // }
+
   const handleDescriptionChange = (event) => {
     setTaskDescription(event.target.value);
   };
@@ -68,9 +118,14 @@ function TaskInfoModal(props) {
   };
 
   const handlePlanChange = (event) => {
-    setAddToPlan(event.target.value);
+    const {
+      target: { value },
+    } = event;
+
+    setAddToPlan(value);
   };
 
+  // console.log(taskInfo);
 
   const handleMoveTask = async (event) => {
 
@@ -149,11 +204,24 @@ function TaskInfoModal(props) {
     console.log(response.data)
 
     if(response.data === "no changes"){
-
-    } else if (response.data === "success"){
+      notify("no changes", taskName);
+    } else if (response.data === "plan change") {
+      notify("plan change", taskName);
       updateTask()
       handleCloseModal()
       reloadForm()
+    } else if (response.data === "desc change") {
+      notify("desc change", taskName);
+      updateTask()
+      handleCloseModal()
+      reloadForm()
+    } else if (response.data === "plan desc") {
+      notify("plan desc", taskName);
+      updateTask()
+      handleCloseModal()
+      reloadForm()
+    }else {
+      notify("warning", taskName);
     }
   };
 
@@ -203,24 +271,29 @@ function TaskInfoModal(props) {
                       !openRights
                         ? true
                         : taskInfo.task_state === "open"
-                          ?false
-                          :true
+                          ? false
+                          : true
                     }>
                       <InputLabel id="demo-multiple-name-label">Add to Plan</InputLabel>
-                      <Select
-                        labelId="demo-multiple-name-label"
-                        id="demo-multiple-name"
-                        value={addToPlan.length !== 0 ? addToPlan :"none"}
+                      <Select 
+                        className="select-form2"
+                        labelId="multiple-checkbox-label"
+                        defaultValue={taskInfo.task_plan? taskInfo.task_plan : "none"}
                         onChange={handlePlanChange}
                         input={<OutlinedInput label="Add to Plan" />}
+                        // renderValue={(selected) => selected.join(', ')}
                         MenuProps={MenuProps}
                       >
-                        <MenuItem key={"none"} value={"none"}>None</MenuItem>
-                        {plans.map((plan) => (
-                          <MenuItem key={plan.plan_MVP_name} value={plan.plan_MVP_name}>
-                            {plan.plan_MVP_name}
-                          </MenuItem>
-                        ))}
+                        <MenuItem key={"none"} value={"none"}>
+                          <ListItemText primary={"None"} />
+                        </MenuItem>
+                        {plans.map((plan) => {
+                          return(
+                            <MenuItem key={plan.plan_MVP_name} value={plan.plan_MVP_name}>
+                            <ListItemText primary={plan.plan_MVP_name} />
+                            </MenuItem>
+                          )
+                        })}
                       </Select>
                     </FormControl>
                   </div>
@@ -231,7 +304,13 @@ function TaskInfoModal(props) {
               <div className="col-6">
                 <div className="form-group">
                   <label htmlFor="task-description">Task Description</label>
-                  <textarea className="form-control task-description" id="task-description" rows="8" 
+                  <textarea 
+                  disabled={
+                    taskInfo.task_state === "close"
+                      ? true
+                      : false
+                  }
+                  className="form-control task-description" id="task-description" rows="8" 
                   defaultValue={taskInfo.task_description? taskInfo.task_description : "None"}
                   onChange={handleDescriptionChange}
                   ></textarea>
@@ -273,101 +352,54 @@ function TaskInfoModal(props) {
           <Button variant="secondary" onClick={handleCloseModal}>
             Close
           </Button>
-          <Button variant="primary" 
-          onClick={taskAction
-            ? handleMoveTask
-            : handleUpdateTaskInfo
-          }>
-            {taskAction === "promote"
-            ? "Promote Task"
-            : taskAction === "demote"
-              ? "Demote Task"
-              : "Save Changes"
+          {/* Button for saving in open state */}
+          {/*
+            !openRights
+              ? ""
+              : taskInfo.task_state === "open"
+                ?
+                <Button variant="primary" onClick={handleUpdateTaskInfo}>
+                  Save Changes
+                </Button>
+                : true
+            */
           }
-          </Button>
+          {/* Button for promote & demote */}
+          {/*
+            !taskAction
+              ? ""
+              : <Button variant="primary" 
+              onClick={taskAction
+                ? handleMoveTask
+                : handleUpdateTaskInfo
+              }>
+                {taskAction === "promote"
+                ? "Promote Task"
+                : "Demote Task"
+              }
+              </Button>
+            */
+          }
+
+          {/* Original */}
+          {
+            taskInfo.task_state === "close"
+              ? ""
+              :<Button variant="primary" 
+              onClick={taskAction
+                ? handleMoveTask
+                : handleUpdateTaskInfo
+              }>
+                {taskAction === "promote"
+                ? "Promote Task"
+                : taskAction === "demote"
+                  ? "Demote Task"
+                  : "Save Changes"
+              }
+              </Button>
+          }
         </Modal.Footer>
       </Modal>
-
-    // Testing
-    // <div className="modal fade" id="taskInfoModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    //     <div className="modal-dialog modal-lg">
-    //     <div className="modal-content">
-    //         <div className="modal-header">
-    //         <h5 className="modal-title" id="exampleModalLabel">Task Info</h5>
-    //         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    //         </div>
-
-    //         <div className="modal-body">
-    //           <form>
-    //             <div className="form row">
-    //               {/* Left */}
-    //               <div className="col-6">
-    //                 <div className="form-row py-lg-3">
-    //                   <div className="col-12">
-    //                     <label className="" htmlFor="task-name">Task Name</label>
-    //                     <input id="task-name" type="text" className="form-control"/>
-    //                   </div>
-    //                 </div>
-    //                 <div className="form-row py-lg-2">
-    //                   <div className="col-12">
-    //                     <Box sx={{ minWidth: 120 }} className="py-md-2">
-    //                       <FormControl fullWidth>
-    //                         <InputLabel id="demo-simple-select-label">Add To Plan</InputLabel>
-    //                         <Select
-    //                           labelId="demo-simple-select-label"
-    //                           id="demo-simple-select"
-    //                           defaultValue={10}
-    //                           label="Add To Plan"
-    //                           onChange={handleChange}>
-    //                           <MenuItem value={10}>Application 1</MenuItem>
-    //                           <MenuItem value={20}>Application 2</MenuItem>
-    //                           <MenuItem value={30}>Application 3</MenuItem>
-    //                         </Select>
-    //                       </FormControl>
-    //                     </Box>
-    //                   </div>
-    //                 </div>
-    //               </div>
-
-    //               {/* Right */}
-    //               <div className="col-6 py-lg-3">
-    //                 <div className="form-group">
-    //                   <label htmlFor="app-description">Task Description</label>
-    //                   <textarea className="form-control" id="app-description" rows="5"></textarea>
-    //                 </div>
-    //               </div>
-    //             </div>
-
-    //             <div className="form-row">
-    //               <div className="col-12">
-    //                 <div className="accordion accordion-flush" id="accordionFlushExample">
-    //                   <div className="accordion-item">
-    //                     <h2 className="accordion-header" id="flush-headingOne">
-    //                       <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-    //                         Task Notes
-    //                       </button>
-    //                     </h2>
-    //                     <div id="flush-collapseOne" className="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-    //                       <div className="accordion-body">
-    //                         <textarea className="form-control" id="app-description" rows="5" defaultValue="Hello" disabled></textarea>
-    //                       </div>
-    //                     </div>
-    //                   </div>
-    //                 </div>
-
-    //               </div>
-    //             </div>
-
-    //           </form>
-    //         </div>
-
-    //         <div className="modal-footer">
-    //         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    //         {/* <button type="button" className="btn btn-primary">Create</button> */}
-    //         </div>
-    //     </div>
-    //     </div>
-    // </div>
   )
 }
 

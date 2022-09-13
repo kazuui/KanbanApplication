@@ -48,6 +48,16 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         permitDone
     } = req.body;
 
+    // var app_RNum
+
+    // if (Number.isInteger(appRNum)){
+    //     app_RNum = appRNum;
+    // } else {
+    //     app_RNum = Math.round(appRNum);
+    // }
+
+    // console.log(app_RNum);
+
     const existingApplication = await this.getOneApp(appAcronym);
 
     if(existingApplication){
