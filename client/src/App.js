@@ -51,12 +51,12 @@ function App() {
         <Route element={<PrivateRoutes allowedRoles={["admin", "user"]}/>}>
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/users/update/:id" element={<UpdateUser />} />
         </Route>
 
         {/* Protected admin ONLY */}
         <Route element={<PrivateRoutes allowedRoles={["admin"]}/>}>
           <Route path="/users" element={<UserManagement />} />
-          <Route path="/users/update/:id" element={<UpdateUser />} />
           <Route path="/users/create" element={<CreateUser />} />
           <Route path="/groups" element={<GroupManagement/>} />
           {/* <Route path="/app" element={<ApplicationBoard/>} /> */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect ,  useContext } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 //Context
 import AuthContext from "../context/authContext"
@@ -25,6 +26,11 @@ function NavBar(props) {
     setCurrApplication("");
     setUserData({});
     setIsLoggedIn(false);
+  }
+
+  const doTestEmail = async() =>{
+    const response = await axios.post('/test-email')
+    console.log(response.data)
   }
 
   const navIcon = () => {
@@ -56,6 +62,9 @@ function NavBar(props) {
         return (
           <div>
             <ul className="nav">
+              <button onClick={doTestEmail}>
+                Hello
+              </button>
               <li className="nav-item">
                 <Link to="/profile" className=" text-white navBarLink nav-link">{" "}Profile{" "}</Link>
               </li>

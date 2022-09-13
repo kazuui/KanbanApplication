@@ -7,6 +7,14 @@ const helpers = require('../helpers/helpers');
 //User Model
 const UserModel = require("../models/UserModel.js");
 
+//Get user email
+exports.getUserEmail = catchAsyncErrors ( async (username) => {
+    let sql = `SELECT email FROM kanban_web_app.user WHERE username = ${JSON.stringify(username)}`;
+
+    const results = await db.promise().query(sql);
+    return ((results[0][0]).email)
+});
+
 // Get Users and their groups
 exports.getUsersAndGroups = catchAsyncErrors ( async (req, res, next) => {
     const { id } = req.params;

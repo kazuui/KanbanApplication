@@ -21,4 +21,10 @@ router.route('/apps/tasks/update').post(tasks.updateTask);
 //Update task in same state
 router.route('/apps/tasks/move').post(tasks.moveTask);
 
+//Send test email
+router.route('/test-email').post(tasks.sendTestEmail);
+
+//Send email when task is done
+router.route('/task/send-email').post(tasks.sendDoneTaskEmail);
+
 module.exports = router;

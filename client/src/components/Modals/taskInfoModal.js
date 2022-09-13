@@ -10,9 +10,37 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 function TaskInfoModal(props) {
 
-  const { showModal, handleCloseModal , taskInfo, taskAction, updateTask, plans } = props;
+   //Toast
+   const notify = (status, taskName) => {
+    if(status === "success") {
+      toast.success(`"${taskName}" ${taskAction}d`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    } else if (status === "warning") {
+      toast.warn('Something went wrong', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
+    }
+  }
+
+  const { showModal, handleCloseModal , taskInfo, taskAction, updateTask, plans, openRights } = props;
 
   const [application, setApplication] = React.useState('');
   const [taskDescription, setTaskDescription] = useState("");
@@ -44,7 +72,7 @@ function TaskInfoModal(props) {
   };
 
 
-  const handleUpdateTask = async (event) => {
+  const handleMoveTask = async (event) => {
 
     let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
     let application = taskInfo.task_app_acronym
@@ -52,6 +80,7 @@ function TaskInfoModal(props) {
     let updateType = taskAction
     let taskName = taskInfo.task_name
     let currentState = taskInfo.task_state
+    let taskCreator = taskInfo.task_creator
 
     const response = await axios.post('/apps/tasks/move', {
       username,
@@ -63,30 +92,69 @@ function TaskInfoModal(props) {
       addToPlan,
       taskDescription,
       taskNote
-    });
+    })
+    
+    // .then(updateTask === "promote" && currentState ==="doing"
+    //   ? await axios.post('/task/send-email', {
+    //     application,
+    //     username,
+    //     taskCreator,
+    //     taskName,
+    //     taskNote
+    //   })
+    //   : ""
+    // );
 
-    updateTask()
-    handleCloseModal()
-    reloadForm()
+    if (response.data === "success"){
+      notify("success", taskName);
+      updateTask()
+      handleCloseModal()
+      reloadForm()
+
+      if (updateType === "promote" && currentState === "doing"){
+        const sendEmail = await axios.post('/task/send-email', {
+          application,
+          username,
+          taskCreator,
+          taskName,
+          taskNote
+        })
+        console.log(sendEmail.data);
+      }
+
+    } else {
+      notify("warning", taskName);
+    }
+
     // setApplication(event.target.value);
   };
 
-  const handleUpdateInfo = async (event) => {
+  const handleUpdateTaskInfo = async (event) => {
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
     let application = taskInfo.task_app_acronym
     let taskID = taskInfo.task_id
     let taskName = taskInfo.task_name
+    let currentState = taskInfo.task_state
 
     const response = await axios.post('/apps/tasks/update', {
+      username,
       application,
+      currentState,
       taskID,
       taskName,
       addToPlan,
       taskDescription
     });
 
-    updateTask()
-    handleCloseModal()
-    reloadForm()
+    console.log(response.data)
+
+    if(response.data === "no changes"){
+
+    } else if (response.data === "success"){
+      updateTask()
+      handleCloseModal()
+      reloadForm()
+    }
   };
 
    //reload form
@@ -131,9 +199,12 @@ function TaskInfoModal(props) {
                     {/* <label className="" htmlFor="task-plan-name">Plan</label>
                     <input disabled={taskInfo.task_state === "open"? "" : true} id="task-plan-name" type="text" value={taskInfo.task_plan} className="form-control"/> */}
                     <FormControl fullWidth 
-                    disabled={taskInfo.task_state === "open"
-                      ? false
-                      : true
+                    disabled={
+                      !openRights
+                        ? true
+                        : taskInfo.task_state === "open"
+                          ?false
+                          :true
                     }>
                       <InputLabel id="demo-multiple-name-label">Add to Plan</InputLabel>
                       <Select
@@ -204,8 +275,8 @@ function TaskInfoModal(props) {
           </Button>
           <Button variant="primary" 
           onClick={taskAction
-            ? handleUpdateTask
-            : handleUpdateInfo
+            ? handleMoveTask
+            : handleUpdateTaskInfo
           }>
             {taskAction === "promote"
             ? "Promote Task"

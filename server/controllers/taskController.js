@@ -1,9 +1,12 @@
 require('dotenv/config');
 const db = require('../config/db.js');
+const {nodemailer, transporter} = require('../config/email');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 
 const { getOneApp } = require("./applicationController");
 const { createDateTime } = require("../helpers/helpers");
+const { getUserEmail } = require("./userController");
+
 
 //Get amount of task in app
 exports.getTaskAmount = catchAsyncErrors ( async (task_app_acronym) => {
@@ -119,7 +122,6 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
     var updateNote
     var newState
     var changePlan
-
     
     let checkPlan = (await this.getTaskPlan(taskName, application) !== addToPlan)
     if (checkPlan){
@@ -176,53 +178,110 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
     const {
         username, 
         application,
-        updateType,
         currentState,
         taskID,
         taskName,
         addToPlan,
         taskDescription,
-        taskNote
     } = req.body;
 
-    //To add update notes
-
-    let checkPlan = await this.getTaskPlan(taskName, application);
+    const date = createDateTime();
+    var addPlan = addToPlan
     let planChange
     let descriptionChange
+
+    if (!addToPlan.length){
+        addPlan = null
+    }
+    let checkPlan = (await this.getTaskPlan(taskName, application) !== addPlan)
+
+    console.log(checkPlan);
+    if(!checkPlan && !descriptionChange){
+        res.send("no changes")
+    }
+
+    var updateNote = JSON.stringify(`[${username}] edited ${taskName}
+    ${planChange && descriptionChange? "'s plan and description":planChange && !descriptionChange?"'s plan":descriptionChange && !planChange?"'s description":""}on ${date} \nTask State: ${currentState}\n`)
+    let sql = `UPDATE task SET ${checkPlan? "task_plan = "+ addPlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
+    db.query(sql, (error, results) => {
+        if (error) {
+            console.log(error)
+            res.send("Error");
+        } else {
+            if (checkPlan && !descriptionChange){
+                res.send("plan change")
+            } else if (descriptionChange && !checkPlan){
+                res.send("desc change")
+            } else {
+                console.log("success")
+                res.send("success");
+            }
+        }
+    })
+});
+
+//Testing email
+exports.sendTestEmail = catchAsyncErrors( async() => {
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: 'test@example.com', // sender address
+        to: "jiayi.ang98@hotmail.com", // list of receivers
+        subject: "Hello ✔", // Subject line
+        text: "Hello world?", // plain text body
+        html: "<b>Hello world?</b>", // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+})
+
+//Send email when task is moved to done state
+exports.sendDoneTaskEmail = catchAsyncErrors( async (req, res, next) => {
+    const {
+        application,
+        username,
+        taskCreator,
+        taskName,
+        taskNote,
+    } = req.body;
+
     const date = createDateTime();
 
-    if (!taskDescription.length && !addToPlan.length){
-        res.status(200).send("no changes")
-    } else if (checkPlan !== addToPlan) {
-        if (addToPlan) {
-            let sql = `UPDATE task SET task_plan = ${JSON.stringify(addToPlan)} WHERE (task_id = ${JSON.stringify(taskID)})`;
-            db.query(sql, (error, results) => {
-                if (error) {
-                    res.send("Error");
-                } else {
-                    planChange = true
-                }
-            })
-        }
-        
-        if (taskDescription){
-            let sql = `UPDATE task SET task_plan = ${JSON.stringify(addToPlan)} WHERE (task_id = ${JSON.stringify(taskID)})`;
-            db.query(sql, (error, results) => {
-                if (error) {
-                    res.send("Error");
-                } else {
-                    descriptionChange = true
-                }
-            })
-        }
+    var receiverEmail = JSON.stringify(await getUserEmail(taskCreator));
+    if (!receiverEmail.length){
+        receiverEmail = "jiayi.ang98@hotmail.com"
     }
 
-    if (planChange && descriptionChange){
-        res.send("all success")
-    } else if (planChange){
-        res.send("plan success")
-    } else if (descriptionChange) {
-        res.send("description success")
-    }
-});
+    var emailSubject = `A task has been completed in ${application} by ${username}`
+    // var emailSubject = `${username} has completed the task ${taskName} in ${application}`
+    
+    var emailBody = 
+    `
+    <div>
+        <h3>TASK "<span style="text-transform: uppercase;">${application}</span>" IS MOVED TO DONE</h3>
+        <h3>[${username}] has moved the task "${taskName}" to DONE on ${date}</h5>
+        ${taskNote?"<h5>Notes:</h5><p>" + taskNote + "</p>": ""}
+    </div>
+    `
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+        from: 'kanban_app@example.com' , // sender address
+        to: receiverEmail , // list of receivers
+        subject: emailSubject , // Subject line
+        // text: "Hello world?", // plain text body
+        html: emailBody , // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+})

@@ -11,8 +11,6 @@ function Board(props) {
 
   const { tasks, update, plans, accessRights } = props;
 
-  // console.log(accessRights);
-
   //Rights
   const [createRights, setCreateRights] = useState(false)
   const [openRights, setOpenRights] = useState(false)
@@ -174,6 +172,7 @@ function Board(props) {
         taskInfo={displayedTasks}
         taskAction={taskAction}
         updateTask={update}
+        openRights={openRights}
         />
 
       </div>
