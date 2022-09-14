@@ -24,13 +24,13 @@ exports.getTaskPlan = catchAsyncErrors ( async (task_name, task_app_acronym) => 
     return ((results[0][0]).task_plan)
 });
 
-//Get task description
-// exports.getTaskDescription = catchAsyncErrors ( async (task_name, task_app_acronym) => {
-//     let sql = `SELECT task_description FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
+// Get task description
+exports.getTaskDescription = catchAsyncErrors ( async (task_name, task_app_acronym) => {
+    let sql = `SELECT task_description FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
 
-//     const results = await db.promise().query(sql);
-//     return ((results[0][0]).task_description)
-// });
+    const results = await db.promise().query(sql);
+    return ((results[0][0]).task_description)
+});
 
 //get task name
 exports.getTaskName = catchAsyncErrors ( async (task_name,task_app_acronym) => {
@@ -74,7 +74,7 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
 
     const existingTask = await this.getTaskName(taskName, application);
 
-    if (!taskName){
+    if (!taskName.replace(/\s/g, '').length){
         res.status(200).send("no task name");
     } else if(existingTask){
         res.status(200).send("task exists");
@@ -187,39 +187,54 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
 
     const date = createDateTime();
     var addPlan
+    var addDesc = taskDescription
     let planChanged
-    let descriptionChange
+    let descriptionChanged
     let existingPlan = (await this.getTaskPlan(taskName, application))
+    let existingDesc = (await this.getTaskDescription(taskName, application))
 
-    if (addToPlan === "none"){
+    if (addToPlan === "none" || !addToPlan.length){
         addPlan = null
     } else {
         addPlan = JSON.stringify(addToPlan)
     }
 
     let checkPlanChanged = (existingPlan !== addPlan)
+    let checkDescChange = (taskDescription.length !== 0 || existingDesc !== taskDescription)
+
+    console.log(checkDescChange)
 
     if (!checkPlanChanged) {
         planChanged = false
     } else if (checkPlanChanged){
+        if(existingDesc !== taskDescription && taskDescription.length === 0){
+            addDesc = "none"
+        }
         planChanged = true
     }
 
-    if(!checkPlanChanged && !taskDescription){
+    if (!checkDescChange) {
+        descriptionChanged = false
+    } else if (checkDescChange){
+        descriptionChanged = true
+    }
+
+    if(!planChanged && !taskDescription){
         res.send("no changes");
     } else {
-        var updateNote = JSON.stringify(`[${username}] edited ${taskName}${planChanged && descriptionChange?"'s plan and description":planChanged && !descriptionChange?"'s plan":descriptionChange && !planChanged?"'s description":""} on ${date} \nTask State: ${currentState}\n\n`)
+        var updateNote = JSON.stringify(`[${username}] edited "${taskName}" ${planChanged && descriptionChanged?"plan and description":planChanged && !descriptionChanged?"plan":descriptionChanged && !planChanged?"description":""} on ${date} \nTask State: ${currentState}\n${!descriptionChanged?"":!existingDesc.length?"\nPrevious description:\nnone":"\nPrevious description: "+existingDesc}\n\n`)
 
-        let sql = `UPDATE task SET ${addPlan !== existingPlan? "task_plan = "+ addPlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
+        // console.log(addPlan)
+        let sql = `UPDATE task SET ${addPlan !== existingPlan? "task_plan = "+ addPlan +"," : "" } ${addDesc? "task_description = " + JSON.stringify(addDesc)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
 
         db.query(sql, (error, results) => {
             if (error) {
-                console.log(error)
+                // console.log(error)
                 res.send("Error");
             } else {
-                if (addPlan !== existingPlan && !descriptionChange){
+                if (addPlan !== existingPlan && !descriptionChanged){
                     res.send("plan change")
-                } else if (descriptionChange && addPlan === existingPlan){
+                } else if (descriptionChanged && addPlan === existingPlan){
                     res.send("desc change")
                 } else {
                     res.send("plan desc");

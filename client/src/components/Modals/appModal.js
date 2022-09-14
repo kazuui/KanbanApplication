@@ -20,7 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ApplicationContext from "../../context/appContext"
 
 const AppModal = (props) => {
-  const { handleShowModal, showModal , appData} = props;
+  const { handleShowModal, showModal , appData, update , isInLead} = props;
   const { GroupsArray } = useContext(ApplicationContext);
 
   //Toast
@@ -136,36 +136,29 @@ const AppModal = (props) => {
 
   //Submit Create Task
   async function handleUpdateApp(e) {
-    // e.preventDefault();
+    e.preventDefault();
 
-    // let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
-    // // console.log(application,taskName,addToPlan,taskDescription,taskNote,username)
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
+    let appAcronym = appData.app_acronym
 
-    // try{
-    //   const response = await axios.post('/apps/tasks/create', {
-    //     application,
-    //     taskName,
-    //     addToPlan,
-    //     taskDescription,
-    //     taskNote,
-    //     username
-    //   });
+    try{
+      const response = await axios.post('/apps/update', {
+        appAcronym,
+        permitCreate,
+        permitOpen,
+        permitToDoList,
+        permitDoing,
+        permitDone
+      });
 
-    //   // console.log(response.data);
+      if (response.data === "success"){
+        handleShowModal();
+        update(username);
+        // console.log("to do accessRights update");
+      }
+    } catch {
 
-    //   if(response.data === "task exists"){
-    //     notify("task exists");
-    //   }else if(response.data === "no task name"){
-    //     notify("no task name");
-    //     document.getElementById("task-name").focus();
-    //   } else if(response.data === "success"){
-    //     notify("success");
-    //     reloadForm();
-    //     updateTasks();
-    //   }
-    // }catch{
-    //   notify("warning");
-    // }
+    }
   }
 
   return (
@@ -216,6 +209,11 @@ const AppModal = (props) => {
                 <InputLabel id="demo-multiple-name-label">Create</InputLabel>
                 <Dialog disableEnforceFocus></Dialog>
                 <Select 
+                  disabled={
+                    !isInLead
+                      ? true
+                      : false
+                  }
                   className="select-form"
                   labelId="multiple-checkbox-label"
                   id="multiple-checkbox"
@@ -242,6 +240,11 @@ const AppModal = (props) => {
                 <InputLabel id="demo-multiple-name-label">Open</InputLabel>
                 <Dialog disableEnforceFocus></Dialog>
                 <Select 
+                  disabled={
+                    !isInLead
+                      ? true
+                      : false
+                  }
                   className="select-form"
                   labelId="multiple-checkbox-label"
                   id="multiple-checkbox"
@@ -268,6 +271,11 @@ const AppModal = (props) => {
                 <InputLabel id="demo-multiple-name-label">To-Do</InputLabel>
                 <Dialog disableEnforceFocus></Dialog>
                 <Select 
+                  disabled={
+                    !isInLead
+                      ? true
+                      : false
+                  }
                   className="select-form"
                   labelId="multiple-checkbox-label"
                   id="multiple-checkbox"
@@ -297,6 +305,11 @@ const AppModal = (props) => {
                 <InputLabel id="demo-multiple-name-label">Doing</InputLabel>
                 <Dialog disableEnforceFocus></Dialog>
                 <Select 
+                  disabled={
+                    !isInLead
+                      ? true
+                      : false
+                  }
                   className="select-form"
                   labelId="multiple-checkbox-label"
                   id="multiple-checkbox"
@@ -323,6 +336,11 @@ const AppModal = (props) => {
                 <InputLabel id="demo-multiple-name-label">Done</InputLabel>
                 <Dialog disableEnforceFocus></Dialog>
                 <Select 
+                  disabled={
+                    !isInLead
+                      ? true
+                      : false
+                  }
                   className="select-form"
                   labelId="multiple-checkbox-label"
                   id="multiple-checkbox"
@@ -351,9 +369,13 @@ const AppModal = (props) => {
         <Button variant="secondary" onClick={handleShowModal}>
           Close
         </Button>
-        <Button variant="primary" type="submit" form="appInfoForm" className="btn btn-primary">
-          Update Permits
-        </Button>
+        {
+          !isInLead
+            ? ""
+            : <Button variant="primary" onClick={handleUpdateApp} className="btn btn-primary">
+                Update Permits
+              </Button>
+        }
       </Modal.Footer>
     </Modal>
   );

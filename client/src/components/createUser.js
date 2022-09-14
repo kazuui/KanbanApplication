@@ -198,9 +198,8 @@ function CreateUser() {
             </div>
             
             <button type="submit" className="py-3 mt-4 btn btn-lg btn-success btn-block"> Create</button>
+            <button className="py-3 mt-4 btn btn-lg btn-primary btn-block" onClick={doGoBack}> Back </button>
           </form>
-
-          <button type="submit" className="py-3 mt-4 btn btn-lg btn-edit btn-block" onClick={doGoBack}> Back </button>
 
         </div>
 

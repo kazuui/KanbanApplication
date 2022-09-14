@@ -62,9 +62,9 @@ function NavBar(props) {
         return (
           <div>
             <ul className="nav">
-              <button onClick={doTestEmail}>
+              {/* <button onClick={doTestEmail}>
                 Hello
-              </button>
+              </button> */}
               <li className="nav-item">
                 <Link to="/profile" className=" text-white navBarLink nav-link">{" "}Profile{" "}</Link>
               </li>

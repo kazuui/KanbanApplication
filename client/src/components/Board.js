@@ -25,8 +25,7 @@ function Board(props) {
   const [doneTasks, setDoneTasks] = useState([]);
   const [closeTasks, setCloseTasks] = useState([]);
 
-  //Current Plans & Tasks
-  const [displayedPlans, setDisplayedPlans] = useState([]);
+  //Current Tasks
   const [displayedTasks, setDisplayedTasks] = useState([]);
 
   //Current Task Info
@@ -173,7 +172,11 @@ function Board(props) {
         taskInfo={displayedTasks}
         taskAction={taskAction}
         updateTask={update}
+        createRights={createRights}
         openRights={openRights}
+        toDoRights={toDoListRights}
+        doingRights={doingRights}
+        doneRights={doneRights}
         />
 
       </div>

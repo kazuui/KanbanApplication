@@ -18,6 +18,7 @@ import ApplicationBoard from "../../components/Board"
 import CreateAppModal from "../../components/Modals/createAppModal"
 import CreatePlanModal from "../../components/Modals/createPlanModal"
 import ApplicationModal from "../../components/Modals/appModal"
+import PlanModal from "../../components/Modals/planInfoModal"
 
 function Home() {
   document.title = `Home | Task Management App`;
@@ -36,6 +37,10 @@ function Home() {
   //View App Info Modal
   const [allApplicationArray, setAllApplicationArray] = useState("");
   const [showAppInfo, setShowAppInfo] = useState(false);
+
+  //View Plan Info Modal
+  const [showPlanInfo, setShowPlanInfo] = useState(false);
+  const [displayedPlans, setDisplayedPlans] = useState([]);
 
   //Application selector
   const ITEM_HEIGHT = 48;
@@ -168,7 +173,7 @@ function Home() {
   };
 
   //Show task info modal
-  const handleShowAppInfo = (currApplication) => {
+  const handleShowAppInfo = () => {
     if(showAppInfo){
       setShowAppInfo(false)
     } else{
@@ -176,7 +181,18 @@ function Home() {
     }
   };
 
+  //Show plan info modal
+  const handleShowPlanInfo = (plan) => {
+    if(showPlanInfo){
+      setShowPlanInfo(false)
+    } else{
+      setShowPlanInfo(true);
+      setDisplayedPlans(plan)
+    }
+  };
+
   // console.log(currentAppData);
+  // console.log(currentAppRights.open);
 
   return (
     <div className="py-md-2">
@@ -225,22 +241,34 @@ function Home() {
           onClick={handleShowAppInfo}>
             View App
           </button>
-          <ApplicationModal showModal={showAppInfo} handleShowModal={handleShowAppInfo} appData={currentAppData}/>
+          {!currentAppData
+            ? ""
+            : <ApplicationModal showModal={showAppInfo} handleShowModal={handleShowAppInfo} appData={currentAppData} update={updateApps} isInLead={isInLead}/>}
 
           {/* Plans */}
           <h5 className="create-text">Current Plans:</h5>
-          <button type="button" className="btn btn-add btn-lg btn-block create-app" 
+          <button disabled={
+            !currentAppRights
+              ?true
+              :currentAppRights.open === true
+                ?false
+                :true
+          } type="button" className="btn btn-add btn-lg btn-block create-app" 
           data-bs-toggle="modal" data-bs-target="#createPlanModal">+</button>
           <CreatePlanModal update={updatePlans}/>
 
           <div className="py-lg-3 center_align text-align-center">
-
           {currentAppPlans.map((plan) => {
             return(
-              <p className="app-items"><Link to="#">{" "}{plan.plan_MVP_name}{" "}</Link></p>
+              <button className="btn btn-secondary btn-lg btn-block" onClick={()=> handleShowPlanInfo(plan)}>{" "}{plan.plan_MVP_name}{" "}</button>
             )
           })}
           </div>
+          {
+            !displayedPlans
+              ? ""
+              : <PlanModal showModal={showPlanInfo} handleCloseModal={handleShowPlanInfo} planInfo={displayedPlans}/>
+          }
         </div>
         <div className="col-lg-8 py-lg-4">
           <ApplicationBoard tasks={currentAppTasks} update={updateTasks} plans={currentAppPlans} accessRights={currentAppRights}/>

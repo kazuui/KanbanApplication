@@ -35,7 +35,9 @@ exports.createPlan = catchAsyncErrors ( async (req, res, next) => {
     
     const existingPlan = await this.checkPlanName(JSON.stringify(planMVPName), application);
 
-    if(existingPlan){
+    if(!planMVPName.replace(/\s/g, '').length){
+        res.send("no plan");
+    } else if(existingPlan){
         console.log("plan exists");
         res.send("plan exists");
     } else {

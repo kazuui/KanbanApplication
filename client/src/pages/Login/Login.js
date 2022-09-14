@@ -76,12 +76,12 @@ function Login() {
 
         </div>
       </div>
-      <div className="display-3-center center_align">
+      {/* <div className="display-3-center center_align">
         <p>Lead: admin </p>
         <p>Project Lead: dev1 </p>
         <p>Project Manager: dev2 </p>
         <p>Team Member: dev3</p>
-      </div>
+      </div> */}
     </Page>
   )
 }

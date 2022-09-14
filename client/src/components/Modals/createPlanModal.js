@@ -52,6 +52,16 @@ function Modal(props) {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "no plan name") {
+      toast.warn(`Enter plan name`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     }
   }
 
@@ -71,7 +81,9 @@ function Modal(props) {
         planEndDate
       });
 
-      if (response.data === "plan exists"){
+      if (response.data === "no plan name"){
+        notify("no plan name");
+      } else if (response.data === "plan exists"){
         notify("plan exists");
       } else if (response.data === "success"){
         notify("success");
@@ -100,7 +112,9 @@ function Modal(props) {
   async function reloadForm(e) {
     document.getElementById("createPlanForm").reset();
     document.getElementById("plan-name").focus();
-
+    setPlanMVPName("");
+    setPlanStartDate("");
+    setPlanEndDate("");
   }
   
 
@@ -115,7 +129,7 @@ function Modal(props) {
             </div>
 
             <div className="modal-body">
-              <form id="createPlanForm" onSubmit={handleCreatePlanSubmit}>
+              <form id="createPlanForm" autoComplete="off" onSubmit={handleCreatePlanSubmit}>
                 <div className="form row">
                   {/* Left */}
                   <div className="col-12">
@@ -128,11 +142,11 @@ function Modal(props) {
                     <div className="form-row py-lg-2">
                       <div className="col-6">
                         <label className="" htmlFor="app-startDate">Start Date</label>
-                        <input id="app-startDate" onChange={handlePlanStartDateChange} type="date" className="form-control"/>
+                        <input required id="app-startDate" onChange={handlePlanStartDateChange} type="date" className="form-control"/>
                       </div>
                       <div className="col-6">
                         <label className="" htmlFor="app-endDate">End Date</label>
-                        <input id="app-endDate" onChange={handlePlanEndDateChange} type="date" className="form-control"/>
+                        <input required id="app-endDate" onChange={handlePlanEndDateChange} type="date" className="form-control"/>
                       </div>
                     </div>
                   </div>
@@ -141,7 +155,7 @@ function Modal(props) {
             </div>
 
             <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={reloadForm}>Close</button>
             <button type="submit" form="createPlanForm" className="btn btn-primary">Create</button>
             </div>
         </div>

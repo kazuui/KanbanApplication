@@ -82,7 +82,7 @@ function TaskInfoModal(props) {
     }
   }
 
-  const { showModal, handleCloseModal , taskInfo, taskAction, updateTask, plans, openRights } = props;
+  const { showModal, handleCloseModal , taskInfo, taskAction, updateTask, plans, openRights, createRights, toDoRights, doingRights, doneRights } = props;
 
   const [application, setApplication] = React.useState('');
   const [taskDescription, setTaskDescription] = useState("");
@@ -226,11 +226,19 @@ function TaskInfoModal(props) {
   };
 
    //reload form
-   async function reloadForm() {
+  async function reloadForm() {
     document.getElementById("updateForm").reset();
     document.getElementById("app-notes").focus();
     setTaskDescription("");
     setTaskNote("");
+  }
+
+  const submitButton = ()=>{
+    return(
+      <Button variant="primary" onClick={handleUpdateTaskInfo}>
+        Save Changes
+      </Button>
+    )
   }
 
   return (
@@ -308,10 +316,18 @@ function TaskInfoModal(props) {
                   disabled={
                     taskInfo.task_state === "close"
                       ? true
-                      : false
+                      : taskInfo.task_state === "open" && openRights
+                        ? false
+                        : taskInfo.task_state === "toDoList" && toDoRights
+                          ? false
+                          : taskInfo.task_state === "doing" && doingRights
+                            ? false
+                            : taskInfo.task_state == "done" && doneRights
+                              ? false
+                              :true
                   }
                   className="form-control task-description" id="task-description" rows="8" 
-                  defaultValue={taskInfo.task_description? taskInfo.task_description : "None"}
+                  defaultValue={taskInfo.task_description? taskInfo.task_description : ""}
                   onChange={handleDescriptionChange}
                   ></textarea>
                 </div>
@@ -353,19 +369,23 @@ function TaskInfoModal(props) {
             Close
           </Button>
           {/* Button for saving in open state */}
-          {/*
-            !openRights
-              ? ""
-              : taskInfo.task_state === "open"
-                ?
-                <Button variant="primary" onClick={handleUpdateTaskInfo}>
-                  Save Changes
-                </Button>
-                : true
-            */
+          {
+            taskAction
+              ?""
+              :taskInfo.task_state === "close"
+              ? submitButton()
+              : taskInfo.task_state === "open" && openRights
+                ? submitButton()
+                : taskInfo.task_state === "toDoList" && toDoRights
+                  ? submitButton()
+                  : taskInfo.task_state === "doing" && doingRights
+                    ? submitButton()
+                    : taskInfo.task_state == "done" && doneRights
+                      ? submitButton()
+                      :""
           }
           {/* Button for promote & demote */}
-          {/*
+          {
             !taskAction
               ? ""
               : <Button variant="primary" 
@@ -378,11 +398,10 @@ function TaskInfoModal(props) {
                 : "Demote Task"
               }
               </Button>
-            */
           }
 
           {/* Original */}
-          {
+          {/*
             taskInfo.task_state === "close"
               ? ""
               :<Button variant="primary" 
@@ -397,6 +416,7 @@ function TaskInfoModal(props) {
                   : "Save Changes"
               }
               </Button>
+            */
           }
         </Modal.Footer>
       </Modal>

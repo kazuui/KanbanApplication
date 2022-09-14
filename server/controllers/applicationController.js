@@ -48,6 +48,8 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         permitDone
     } = req.body;
 
+    console.log(appAcronym)
+
     // var app_RNum
 
     // if (Number.isInteger(appRNum)){
@@ -60,7 +62,9 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
 
     const existingApplication = await this.getOneApp(appAcronym);
 
-    if(existingApplication){
+    if(!appAcronym.replace(/\s/g, '').length){
+        res.status(200).send("no app name");
+    } else if(existingApplication){
         // console.log("App acronym already exists")
         res.send("App acronym already exists");
     } else {
@@ -71,6 +75,55 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         ${JSON.stringify(appDescription)}, ${appRNum}, ${JSON.stringify(appStartDate)}, ${JSON.stringify(appEndDate)}, 
         '${JSON.stringify(permitCreate)}', '${JSON.stringify(permitOpen)}', '${JSON.stringify(permitToDoList)}', '${JSON.stringify(permitDoing)}', 
         '${JSON.stringify(permitDone)}')`;
+        db.query(sql, (error, results) => {
+            if (error) {
+                console.log(error);
+                res.send("Error");
+            } else {
+                // console.log("done")
+                res.send("success");
+            }
+        })
+    }
+});
+
+//Update application
+exports.updateApp = catchAsyncErrors ( async (req, res, next) => {
+    const { 
+        appAcronym,
+        permitCreate,
+        permitOpen,
+        permitToDoList,
+        permitDoing,
+        permitDone
+    } = req.body;
+
+    console.log(
+        appAcronym,
+        permitCreate,
+        permitOpen,
+        permitToDoList,
+        permitDoing,
+        permitDone
+    )
+
+    const existingApplication = await this.getOneApp(appAcronym);
+    const existingCreate = existingApplication.app_permit_create;
+    const existingOpen = existingApplication.app_permit_open;
+    const existingToDoList = existingApplication.app_permit_toDoList;
+    const existingDoing = existingApplication.app_permit_doing;
+    const existingDone = existingApplication.app_permit_done;
+
+    console.log(existingApplication)
+
+    if (permitCreate === existingCreate && 
+    permitOpen === existingOpen && 
+    permitToDoList === existingToDoList &&
+    permitDoing === existingDoing &&
+    permitDone === existingDone){
+        res.send("no permit change")
+    } else {
+        let sql = `UPDATE application SET app_permit_create = '${JSON.stringify(permitCreate)}', app_permit_open = '${JSON.stringify(permitOpen)}', app_permit_toDoList = '${JSON.stringify(permitToDoList)}', app_permit_doing = '${JSON.stringify(permitDoing)}', app_permit_done = '${JSON.stringify(permitDone)}' WHERE app_acronym = ${JSON.stringify(appAcronym)}`;
         db.query(sql, (error, results) => {
             if (error) {
                 console.log(error);

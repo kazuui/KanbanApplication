@@ -52,6 +52,16 @@ function CreateAppModal(props) {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "no app name") {
+      toast.warn('Enter an App Acronym', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     }
   }
 
@@ -102,6 +112,8 @@ function CreateAppModal(props) {
 
       if (response.data === "App acronym already exists"){
         notify("app exists");
+      } else if (response.data === "no app name"){
+        notify("no app name");
       } else if (response.data === "success"){
         notify("success");
         reloadForm();
@@ -227,7 +239,7 @@ function CreateAppModal(props) {
                       </div>
                       <div className="col-6">
                         <label className="" htmlFor="app-Rnumber">Running Number</label>
-                        <input required id="app-Rnumber" onChange={handleRnumChange} type="number" className="form-control"/>
+                        <input required id="app-Rnumber" onChange={handleRnumChange} min="0" type="number" className="form-control"/>
                       </div>
                     </div>
                     <div className="form-row py-lg-2">
