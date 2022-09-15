@@ -9,7 +9,7 @@ import AuthContext from "../context/authContext";
 
 function Board(props) {
 
-  const { tasks, update, plans, accessRights } = props;
+  const { tasks, update, plans, accessRights, appData } = props;
 
   //Rights
   const [createRights, setCreateRights] = useState(false)
@@ -104,7 +104,7 @@ function Board(props) {
           <h4 className="display-3-center kanban-state state-open">OPEN</h4>
 
           {/* Create Tasks */}
-          <button disabled={!createRights? true : false} type="button" className="btn btn-add btn-lg btn-add btn-block" 
+          <button disabled={!accessRights? true : !accessRights.create? true : false} type="button" className="btn btn-add btn-lg btn-add btn-block" 
           data-bs-toggle="modal" data-bs-target="#createTaskModal">+</button>
 
           <TaskPanels

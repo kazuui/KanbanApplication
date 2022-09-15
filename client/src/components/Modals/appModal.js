@@ -152,8 +152,8 @@ const AppModal = (props) => {
       });
 
       if (response.data === "success"){
-        handleShowModal();
         update(username);
+        handleShowModal();
         // console.log("to do accessRights update");
       }
     } catch {

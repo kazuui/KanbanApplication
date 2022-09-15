@@ -220,11 +220,11 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
         }
     }
 
-    console.log("---")
-    console.log(addToPlan)
-    console.log(existingPlan)
-    console.log(addPlan)
-    console.log(checkPlanChanged)
+    // console.log("---")
+    // console.log(addToPlan)
+    // console.log(existingPlan)
+    // console.log(addPlan)
+    // console.log(checkPlanChanged)
 
     // let existingAudit = await this.getTaskAudit(taskName,application);
     updateNote = JSON.stringify(`[${username}] moved "${taskName}" to ${newState} on ${date} \nTask State: ${newState}\n${taskNote?"\nNotes:\n" + taskNote +"\n" : ""} \n`)
@@ -257,8 +257,8 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
     const date = createDateTime();
     var addPlan
 
-    console.log("---")
-    console.log(taskNote)
+    // console.log("---")
+    // console.log(taskNote)
 
     if (!addToPlan.length){
         addPlan = null
@@ -340,19 +340,22 @@ exports.sendDoneTaskEmail = catchAsyncErrors( async (req, res, next) => {
     var receiverEmailArr = []
     var allUsersEmail
     
-    console.log(appCreateStateGroup);
-    console.log(appCreateStateGroup.length);
+    // console.log(appCreateStateGroup);
+    // console.log(appCreateStateGroup.length);
 
     for(var i = 0 ; i < appCreateStateGroup.length; i++){
         const usersInCreatePermit = await getUsersInGroup(appCreateStateGroup[i])
-        console.log(usersInCreatePermit);
-        let currentEmail
+        // console.log(usersInCreatePermit);
+        
+        let previousEmail
         for(var x = 0 ; x < usersInCreatePermit.length; x++){
-            const checkSameEmail = (usersInCreatePermit[i].email !== currentEmail)
-            if (usersInCreatePermit[i].email && checkSameEmail){
-                receiverEmail=usersInCreatePermit[i].email
+            const userEmail = usersInCreatePermit[x].email
+            const checkSameEmail = (userEmail !== previousEmail)
+            
+            if (userEmail && checkSameEmail){
+                let receiverEmail=usersInCreatePermit[x].email
                 receiverEmailArr.push(receiverEmail)
-                currentEmail = usersInCreatePermit[i].email
+                previousEmail = usersInCreatePermit[x].email
             }
         }
     }

@@ -48,7 +48,7 @@ exports.createApp = catchAsyncErrors ( async (req, res, next) => {
         permitDone
     } = req.body;
 
-    console.log(appAcronym)
+    // console.log(appAcronym)
 
     // var app_RNum
 
@@ -98,14 +98,14 @@ exports.updateApp = catchAsyncErrors ( async (req, res, next) => {
         permitDone
     } = req.body;
 
-    console.log(
-        appAcronym,
-        permitCreate,
-        permitOpen,
-        permitToDoList,
-        permitDoing,
-        permitDone
-    )
+    // console.log(
+    //     appAcronym,
+    //     permitCreate,
+    //     permitOpen,
+    //     permitToDoList,
+    //     permitDoing,
+    //     permitDone
+    // )
 
     const existingApplication = await this.getOneApp(appAcronym);
     const existingCreate = existingApplication.app_permit_create;

@@ -120,7 +120,7 @@ function Modal(props) {
 
   const handleTaskNameChange = (event) => {
     setTaskName(event.target.value);
-    console.log(taskName);
+    // console.log(taskName);
   };
 
   const handleTaskDescriptionChange = (event) => {
