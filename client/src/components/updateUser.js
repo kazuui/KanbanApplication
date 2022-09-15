@@ -192,7 +192,11 @@ function UpdateUser() {
           }
         }
         notify("success");
-        Navigate("/users", { replace: true });
+        {
+          userData.role === "admin"
+            ?Navigate("/users", { replace: true })
+            :Navigate("/profile", { replace: true })
+        }
       }
     } catch(e){
       notify("warning");

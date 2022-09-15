@@ -34,7 +34,7 @@ exports.getTaskDescription = catchAsyncErrors ( async (task_name, task_app_acron
 });
 
 //get task name
-exports.getTaskName = catchAsyncErrors ( async (task_name,task_app_acronym) => {
+exports.getSingleTask = catchAsyncErrors ( async (task_name,task_app_acronym) => {
     let sql = `SELECT * FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
     const results = await db.promise().query(sql);
     return results[0][0];
@@ -73,7 +73,7 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
         username
     } = req.body;
 
-    const existingTask = await this.getTaskName(taskName, application);
+    const existingTask = await this.getSingleTask(taskName, application);
 
     if (!taskName.replace(/\s/g, '').length){
         res.status(200).send("no task name");
