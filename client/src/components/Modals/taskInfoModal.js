@@ -206,20 +206,20 @@ function TaskInfoModal(props) {
     if(response.data === "no changes"){
       notify("no changes", taskName);
     } else if (response.data === "plan change") {
+      reloadForm()
       notify("plan change", taskName);
       updateTask()
       handleCloseModal()
-      reloadForm()
     } else if (response.data === "desc change") {
+      reloadForm()
       notify("desc change", taskName);
       updateTask()
       handleCloseModal()
-      reloadForm()
     } else if (response.data === "plan desc") {
+      reloadForm()
       notify("plan desc", taskName);
       updateTask()
       handleCloseModal()
-      reloadForm()
     }else {
       notify("warning", taskName);
     }
@@ -227,10 +227,9 @@ function TaskInfoModal(props) {
 
    //reload form
   async function reloadForm() {
-    document.getElementById("updateForm").reset();
-    document.getElementById("app-notes").focus();
     setTaskDescription("");
     setTaskNote("");
+    document.getElementById("app-notes").focus();
   }
 
   const submitButton = ()=>{
@@ -322,7 +321,7 @@ function TaskInfoModal(props) {
                           ? false
                           : taskInfo.task_state === "doing" && doingRights
                             ? false
-                            : taskInfo.task_state == "done" && doneRights
+                            : taskInfo.task_state === "done" && doneRights
                               ? false
                               :true
                   }
@@ -380,7 +379,7 @@ function TaskInfoModal(props) {
                   ? submitButton()
                   : taskInfo.task_state === "doing" && doingRights
                     ? submitButton()
-                    : taskInfo.task_state == "done" && doneRights
+                    : taskInfo.task_state === "done" && doneRights
                       ? submitButton()
                       :""
           }

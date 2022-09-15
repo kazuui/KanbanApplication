@@ -187,54 +187,38 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
 
     const date = createDateTime();
     var addPlan
-    var addDesc = taskDescription
-    let planChanged
-    let descriptionChanged
-    let existingPlan = (await this.getTaskPlan(taskName, application))
-    let existingDesc = (await this.getTaskDescription(taskName, application))
 
-    if (addToPlan === "none" || !addToPlan.length){
+    console.log("---")
+    console.log(taskDescription)
+
+    if (!addToPlan.length){
         addPlan = null
     } else {
-        addPlan = JSON.stringify(addToPlan)
+        addPlan = addToPlan
     }
-
+    
+    let existingPlan = (await this.getTaskPlan(taskName, application))
+    let existingDesc = (await this.getTaskDescription(taskName, application))
     let checkPlanChanged = (existingPlan !== addPlan)
-    let checkDescChange = (taskDescription.length !== 0 || existingDesc !== taskDescription)
 
-    console.log(checkDescChange)
+    console.log(!taskDescription.length)
+    console.log(!checkPlanChanged)
 
-    if (!checkPlanChanged) {
-        planChanged = false
-    } else if (checkPlanChanged){
-        if(existingDesc !== taskDescription && taskDescription.length === 0){
-            addDesc = "none"
-        }
-        planChanged = true
-    }
-
-    if (!checkDescChange) {
-        descriptionChanged = false
-    } else if (checkDescChange){
-        descriptionChanged = true
-    }
-
-    if(!planChanged && !taskDescription){
+    if(!checkPlanChanged && !taskDescription.length){
         res.send("no changes");
     } else {
-        var updateNote = JSON.stringify(`[${username}] edited "${taskName}" ${planChanged && descriptionChanged?"plan and description":planChanged && !descriptionChanged?"plan":descriptionChanged && !planChanged?"description":""} on ${date} \nTask State: ${currentState}\n${!descriptionChanged?"":!existingDesc.length?"\nPrevious description:\nnone":"\nPrevious description: "+existingDesc}\n\n`)
+        var updateNote = JSON.stringify(`[${username}] edited "${taskName}" ${checkPlanChanged && taskDescription.length?"plan and description":checkPlanChanged && !taskDescription.length?"plan":taskDescription.length && !checkPlanChanged?"description":""} on ${date} \nTask State: ${currentState}\n${!checkPlanChanged?"":!existingPlan?"\nPrevious plan: \nnone assigned":"\nPrevious Plan: "+existingPlan}${!taskDescription.length?"":!existingDesc.length?"\nPrevious description:\nnone":"\nPrevious description: "+existingDesc}\n\n`)
 
-        // console.log(addPlan)
-        let sql = `UPDATE task SET ${addPlan !== existingPlan? "task_plan = "+ addPlan +"," : "" } ${addDesc? "task_description = " + JSON.stringify(addDesc)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
+        let sql = `UPDATE task SET ${addPlan !== existingPlan? "task_plan = "+ JSON.stringify(addPlan) +"," : "" } ${taskDescription.length? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
 
         db.query(sql, (error, results) => {
             if (error) {
-                // console.log(error)
+                console.log(error)
                 res.send("Error");
             } else {
-                if (addPlan !== existingPlan && !descriptionChanged){
+                if (addPlan !== existingPlan && !taskDescription.length){
                     res.send("plan change")
-                } else if (descriptionChanged && addPlan === existingPlan){
+                } else if (taskDescription.length && addPlan === existingPlan){
                     res.send("desc change")
                 } else {
                     res.send("plan desc");
