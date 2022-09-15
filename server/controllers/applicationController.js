@@ -114,7 +114,7 @@ exports.updateApp = catchAsyncErrors ( async (req, res, next) => {
     const existingDoing = existingApplication.app_permit_doing;
     const existingDone = existingApplication.app_permit_done;
 
-    console.log(existingApplication)
+    // console.log(existingApplication)
 
     if (permitCreate === existingCreate && 
     permitOpen === existingOpen && 

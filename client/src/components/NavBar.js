@@ -28,8 +28,12 @@ function NavBar(props) {
     setIsLoggedIn(false);
   }
 
-  const doTestEmail = async() =>{
-    const response = await axios.post('/test-email')
+  const getUserOfSpecificGroup = async() =>{
+    let groupName = "Project Lead"
+
+    const response = await axios.post('/groups/users', {
+      groupName
+    })
     console.log(response.data)
   }
 
@@ -62,8 +66,8 @@ function NavBar(props) {
         return (
           <div>
             <ul className="nav">
-              {/* <button onClick={doTestEmail}>
-                Hello
+              {/* <button onClick={getUserOfSpecificGroup}>
+                Group
               </button> */}
               <li className="nav-item">
                 <Link to="/profile" className=" text-white navBarLink nav-link">{" "}Profile{" "}</Link>
@@ -84,6 +88,9 @@ function NavBar(props) {
         return(
           <div>
             <ul className="nav">
+              {/* <button onClick={getUserOfSpecificGroup}>
+                Group
+              </button> */}
               <li className="nav-item">
                 <Link to="/profile" className="text-white navBarLink nav-link">{" "}Profile{" "}</Link>
               </li>

@@ -11,6 +11,9 @@ router.route('/groups').get(groups.getGroups);
 //Create group
 router.route('/groups/create').post(groups.createGroup);
 
+//Testing get all user in group
+router.route('/groups/users').post(groups.getAllUserInGroup);
+
 //Get group ID
 // router.route('/groups/:groupName').get(groups.getGroupID);
 

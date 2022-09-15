@@ -21,7 +21,7 @@ function PlanInfoModal(props) {
   // const [taskNote, setTaskNote] = useState("");
   // const [addToPlan, setAddToPlan] = useState([]);
 
-  console.log(planInfo)
+  // console.log(planInfo)
 
   return (
     <Modal show={showModal} onHide={handleCloseModal}>

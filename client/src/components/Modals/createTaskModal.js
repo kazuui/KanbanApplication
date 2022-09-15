@@ -173,11 +173,12 @@ function Modal(props) {
                     <div className="form-row py-lg-2">
                       <div className="col-12">
                         <FormControl fullWidth
-                        disabled={
-                          !openRights
-                            ? true
-                            : false
-                        }>
+                        // disabled={
+                        //   !openRights
+                        //     ? true
+                        //     : false
+                        // }
+                        >
                           <InputLabel id="demo-multiple-name-label">Add to Plan</InputLabel>
                           <Select
                             labelId="demo-multiple-name-label"

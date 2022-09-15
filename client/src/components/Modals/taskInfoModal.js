@@ -59,6 +59,16 @@ function TaskInfoModal(props) {
         draggable: true,
         progress: undefined,
         });
+    } else if (status === "note add") {
+      toast.success(`"${taskName}" new note added`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        });
     } else if (status === "no changes") {
       toast.warn('Nothing was updated', {
         position: "top-center",
@@ -101,14 +111,6 @@ function TaskInfoModal(props) {
      },
    };
 
-  // useEffect(() => {
-  //   getCurrentPlan();
-  // }, [])
-
-  // const getCurrentPlan = async() =>{
-  //   setAddToPlan([taskInfo.task_plan]);
-  // }
-
   const handleDescriptionChange = (event) => {
     setTaskDescription(event.target.value);
   };
@@ -148,17 +150,6 @@ function TaskInfoModal(props) {
       taskDescription,
       taskNote
     })
-    
-    // .then(updateTask === "promote" && currentState ==="doing"
-    //   ? await axios.post('/task/send-email', {
-    //     application,
-    //     username,
-    //     taskCreator,
-    //     taskName,
-    //     taskNote
-    //   })
-    //   : ""
-    // );
 
     if (response.data === "success"){
       notify("success", taskName);
@@ -198,7 +189,8 @@ function TaskInfoModal(props) {
       taskID,
       taskName,
       addToPlan,
-      taskDescription
+      taskDescription,
+      taskNote
     });
 
     console.log(response.data)
@@ -220,7 +212,12 @@ function TaskInfoModal(props) {
       notify("plan desc", taskName);
       updateTask()
       handleCloseModal()
-    }else {
+    } else if (response.data === "note add") {
+      reloadForm()
+      notify("note add", taskName);
+      updateTask()
+      handleCloseModal()
+    } else {
       notify("warning", taskName);
     }
   };
@@ -229,7 +226,7 @@ function TaskInfoModal(props) {
   async function reloadForm() {
     setTaskDescription("");
     setTaskNote("");
-    document.getElementById("app-notes").focus();
+    // document.getElementById("app-notes").focus();
   }
 
   const submitButton = ()=>{
@@ -334,15 +331,12 @@ function TaskInfoModal(props) {
             </div>
             
             <div className="form-row">
-              {taskAction
-              ?<div className="col-12">
-                  <label htmlFor="app-notes">Notes</label>
-                  <textarea autoFocus className="form-control" id="app-notes" rows="4"
-                  onChange={handleNotesChange}
-                  ></textarea>
-                </div>
-              : null
-              }
+              <div className="col-12">
+                <label htmlFor="app-notes">Notes</label>
+                <textarea autoFocus className="form-control" id="app-notes" rows="4"
+                onChange={handleNotesChange}
+                ></textarea>
+              </div>
               <div className="col-12 py-lg-3">
                 <div className="accordion accordion-flush" id="accordionFlushExample">
                   <div className="accordion-item">

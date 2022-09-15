@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 
 //Context
 import ApplicationContext from "../context/appContext"
@@ -9,20 +10,29 @@ function TaskPanel(props) {
   const { currApplication } = useContext(ApplicationContext);
   // document.getElementById("helloHello").style.backgroundColor = "lightblue";
 
-  // const handleTaskUpdate = async (task, updateType) => {
+  const handleMoveTask = async (taskInfo, taskAction) => {
+    let username = await (JSON.parse(sessionStorage.getItem('user'))).username;
+    let updateType = taskAction
+    let currentState = taskInfo.task_state
 
-  //   let application = currApplication
-  //   let taskName = task.task_name
-  //   let currentState = task.task_state
+    const response = await axios.post('/apps/tasks/move-state', {
+      username,
+      updateType,
+      taskInfo
+    })
 
-  //   const response = await axios.post('/apps/tasks/update', {
-  //     application,
-  //     updateType,
-  //     currentState,
-  //     taskName
-  //   });
-  //   updateTasks();
-  // };
+    if (response.data === "success"){
+      // notify("success", taskName);
+      updateTasks()
+
+      if (updateType === "promote" && currentState === "doing"){
+        const sendEmail = await axios.post('/task/send-email', {
+          username,
+          taskInfo
+        })
+      }
+    }
+  };
 
   return (
     taskState.map((task) => {
@@ -81,7 +91,7 @@ function TaskPanel(props) {
                         : false
               }
                 type="button" className="btn-arrow" 
-                onClick={() => handleShowModal(task,"demote")}>
+                onClick={() => handleMoveTask(task,"demote")}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-left-fill" viewBox="0 0 16 16">
                   <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
                 </svg>
@@ -96,7 +106,7 @@ function TaskPanel(props) {
                     : false
               }
                  type="button" className="btn-arrow btn-align-right"
-                 onClick={() => handleShowModal(task,"promote")}>
+                 onClick={() => handleMoveTask(task,"promote")}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-caret-right-fill" viewBox="0 0 16 16">
                   <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
                 </svg>

@@ -6,6 +6,7 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const { getOneApp } = require("./applicationController");
 const { createDateTime } = require("../helpers/helpers");
 const { getUserEmail } = require("./userController");
+const { getUsersInGroup } = require("./groupController");
 
 
 //Get amount of task in app
@@ -105,32 +106,20 @@ exports.createTask = catchAsyncErrors ( async (req, res, next) => {
 });
 
 //Move Task
-exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
+exports.moveTaskState = catchAsyncErrors ( async (req, res, next) => {
     const {
-        username, 
-        application,
+        username,
         updateType,
-        currentState,
-        taskID,
-        taskName,
-        addToPlan,
-        taskDescription,
-        taskNote
+        taskInfo
     } = req.body;
-    
+
+    let taskID = taskInfo.task_id
+    let taskName = taskInfo.task_name
+    let currentState = taskInfo.task_state
+
     const date = createDateTime();
     var updateNote
     var newState
-    var changePlan
-    
-    let checkPlan = (await this.getTaskPlan(taskName, application) !== addToPlan)
-    if (checkPlan){
-        if(addToPlan.length === 0 || addToPlan === "none" || !addToPlan ){
-            changePlan = null
-        } else {
-            changePlan = JSON.stringify(addToPlan)
-        }
-    }
 
     if (updateType === "promote"){
         switch (currentState) {
@@ -158,10 +147,89 @@ exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
         }
     }
 
+    updateNote = JSON.stringify(`[${username}] moved "${taskName}" to ${newState} on ${date} \nPrevious State:${currentState}\nTask State: ${newState}\n\n`)
+
+    let sql = `UPDATE task SET task_state = ${JSON.stringify(newState)} , task_notes = CONCAT(${updateNote}, task_notes), task_owner = ${JSON.stringify(username)} WHERE (task_id = ${JSON.stringify(taskID)})`;
+    db.query(sql, (error, results) => {
+        if (error) {
+            console.log(error)
+            res.send("Error");
+        } else {
+            console.log("success")
+            res.send("success");
+        }
+    })
+});
+
+//Move Task
+exports.moveTask = catchAsyncErrors ( async (req, res, next) => {
+    const {
+        username, 
+        application,
+        updateType,
+        currentState,
+        taskID,
+        taskName,
+        addToPlan,
+        taskDescription,
+        taskNote
+    } = req.body;
+
+    const date = createDateTime();
+    var addPlan
+    var updateNote
+    var newState
+
+    let existingPlan = (await this.getTaskPlan(taskName, application))
+
+    if (!addToPlan.length){
+        if (!existingPlan){
+            addPlan = null
+        } else {
+            addPlan = existingPlan
+        }
+    } else {
+        addPlan = addToPlan
+    }
+
+    let checkPlanChanged = (existingPlan !== addPlan)
+
+    if (updateType === "promote"){
+        switch (currentState) {
+            case "open":
+                newState = "toDoList"
+                break;
+            case "toDoList":
+                newState = "doing"
+                break;
+            case "doing":
+                newState = "done"
+                break;
+            case "done":
+                newState = "close"
+                break;
+        }
+    } else {
+        switch (currentState) {
+            case "doing":
+                newState = "toDoList"
+                break;
+            case "done":
+                newState = "doing"
+                break;
+        }
+    }
+
+    console.log("---")
+    console.log(addToPlan)
+    console.log(existingPlan)
+    console.log(addPlan)
+    console.log(checkPlanChanged)
+
     // let existingAudit = await this.getTaskAudit(taskName,application);
     updateNote = JSON.stringify(`[${username}] moved "${taskName}" to ${newState} on ${date} \nTask State: ${newState}\n${taskNote?"\nNotes:\n" + taskNote +"\n" : ""} \n`)
 
-    let sql = `UPDATE task SET ${checkPlan? "task_plan = "+ changePlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_state = ${JSON.stringify(newState)} , task_notes = CONCAT(${updateNote}, task_notes), task_owner = ${JSON.stringify(username)} WHERE (task_id = ${JSON.stringify(taskID)})`;
+    let sql = `UPDATE task SET ${checkPlanChanged? "task_plan = "+ addPlan +"," : "" } ${taskDescription? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_state = ${JSON.stringify(newState)} , task_notes = CONCAT(${updateNote}, task_notes), task_owner = ${JSON.stringify(username)} WHERE (task_id = ${JSON.stringify(taskID)})`;
     db.query(sql, (error, results) => {
         if (error) {
             console.log(error)
@@ -183,13 +251,14 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
         taskName,
         addToPlan,
         taskDescription,
+        taskNote
     } = req.body;
 
     const date = createDateTime();
     var addPlan
 
     console.log("---")
-    console.log(taskDescription)
+    console.log(taskNote)
 
     if (!addToPlan.length){
         addPlan = null
@@ -201,13 +270,18 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
     let existingDesc = (await this.getTaskDescription(taskName, application))
     let checkPlanChanged = (existingPlan !== addPlan)
 
-    console.log(!taskDescription.length)
-    console.log(!checkPlanChanged)
-
-    if(!checkPlanChanged && !taskDescription.length){
+    if(!checkPlanChanged && !taskDescription.length && !taskNote){
         res.send("no changes");
     } else {
-        var updateNote = JSON.stringify(`[${username}] edited "${taskName}" ${checkPlanChanged && taskDescription.length?"plan and description":checkPlanChanged && !taskDescription.length?"plan":taskDescription.length && !checkPlanChanged?"description":""} on ${date} \nTask State: ${currentState}\n${!checkPlanChanged?"":!existingPlan?"\nPrevious plan: \nnone assigned":"\nPrevious Plan: "+existingPlan}${!taskDescription.length?"":!existingDesc.length?"\nPrevious description:\nnone":"\nPrevious description: "+existingDesc}\n\n`)
+        var updateNote = JSON.stringify(`[${username}] edited "${taskName}" ${
+            checkPlanChanged && taskDescription.length
+            ?"plan and description "
+            :checkPlanChanged && !taskDescription.length
+            ?"plan "
+            :taskDescription.length && !checkPlanChanged
+            ?"description "
+            :""
+        }on ${date}${!taskNote?"":" (added task note)"}\nTask State: ${currentState}\n${!checkPlanChanged?"":!existingPlan?"\nPrevious plan: \nnone assigned":"\nPrevious Plan: "+existingPlan}${!taskDescription.length?"":!existingDesc.length?"\nPrevious description:\nnone":"\nPrevious description: "+existingDesc +"\n"}${taskNote?"Notes:\n" + taskNote +"\n" : ""}\n`)
 
         let sql = `UPDATE task SET ${addPlan !== existingPlan? "task_plan = "+ JSON.stringify(addPlan) +"," : "" } ${taskDescription.length? "task_description = " + JSON.stringify(taskDescription)+"," : ""} task_notes = CONCAT(${updateNote}, task_notes) WHERE (task_id = ${JSON.stringify(taskID)})`;
 
@@ -218,9 +292,11 @@ exports.updateTask = catchAsyncErrors ( async (req, res, next) => {
             } else {
                 if (addPlan !== existingPlan && !taskDescription.length){
                     res.send("plan change")
-                } else if (taskDescription.length && addPlan === existingPlan){
+                } else if (taskDescription.length && addPlan === existingPlan ){
                     res.send("desc change")
-                } else {
+                } else if (!taskDescription.length && !addPlan && taskNote){
+                    res.send("note add")
+                }else {
                     res.send("plan desc");
                 }
             }
@@ -252,19 +328,37 @@ exports.sendTestEmail = catchAsyncErrors( async() => {
 //Send email when task is moved to done state
 exports.sendDoneTaskEmail = catchAsyncErrors( async (req, res, next) => {
     const {
-        application,
         username,
-        taskCreator,
-        taskName,
-        taskNote,
+        taskInfo
     } = req.body;
 
     const date = createDateTime();
+    let application = taskInfo.task_app_acronym
+    const currentAppData = await getOneApp(application)
+    const appCreateStateGroup = JSON.parse(currentAppData.app_permit_create)
+    var taskName = taskInfo.task_name
+    var receiverEmailArr = []
+    var allUsersEmail
+    
+    console.log(appCreateStateGroup);
+    console.log(appCreateStateGroup.length);
 
-    var receiverEmail = JSON.stringify(await getUserEmail(taskCreator));
-    if (!receiverEmail.length){
-        receiverEmail = "jiayi.ang98@hotmail.com"
+    for(var i = 0 ; i < appCreateStateGroup.length; i++){
+        const usersInCreatePermit = await getUsersInGroup(appCreateStateGroup[i])
+        console.log(usersInCreatePermit);
+        let currentEmail
+        for(var x = 0 ; x < usersInCreatePermit.length; x++){
+            const checkSameEmail = (usersInCreatePermit[i].email !== currentEmail)
+            if (usersInCreatePermit[i].email && checkSameEmail){
+                receiverEmail=usersInCreatePermit[i].email
+                receiverEmailArr.push(receiverEmail)
+                currentEmail = usersInCreatePermit[i].email
+            }
+        }
     }
+
+    allUsersEmail = JSON.stringify(receiverEmailArr).replace(/\s|\[|\]/g,"")
+    console.log(allUsersEmail)
 
     var emailSubject = `A task has been completed in ${application} by ${username}`
     // var emailSubject = `${username} has completed the task ${taskName} in ${application}`
@@ -274,14 +368,13 @@ exports.sendDoneTaskEmail = catchAsyncErrors( async (req, res, next) => {
     <div>
         <h3>TASK "<span style="text-transform: uppercase;">${application}</span>" IS MOVED TO DONE</h3>
         <h3>[${username}] has moved the task "${taskName}" to DONE on ${date}</h5>
-        ${taskNote?"<h5>Notes:</h5><p>" + taskNote + "</p>": ""}
     </div>
     `
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
         from: 'kanban_app@example.com' , // sender address
-        to: receiverEmail , // list of receivers
+        to: allUsersEmail , // list of receivers
         subject: emailSubject , // Subject line
         // text: "Hello world?", // plain text body
         html: emailBody , // html body

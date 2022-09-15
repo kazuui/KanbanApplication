@@ -18,8 +18,11 @@ router.route('/apps/tasks/create').post(tasks.createTask);
 //Update task in same state
 router.route('/apps/tasks/update').post(tasks.updateTask);
 
-//Update task in same state
-router.route('/apps/tasks/move').post(tasks.moveTask);
+//Promote/Demote with Action notes
+// router.route('/apps/tasks/move').post(tasks.moveTask);
+
+//Promote/Demote
+router.route('/apps/tasks/move-state').post(tasks.moveTaskState);
 
 //Send test email
 router.route('/test-email').post(tasks.sendTestEmail);
