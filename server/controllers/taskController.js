@@ -40,6 +40,14 @@ exports.getSingleTask = catchAsyncErrors ( async (task_name,task_app_acronym) =>
     return results[0][0];
 });
 
+//get task by ID
+exports.getSingleTaskByID = catchAsyncErrors ( async (task_id,task_app_acronym) => {
+    let sql = `SELECT * FROM kanban_web_app.task WHERE task_id = ${JSON.stringify(task_id)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
+    const results = await db.promise().query(sql);
+    return results[0][0];
+});
+
+
 //Get Audit note of task
 exports.getTaskAudit = catchAsyncErrors ( async (task_name,task_app_acronym) => {
     let sql = `SELECT task_notes FROM kanban_web_app.task WHERE task_name = ${JSON.stringify(task_name)} AND task_app_acronym = ${JSON.stringify(task_app_acronym)}`;
@@ -147,7 +155,7 @@ exports.moveTaskState = catchAsyncErrors ( async (req, res, next) => {
         }
     }
 
-    updateNote = JSON.stringify(`[${username}] moved "${taskName}" to ${newState} on ${date} \nPrevious State:${currentState}\nTask State: ${newState}\n\n`)
+    updateNote = JSON.stringify(`[${username}] moved "${taskName}" to ${newState} on ${date} \nPrevious State: ${currentState}\nTask State: ${newState}\n\n`)
 
     let sql = `UPDATE task SET task_state = ${JSON.stringify(newState)} , task_notes = CONCAT(${updateNote}, task_notes), task_owner = ${JSON.stringify(username)} WHERE (task_id = ${JSON.stringify(taskID)})`;
     db.query(sql, (error, results) => {
@@ -369,8 +377,8 @@ exports.sendDoneTaskEmail = catchAsyncErrors( async (req, res, next) => {
     var emailBody = 
     `
     <div>
-        <h3>TASK "<span style="text-transform: uppercase;">${application}</span>" IS MOVED TO DONE</h3>
-        <h3>[${username}] has moved the task "${taskName}" to DONE on ${date}</h5>
+        <h3>TASK "<span style="text-transform: uppercase;">${taskName}</span>" IS MOVED TO DONE</h3>
+        <h5>[${username}] has moved the task "${taskName}" to DONE on ${date}</h5>
     </div>
     `
 
