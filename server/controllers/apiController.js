@@ -105,7 +105,7 @@ exports.CreateTask = catchAsyncErrors ( async (req, res, next) => {
 
                                 const createTaskNote = JSON.stringify(`[${username}] created task "${task_name}" on ${date} \nTask state: ${taskState}\n${task_note?"\nNotes:\n" + task_note : ""}`);
 
-                                let sql = `INSERT INTO task (task_id, task_name, task_description, task_notes, task_app_acronym, task_state, task_creator, task_owner,  task_createDate) VALUES(${JSON.stringify(taskID)},${JSON.stringify(task_name)},${!task_desc?null:JSON.stringify(task_desc)},${createTaskNote},${JSON.stringify(app_acronym)},${JSON.stringify(taskState)},${JSON.stringify(username)}, ${JSON.stringify(username)}, ${JSON.stringify(createDate)})`;
+                                let sql = `INSERT INTO task (task_id, task_name, task_notes, task_app_acronym, task_state, task_creator, task_owner,  task_createDate) VALUES(${JSON.stringify(taskID)},${JSON.stringify(task_name)},${createTaskNote},${JSON.stringify(app_acronym)},${JSON.stringify(taskState)},${JSON.stringify(username)}, ${JSON.stringify(username)}, ${JSON.stringify(createDate)})`;
                                 db.query(sql, (error, results) => {
                                     if (error) {
                                         res.status(500).send({
@@ -130,12 +130,14 @@ exports.CreateTask = catchAsyncErrors ( async (req, res, next) => {
 //Retrieve tasks in a particular state
 exports.GetTaskbyState = catchAsyncErrors ( async (req, res, next) => {
 
-    const { username, password, app_acronym, task_state  } = req.body;
+    const { username, password, app_acronym } = req.body;
     // var app_acronym = req.body.app_acronym;
-    // var task_state = req.body.task_state;
 
     // app_acronym = app_acronym.trim()
     // task_state = task_state.trim()
+
+    var task_state = req.body.task_state;
+    task_state = task_state.toLowerCase();
 
     //If username and password not entered
     if(!username || !password){

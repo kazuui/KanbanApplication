@@ -343,27 +343,27 @@ exports.sendDoneTaskEmail = catchAsyncErrors( async (req, res, next) => {
     const date = createDateTime();
     let application = taskInfo.task_app_acronym
     const currentAppData = await getOneApp(application)
-    const appCreateStateGroup = JSON.parse(currentAppData.app_permit_create)
+    const appDoneStateGroup = JSON.parse(currentAppData.app_permit_done)
     var taskName = taskInfo.task_name
     var receiverEmailArr = []
     var allUsersEmail
     
-    // console.log(appCreateStateGroup);
-    // console.log(appCreateStateGroup.length);
+    // console.log(appDoneStateGroup);
+    // console.log(appDoneStateGroup.length);
 
-    for(var i = 0 ; i < appCreateStateGroup.length; i++){
-        const usersInCreatePermit = await getUsersInGroup(appCreateStateGroup[i])
-        // console.log(usersInCreatePermit);
+    for(var i = 0 ; i < appDoneStateGroup.length; i++){
+        const usersInDonePermit = await getUsersInGroup(appDoneStateGroup[i])
+        // console.log(usersInDonePermit);
         
         let previousEmail
-        for(var x = 0 ; x < usersInCreatePermit.length; x++){
-            const userEmail = usersInCreatePermit[x].email
+        for(var x = 0 ; x < usersInDonePermit.length; x++){
+            const userEmail = usersInDonePermit[x].email
             const checkSameEmail = (userEmail !== previousEmail)
             
             if (userEmail && checkSameEmail){
-                let receiverEmail=usersInCreatePermit[x].email
+                let receiverEmail=usersInDonePermit[x].email
                 receiverEmailArr.push(receiverEmail)
-                previousEmail = usersInCreatePermit[x].email
+                previousEmail = usersInDonePermit[x].email
             }
         }
     }
