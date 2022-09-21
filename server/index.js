@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const mysql = require("mysql2");
+// const mysql = require("mysql2");
 const cors = require("cors");
-require('dotenv/config');
-const db = require('./config/db.js');
+// require('dotenv/config');
+// const db = require('./config/db.js');
 
 app.use(cors({ credentials:true, origin:'http://localhost:5000' }));
 app.use(express.json());
@@ -29,15 +29,15 @@ app.use('/', planRoutes);
 app.use('/', apiRoutes);
 
 
-// app.get('/', (req,res) => {
-//   res
-//   .status(200)
-//   .json({message: 'Hello from the server side!', app: 'Kanban'});
-// });
-
-app.post('/', (req,res) => {
-  res.send('You can post to this URL');
+app.get('/', (req,res) => {
+  res
+  .status(200)
+  .json({message: 'Hello from the server side!', app: 'Kanban'});
 });
+
+// app.post('/', (req,res) => {
+//   res.send('You can post to this URL');
+// });
 
 const PORT = process.env.PORT || 5000; //Backend routing port
 app.listen(PORT , () => {
