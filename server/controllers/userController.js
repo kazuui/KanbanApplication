@@ -5,7 +5,7 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const helpers = require('../helpers/helpers');
 
 //User Model
-const UserModel = require("../models/UserModel.js");
+// const UserModel = require("../models/UserModel.js");
 
 //Get user email
 exports.getUserEmail = catchAsyncErrors ( async (username) => {

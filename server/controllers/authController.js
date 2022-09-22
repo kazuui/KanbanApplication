@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 
-const UserModel = require ('../models/UserModel');
+// const UserModel = require ('../models/UserModel');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const helpers = require('../helpers/helpers');
 const Groups = require('./groupController');

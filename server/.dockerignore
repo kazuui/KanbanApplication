@@ -1,0 +1,14 @@
+Dockerfile
+
+.env
+
+node_modules
+npm-debug.log
+package-lock.json
+
+Archive
+models
+middleware/authMiddleware.js
+middleware/verifyToken.js
+controllers/expressValidator.js
+controllers/Idk.js
