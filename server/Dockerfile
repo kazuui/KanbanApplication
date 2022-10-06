@@ -1,18 +1,22 @@
-FROM node:alpine
+FROM node:18-alpine
 
-WORKDIR /app1
+# FROM alpine
 
-RUN apk add npm
+WORKDIR /node
 
-COPY package.json /app1
+# RUN apk add npm
+
+COPY package.json ./
 
 RUN npm install && npm cache clean --force
 
-COPY . /app1
+COPY . .
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+# RUN addgroup -S nodegroup && adduser -S nodeuser -G nodegroup
 
-USER appuser
+# USER nodeuser
+
+# USER node
 
 EXPOSE 5000
 
