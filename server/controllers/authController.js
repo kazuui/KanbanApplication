@@ -291,6 +291,7 @@ exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
         let app = {app: appName}
 
         // console.log(permitData)
+        // console.log("------")
 
         //Loop app states
         for(var x = 0 ; x < permitData.length; x++){
@@ -310,6 +311,7 @@ exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
         }
 
         let stateGroups = JSON.parse(permitData[x][1])
+        // console.log(stateGroups);
         let accessOutcome
 
         //Check if user is in state groups
@@ -333,6 +335,7 @@ exports.getAccessRights = catchAsyncErrors ( async (req, res, next) => {
         app[stateName] = accessOutcome
         }
         accessArr.push(app)
+        // break
     }
     // console.log(accessArr)
     res.send(accessArr)
